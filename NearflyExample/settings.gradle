@@ -1,0 +1,2 @@
+include ':app', ':nearfly', ':nearfly'
+rootProject.name='NearflyExample'
