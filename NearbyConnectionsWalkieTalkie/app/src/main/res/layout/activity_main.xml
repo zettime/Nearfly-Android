@@ -1,0 +1,96 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/black">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="60dp">
+
+        <!-- <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="startAdvertising"
+            android:text="start Advertising" /> -->
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="publish"
+            android:text="publish" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="STATE: "
+        android:textColor="@color/white"
+        />
+        <TextView
+            android:id="@+id/tv_current_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="wait..."
+            android:textColor="@color/white"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="    ROOTNODE: "
+            android:textColor="@color/white"
+            />
+        <TextView
+            android:id="@+id/tv_root_node"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="wait..."
+            android:textColor="@color/white"
+            />
+    </LinearLayout>
+
+    <!-- <TextView
+        android:id="@+id/previous_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:textSize="24sp" /> -->
+
+    <!-- <TextView
+        android:text="@string/status_unknown"
+        android:id="@+id/current_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:padding="10dp"
+        android:textColor="@color/textColor"
+        android:background="@color/state_unknown"/> -->
+
+    <TextView
+        android:id="@+id/debug_log"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="10dp"
+        android:gravity="bottom"
+        android:maxLines="100"
+        android:scrollbars="vertical"
+        android:textSize="10sp" />
+
+</LinearLayout>
