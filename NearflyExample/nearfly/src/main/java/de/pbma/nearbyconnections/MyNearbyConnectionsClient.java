@@ -1,21 +1,21 @@
 package com.google.location.nearby.apps.walkietalkie;
 
-import android.animation.Animator;
-import android.os.Bundle;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+
 import android.text.SpannableString;
-import android.text.format.DateFormat;
-import android.text.method.ScrollingMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
+import com.google.android.gms.nearby.connection.PayloadCallback;
+import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import com.google.android.gms.nearby.connection.Strategy;
 
 import java.io.IOException;
@@ -39,13 +39,7 @@ import java.util.Random;
  * down the volume keys and speaking into the phone. We'll continue to advertise (if we were already
  * advertising) so that more people can connect to us.
  */
-public class NearflyServiceOld extends ConnectionsActivity {
-    /** If true, debug logs are shown on the device. */
-    private static final boolean DEBUG = true;
-
-    /* TODO: LALALA */
-    private int connectionAttemp = 0;
-
+public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     /**
      * The connection strategy we'll use for Nearby Connections. In this case, we've decided on
      * P2P_STAR, which is a combination of Bluetooth Classic and WiFi Hotspots.
@@ -60,12 +54,6 @@ public class NearflyServiceOld extends ConnectionsActivity {
      * to advertise indefinitely so others can still connect.
      */
     private static final long ADVERTISING_DURATION = 60000;
-
-    /** How long to vibrate the phone when we change states. */
-    private static final long VIBRATION_STRENGTH = 500;
-
-    /** Length of state change animations. */
-    private static final long ANIMATION_DURATION = 600;
 
     /**
      * This service id lets us find other nearby devices that are interested in the same thing. Our
@@ -89,46 +77,8 @@ public class NearflyServiceOld extends ConnectionsActivity {
     /** Displays the current state. */
     // private TextView mCurrentStateView;
     // TODO 2503
-    private TextView tvCurrentState;
-    private TextView tvRootNode;
-
-    /** An animator that controls the animation from previous state to current state. */
-    @Nullable private Animator mCurrentAnimator;
-
-    /** A running log of debug messages. Only visible when DEBUG=true. */
-    private TextView mDebugLogView;
-
-    /** The SensorManager gives us access to sensors on the device. */
-    // private SensorManager mSensorManager;
-
-    /** The accelerometer sensor allows us to detect device movement for shake-to-advertise. */
-    // private Sensor mAccelerometer;
-
-    /** Listens to holding/releasing the volume rocker. */
-  /*private final GestureDetector mGestureDetector =
-      new GestureDetector(KeyEvent.KEYCODE_VOLUME_DOWN, KeyEvent.KEYCODE_VOLUME_UP) {
-        @Override
-        protected void onHold() {
-          logV("onHold");
-          startRecording();
-        }
-
-        @Override
-        protected void onRelease() {
-          logV("onRelease");
-          stopRecording();
-        }
-      };*/
-
-    /** For recording audio as the user speaks. */
-    // @Nullable private AudioRecorder mRecorder;
-
-    /** For playing audio from other users nearby. */
-    // private final Set<AudioPlayer> mAudioPlayers = new HashSet<>();
-
-    /** The phone's original media volume. */
-    // private int mOriginalVolume;
-
+    // private TextView tvCurrentState;
+    private String rootNode;
     /**
      * A Handler that allows us to post back on to the UI thread. We use this to resume discovery
      * after an uneventful bout of advertising.
@@ -144,89 +94,37 @@ public class NearflyServiceOld extends ConnectionsActivity {
                 }
             };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-    /*getSupportActionBar()
-        .setBackgroundDrawable(ContextCompat.getDrawable(this, R.drawable.actionBar));*/
+    // TODO: Listener that includes all relevant Informations
+    public interface MyConnectionsListener{
+        void onLogMessage(CharSequence msg);
+        void onStateChanged(String state);
+        void onRootNodeChanged(String rootNode);
+        void onMessage(String msg);
+    }
+    MyConnectionsListener myConnectionsListener;
 
-        // mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        // mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
-        // mPreviousStateView = (TextView) findViewById(R.id.previous_state);
-        // mCurrentStateView = (TextView) findViewById(R.id.current_state);
-        tvCurrentState = findViewById(R.id.tv_current_state);
-        tvRootNode = findViewById(R.id.tv_root_node);
-
-        mDebugLogView = (TextView) findViewById(R.id.debug_log);
-        mDebugLogView.setVisibility(DEBUG ? View.VISIBLE : View.GONE);
-        mDebugLogView.setMovementMethod(new ScrollingMovementMethod());
-
+    public void onCreate(Context context, MyConnectionsListener myConnectionsListener) {
+        this.myConnectionsListener = myConnectionsListener;
+        initService(context);
         mName = generateRandomName();
-
-        ((TextView) findViewById(R.id.name)).setText(mName);
     }
 
-  /*@Override
-  public boolean dispatchKeyEvent(KeyEvent event) {
-    if (mState == State.CONNECTED && mGestureDetector.onKeyEvent(event)) {
-      return true;
-    }
-    return super.dispatchKeyEvent(event);
-  }*/
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
-
-        // Set the media volume to max.
-    /*setVolumeControlStream(AudioManager.STREAM_MUSIC);
-    AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-    // mOriginalVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-    audioManager.setStreamVolume(
-        AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
-*/
-        // TODO: 2503
+    public void onStart() {
+        // Call this at Start
         setState(State.FINDROOT);
-        // setState(State.DISCOVERING);
     }
 
-    @Override
-    protected void onStop() {
-        // mSensorManager.unregisterListener(this);
-
-        // Restore the original volume.
-        // AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        // audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mOriginalVolume, 0);
-        // setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
-
-/*    if (isRecording()) {
-      stopRecording();
-    }
-    if (isPlaying()) {
-      stopPlaying();
-    }
-*/
+    public void onStop() {
+        // Call this at Stop
         setState(State.UNKNOWN);
-        mUiHandler.removeCallbacksAndMessages(null);
-
-/*    if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
-      mCurrentAnimator.cancel();
-    }*/
-
-        super.onStop();
     }
 
-    @Override
     public void onBackPressed() {
         if (getState() == State.CONNECTED || getState() == State.ADVERTISING) {
-            // TODO
             setState(State.FINDROOT);
             return;
         }
-        super.onBackPressed();
     }
 
     @Override
@@ -235,9 +133,6 @@ public class NearflyServiceOld extends ConnectionsActivity {
         if (!isConnecting()) {
 
             // TODO 2503: Advertiser gefunden -> Wechsle zum Discovering
-            // if (getState() == State.FINDROOT && getState() != State.DISCOVERING)
-            //   setState(State.DISCOVERING);
-
             if (endpoint.getName().compareTo(getName()) > 0 ){
                 if (getState() == State.FINDROOT && getState() != State.DISCOVERING)
                     setState(State.DISCOVERING);
@@ -265,29 +160,32 @@ public class NearflyServiceOld extends ConnectionsActivity {
     @Override
     protected void onEndpointConnected(Endpoint endpoint) {
         Toast.makeText(
-                this, getString(R.string.toast_connected, endpoint.getName()), Toast.LENGTH_SHORT)
+                context, "Connected to " + endpoint.getName(), Toast.LENGTH_SHORT)
                 .show();
         setState(State.CONNECTED);
 
         /* TODO */
-        // connectionAttemp=0;
         if (!isAdvertising())
-            tvRootNode.setText(endpoint.getName());
+            rootNode = endpoint.getName();
         else
-            tvRootNode.setText("self");
+            rootNode = "self";
+
+        if (!isAdvertising())
+            myConnectionsListener.onRootNodeChanged(endpoint.getName());
+        else
+            myConnectionsListener.onRootNodeChanged("self");
     }
 
     @Override
     protected void onEndpointDisconnected(Endpoint endpoint) {
         Toast.makeText(
-                this, getString(R.string.toast_disconnected, endpoint.getName()), Toast.LENGTH_SHORT)
+                context, "Disconnected from " + endpoint.getName(), Toast.LENGTH_SHORT)
                 .show();
 
         // If we lost all our endpoints, then we should reset the state of our app and go back
         // to our initial state (discovering).
         if (getConnectedEndpoints().isEmpty()) {
             // TODO: New init State
-            // setState(State.DISCOVERING);
             setState(State.FINDROOT);
         }
     }
@@ -321,8 +219,9 @@ public class NearflyServiceOld extends ConnectionsActivity {
 
         logD("State set to " + state);
         // TODO: 2503
-        tvCurrentState.setText(state.toString()
-        );
+        // tvCurrentState.setText(state.toString()
+        // );
+        myConnectionsListener.onStateChanged(state.toString());
 
         State oldState = mState;
         mState = state;
@@ -341,9 +240,6 @@ public class NearflyServiceOld extends ConnectionsActivity {
      * @param newState The new state we're now in. Prepare the UI for this state.
      */
     private void onStateChanged(State oldState, State newState) {
-    /*if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
-      mCurrentAnimator.cancel();
-    }*/
 
         // Update Nearby Connections to the new state.
         switch (newState) {
@@ -392,75 +288,22 @@ public class NearflyServiceOld extends ConnectionsActivity {
         }
     }
 
-    public void startAdvertising(View view){
+    /*public void startAdvertising(View view){
         setState(State.ADVERTISING);
         postDelayed(mDiscoverRunnable, ADVERTISING_DURATION);
-    }
+    }*/
 
-    public int cnt = 0;
-    public void publish(View view){
-        ExtMessage extMessage = new ExtMessage(String.valueOf(++cnt), "test");
-
+    public void pubIt(String channel, String message){
+        ExtMessage extMessage = new ExtMessage(message, channel);
         send(Payload.fromBytes(extMessage.getBytes()));
-        logD(cnt + " published");
+        logD(message + " published");
     }
-
-    /** The device has moved. We need to decide if it was intentional or not. */
-  /*@Override
-  public void onSensorChanged(SensorEvent sensorEvent) {
-    float x = sensorEvent.values[0];
-    float y = sensorEvent.values[1];
-    float z = sensorEvent.values[2];
-
-    float gX = x / SensorManager.GRAVITY_EARTH;
-    float gY = y / SensorManager.GRAVITY_EARTH;
-    float gZ = z / SensorManager.GRAVITY_EARTH;
-
-    double gForce = Math.sqrt(gX * gX + gY * gY + gZ * gZ);
-
-    if (gForce > SHAKE_THRESHOLD_GRAVITY && getState() == State.DISCOVERING) {
-      logD("Device shaken");
-      vibrate();
-      setState(State.ADVERTISING);
-      postDelayed(mDiscoverRunnable, ADVERTISING_DURATION);
-    }
-  }*/
-
-  /*@Override
-  public void onAccuracyChanged(Sensor sensor, int accuracy) {}*/
-
-    /** Vibrates the phone. */
-  /* private void vibrate() {
-    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-    if (hasPermissions(this, Manifest.permission.VIBRATE) && vibrator.hasVibrator()) {
-      vibrator.vibrate(VIBRATION_STRENGTH);
-    }
-  }*/
 
     /** {@see ConnectionsActivity#onReceive(Endpoint, Payload)} */
     @Override
     protected void onReceive(Endpoint endpoint, Payload payload) {
-    /*if (payload.getType() == Payload.Type.STREAM) {
-      AudioPlayer player =
-          new AudioPlayer(payload.asStream().asInputStream()) {
-            @WorkerThread
-            @Override
-            protected void onFinish() {
-              /*final AudioPlayer audioPlayer = this;
-              post(
-                  new Runnable() {
-                    @UiThread
-                    @Override
-                    public void run() {
-                      // mAudioPlayers.remove(audioPlayer);
-                    }
-                  });*/
-        // }
-        // };
-        // mAudioPlayers.add(player);
-        // player.start();
-        // }
         // logD(new String(payload.asBytes()) + "from" + endpoint);
+        myConnectionsListener.onMessage(new String(payload.asBytes()));
     }
 
     @Override
@@ -470,67 +313,6 @@ public class NearflyServiceOld extends ConnectionsActivity {
         setState(State.DISCOVERING);
         mUiHandler.removeCallbacksAndMessages(null);
     }
-
-    /** Stops all currently streaming audio tracks. */
-  /*private void stopPlaying() {
-    logV("stopPlaying()");
-    for (AudioPlayer player : mAudioPlayers) {
-      player.stop();
-    }
-    mAudioPlayers.clear();
-  }*/
-
-    /** @return True if currently playing. */
-  /*private boolean isPlaying() {
-    return !mAudioPlayers.isEmpty();
-  }*/
-
-    /** Starts recording sound from the microphone and streaming it to all connected devices. */
-  /*private void startRecording() {
-    logV("startRecording()");
-    try {
-      ParcelFileDescriptor[] payloadPipe = ParcelFileDescriptor.createPipe();
-
-      // Send the first half of the payload (the read side) to Nearby Connections.
-      send(Payload.fromStream(payloadPipe[0]));
-
-      // Use the second half of the payload (the write side) in AudioRecorder.
-      mRecorder = new AudioRecorder(payloadPipe[1]);
-      mRecorder.start();
-    } catch (IOException e) {
-      logE("startRecording() failed", e);
-    }
-  }*/
-
-    /** Stops streaming sound from the microphone. */
-  /* private void stopRecording() {
-    logV("stopRecording()");
-    if (mRecorder != null) {
-      mRecorder.stop();
-      mRecorder = null;
-    }
-  }*/
-
-    /** @return True if currently streaming from the microphone. */
-  /*private boolean isRecording() {
-    return mRecorder != null && mRecorder.isRecording();
-  }*/
-
-    /** {@see ConnectionsActivity#getRequiredPermissions()} */
-  /*@Override
-  protected String[] getRequiredPermissions() {
-    return join(
-        super.getRequiredPermissions(),
-        Manifest.permission.RECORD_AUDIO);
-  }*/
-
-    /** Joins 2 arrays together. */
-  /*private static String[] join(String[] a, String... b) {
-    String[] join = new String[a.length + b.length];
-    System.arraycopy(a, 0, join, 0, a.length);
-    System.arraycopy(b, 0, join, a.length, b.length);
-    return join;
-  }*/
 
     /**
      * Queries the phone's contacts for their own profile, and returns their name. Used when
@@ -571,37 +353,31 @@ public class NearflyServiceOld extends ConnectionsActivity {
     @Override
     protected void logV(String msg) {
         super.logV(msg);
-        appendToLogs(toColor(msg, getResources().getColor(R.color.log_verbose)));
+        myConnectionsListener.onLogMessage(toColor(msg, 0xFFFFFFFF));
     }
 
     @Override
     protected void logD(String msg) {
         super.logD(msg);
-        appendToLogs(toColor(msg, getResources().getColor(R.color.log_debug)));
+        myConnectionsListener.onLogMessage(toColor(msg, 0xFFEEEEEE));
     }
 
     @Override
     protected void logW(String msg) {
         super.logW(msg);
-        appendToLogs(toColor(msg, getResources().getColor(R.color.log_warning)));
+        myConnectionsListener.onLogMessage(toColor(msg, 0xFFE57373));
     }
 
     @Override
     protected void logW(String msg, Throwable e) {
         super.logW(msg, e);
-        appendToLogs(toColor(msg, getResources().getColor(R.color.log_warning)));
+        myConnectionsListener.onLogMessage(toColor(msg, 0xFFE57373));
     }
 
     @Override
     protected void logE(String msg, Throwable e) {
         super.logE(msg, e);
-        appendToLogs(toColor(msg, getResources().getColor(R.color.log_error)));
-    }
-
-    private void appendToLogs(CharSequence msg) {
-        mDebugLogView.append("\n");
-        mDebugLogView.append(DateFormat.format("hh:mm", System.currentTimeMillis()) + ": ");
-        mDebugLogView.append(msg);
+        myConnectionsListener.onLogMessage(toColor(msg, 0xFFF44336));
     }
 
     private static CharSequence toColor(String msg, int color) {
@@ -661,25 +437,7 @@ public class NearflyServiceOld extends ConnectionsActivity {
         return (T) collection.toArray()[new Random().nextInt(collection.size())];
     }
 
-    /**
-     * Provides an implementation of Animator.AnimatorListener so that we only have to override the
-     * method(s) we're interested in.
-     */
-  /*private abstract static class AnimatorListener implements Animator.AnimatorListener {
-    @Override
-    public void onAnimationStart(Animator animator) {}
-
-    @Override
-    public void onAnimationEnd(Animator animator) {}
-
-    @Override
-    public void onAnimationCancel(Animator animator) {}
-
-    @Override
-    public void onAnimationRepeat(Animator animator) {}
-  }*/
-
-    /** States that the UI goes through. */
+    /** possible States of Application */
     public enum State {
         UNKNOWN,
         DISCOVERING,

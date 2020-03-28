@@ -1,4 +1,4 @@
-package com.google.location.nearby.apps.walkietalkie;
+package de.pmba.nearflyexample.nearbyconnections;
 
 import android.animation.Animator;
 import android.os.Bundle;
@@ -23,6 +23,9 @@ import java.io.RandomAccessFile;
 import java.util.Collection;
 import java.util.Random;
 
+import de.pbma.nearbyconnections.ExtMessage;
+import de.pbma.nearflyexample.R;
+
 /**
  * Our WalkieTalkie Activity. This Activity has 4 {@link State}s.
  *
@@ -39,7 +42,7 @@ import java.util.Random;
  * down the volume keys and speaking into the phone. We'll continue to advertise (if we were already
  * advertising) so that more people can connect to us.
  */
-public class MainActivityOld extends NearflyServiceOld {
+public class MainActivityOld extends MainActivityWorking {
   /** If true, debug logs are shown on the device. */
   private static final boolean DEBUG = true;
 

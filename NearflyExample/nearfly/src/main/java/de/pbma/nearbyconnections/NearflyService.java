@@ -26,15 +26,18 @@ public class NearflyService extends Service {
     MyNearbyConnectionsClient nearbyConnectionsClient = new MyNearbyConnectionsClient();
     MyNearbyConnectionsClient.MyConnectionsListener narbyConnectionListener = new MyNearbyConnectionsClient.MyConnectionsListener() {
         @Override
-        public void onLogMessage(CharSequence msg) {
+        public void onLogMessage(CharSequence msg) {/*Wahrscheinlich nicht relevant für Nutzer*/
+            nearflyListener.onLogMessage(msg);
         }
 
         @Override
-        public void onStateChanged(String state) {
+        public void onStateChanged(String state) {/*Wahrscheinlich nicht relevant für Nutzer*/
+            nearflyListener.onStateChanged(state);
         }
 
         @Override
-        public void onRootNodeChanged(String rootNode) {
+        public void onRootNodeChanged(String rootNode) {/*Wahrscheinlich nicht relevant für Nutzer*/
+            nearflyListener.onRootNodeChanged(rootNode);
         }
 
         @Override

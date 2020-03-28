@@ -27,13 +27,17 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.google.location.nearby.apps.walkietalkie.MainActivity"
+        <activity android:name="com.google.location.nearby.apps.walkietalkie.MainActivityWithService"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name="com.google.location.nearby.apps.walkietalkie.NearflyService"
+            android:enabled="true" />
     </application>
 
 </manifest>
