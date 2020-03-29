@@ -1,21 +1,14 @@
-package com.google.location.nearby.apps.walkietalkie;
+package de.pbma.nearbyconnections;
 
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
-import com.google.android.gms.nearby.connection.PayloadCallback;
-import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import com.google.android.gms.nearby.connection.Strategy;
 
 import java.io.IOException;
@@ -23,8 +16,10 @@ import java.io.RandomAccessFile;
 import java.util.Collection;
 import java.util.Random;
 
+import de.pbma.nearfly.ExtMessage;
+
 /**
- * Our WalkieTalkie Activity. This Activity has 4 {@link State}s.
+ * This Activity has 5 {@link State}s.
  *
  * <p>{@link State#UNKNOWN}: We cannot do anything while we're in this state. The app is likely in
  * the background.
@@ -38,29 +33,29 @@ import java.util.Random;
  * <p>{@link State#CONNECTED}: We've connected to another device. We can now talk to them by holding
  * down the volume keys and speaking into the phone. We'll continue to advertise (if we were already
  * advertising) so that more people can connect to us.
+ *
+ * <p>{@link State#FINDROOT}: Find the Root that shapes the RootNode of the Start-Network
  */
+
 public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
+    private static final String STATE_UNKNOWN = "unknown";
+    private static final String STATE_DISCOVERING  = "discovering";
+    private static final String STATE_ADVERTISING  = "advertising";
+    private static final String STATE_CONNECTED  = "connected";
+    private static final String STATE_FINDROOT  = "findroot";
+
     /**
      * The connection strategy we'll use for Nearby Connections. In this case, we've decided on
      * P2P_STAR, which is a combination of Bluetooth Classic and WiFi Hotspots.
      */
     private static final Strategy STRATEGY = Strategy.P2P_STAR;
 
-    /** Acceleration required to detect a shake. In multiples of Earth's gravity. */
-    private static final float SHAKE_THRESHOLD_GRAVITY = 2;
-
-    /**
-     * Advertise for 30 seconds before going back to discovering. If a client connects, we'll continue
-     * to advertise indefinitely so others can still connect.
-     */
-    private static final long ADVERTISING_DURATION = 60000;
-
     /**
      * This service id lets us find other nearby devices that are interested in the same thing. Our
      * sample does exactly one thing, so we hardcode the ID.
      */
     private static final String SERVICE_ID =
-            "com.google.location.nearby.apps.walkietalkie.manual.SERVICE_ID";
+            "de.pbma.nearbyexample.SERVICE_ID";
 
     /**
      * The state of the app. As the app changes states, the UI will update and advertising/discovery
@@ -71,28 +66,24 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     /** A random UID used as this device's endpoint name. */
     private String mName;
 
-    /** Displays the previous state during animation transitions. */
-    private TextView mPreviousStateView;
 
-    /** Displays the current state. */
-    // private TextView mCurrentStateView;
-    // TODO 2503
-    // private TextView tvCurrentState;
+    /** Current state. */
     private String rootNode;
+
     /**
      * A Handler that allows us to post back on to the UI thread. We use this to resume discovery
      * after an uneventful bout of advertising.
      */
-    private final Handler mUiHandler = new Handler(Looper.getMainLooper());
+    // private final Handler mUiHandler = new Handler(Looper.getMainLooper());
 
     /** Starts discovery. Used in a postDelayed manor with {@link #mUiHandler}. */
-    private final Runnable mDiscoverRunnable =
+    /*private final Runnable mDiscoverRunnable =
             new Runnable() {
                 @Override
                 public void run() {
                     setState(State.DISCOVERING);
                 }
-            };
+            };*/
 
     // TODO: Listener that includes all relevant Informations
     public interface MyConnectionsListener{
@@ -107,6 +98,13 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         this.myConnectionsListener = myConnectionsListener;
         initService(context);
         mName = generateRandomName();
+        rootNode = mName;
+
+    }
+
+    public void setRootNode(String endpointId){
+        rootNode = endpointId;
+        myConnectionsListener.onRootNodeChanged(endpointId);
     }
 
 
@@ -121,40 +119,84 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     }
 
     public void onBackPressed() {
-        if (getState() == State.CONNECTED || getState() == State.ADVERTISING) {
+        /*if (getState() == State.CONNECTED || getState() == State.ADVERTISING) {
             setState(State.FINDROOT);
             return;
-        }
+        }*/
     }
 
     @Override
     protected void onEndpointDiscovered(Endpoint endpoint) {
-        // We found an advertiser!
-        if (!isConnecting()) {
+        // TODO 2903
+        /*if (getName().compareTo(rootNode)>0){
+            rootNode = getName(); // self
+        }
 
-            // TODO 2503: Advertiser gefunden -> Wechsle zum Discovering
-            if (endpoint.getName().compareTo(getName()) > 0 ){
-                if (getState() == State.FINDROOT && getState() != State.DISCOVERING)
-                    setState(State.DISCOVERING);
-                if (getState() == State.CONNECTED && getState() != State.DISCOVERING)
-                    setState(State.FINDROOT);
+        if (endpoint.getName().compareTo(rootNode) > 0){
+            rootNode = endpoint.getName();
+            disconnectFromAllEndpoints();
+            connectToEndpoint(endpoint);
+            setState(State.CONNECTED);
+        }*/
+
+        // We found an advertiser!
+        /*if (!isConnecting()) {
+            /** TODO 2503: Advertiser gefunden -> Wechsle zum Discovering
+             Gehe in den Discovery-Zustand wenn gemerkt das jemand geeigneter ist**/
+            /*if (endpoint.getName().compareTo(getName()) > 0){
+                if (getState() != State.NODE)
+                    setState(State.NODE);
+                    setRootNode(endpoint.getName());
 
                 // Nur senden, wenn anderer Root
                 connectToEndpoint(endpoint);
             }
+        }*/if (getState()==State.FINDROOT){
+            if (endpoint.getName().compareTo(getName()) > 0) {
+                setRootNode(endpoint.getName());
+
+                setState(State.NODE); // Wechselt in Zustand Node
+            }else{
+                setState(State.ROOT);
+            }
         }
+        // Nur senden, wenn anderer Root
+        connectToEndpoint(endpoint);
+
+
+        // if (getState()==State.NODE){
+
+        //}
     }
 
     @Override
     protected void onConnectionInitiated(Endpoint endpoint, ConnectionInfo connectionInfo) {
         // TODO 2503: Discovering Device found -> Switch to Advertising Mode
-        if (getName().compareTo(endpoint.getName()) > 0) {
+        /*if (getName().compareTo(endpoint.getName()) > 0) {
             if (getState() == State.FINDROOT && getState() != State.ADVERTISING)
                 setState(State.ADVERTISING);
-        }
+        }*/
+        /*if (getName().compareTo(rootNode)>0){
+            rootNode = getName(); // self
+        }*/
+        // Gehe in Discovery, wenn jemand geeigneter ist
+        /*if (getName().compareTo(endpoint.getName()) > 0) {
+            if (getState() == State.FINDROOT)
+                setState(State.ROOT);
+        }else{
+            setState(State.UNKNOWN);
+            setState(State.NODE);
+        }*/
 
-        // A connection to another device has been initiated! We'll accept the connection immediately.
-        acceptConnection(endpoint);
+        // if (endpoint.getName().compareTo(getName()) < 0 ) {
+            // A connection to another device has been initiated! We'll accept the connection immediately.
+            acceptConnection(endpoint);
+
+            /*if (getName().equals(rootNode)){
+                setState(State.ROOT);
+            }*/
+        // }
+
     }
 
     @Override
@@ -162,10 +204,9 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         Toast.makeText(
                 context, "Connected to " + endpoint.getName(), Toast.LENGTH_SHORT)
                 .show();
-        setState(State.CONNECTED);
 
         /* TODO */
-        if (!isAdvertising())
+        /*if (!isAdvertising())
             rootNode = endpoint.getName();
         else
             rootNode = "self";
@@ -173,7 +214,10 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         if (!isAdvertising())
             myConnectionsListener.onRootNodeChanged(endpoint.getName());
         else
-            myConnectionsListener.onRootNodeChanged("self");
+            myConnectionsListener.onRootNodeChanged("self");*/
+        /*if (endpoint.getName().compareTo(rootNode) > 0){
+            setRootNode(endpoint.getName());
+        }*/
     }
 
     @Override
@@ -184,16 +228,18 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
 
         // If we lost all our endpoints, then we should reset the state of our app and go back
         // to our initial state (discovering).
-        if (getConnectedEndpoints().isEmpty()) {
+        // if (getConnectedEndpoints().isEmpty()) {
+        if (rootNode!=getName()){
             // TODO: New init State
             setState(State.FINDROOT);
+            setRootNode(getName());
         }
     }
 
     @Override
     protected void onConnectionFailed(Endpoint endpoint) {
         // Let's try someone else.
-        if (getState() == State.DISCOVERING && !getDiscoveredEndpoints().isEmpty()) {
+        if (getState() == State.NODE && !getDiscoveredEndpoints().isEmpty()) {
             connectToEndpoint(pickRandomElem(getDiscoveredEndpoints()));
             setState(State.FINDROOT);
             /*connectionAttemp++; /* TODO */
@@ -243,7 +289,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
 
         // Update Nearby Connections to the new state.
         switch (newState) {
-            case DISCOVERING:
+            case NODE:
                 if (isAdvertising()) {
                     stopAdvertising();
                 }
@@ -252,21 +298,13 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
                 if (!isDiscovering())
                     startDiscovering();
                 break;
-            case ADVERTISING:
+            case ROOT:
                 if (isDiscovering()) {
                     stopDiscovering();
                 }
                 // disconnectFromAllEndpoints();
-                startAdvertising();
-                break;
-            case CONNECTED:
-                if (isDiscovering()) {
-                    // stopDiscovering();
-                } else if (isAdvertising()) {
-                    // Continue to advertise, so others can still connect,
-                    // but clear the discover runnable.
-                    removeCallbacks(mDiscoverRunnable);
-                }
+                if (!isAdvertising())
+                    startAdvertising();
                 break;
             case UNKNOWN:
                 stopAllEndpoints();
@@ -310,8 +348,8 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     protected void onDiscoveryFailed() {
         super.onDiscoveryFailed();
         setState(State.UNKNOWN);
-        setState(State.DISCOVERING);
-        mUiHandler.removeCallbacksAndMessages(null);
+        setState(State.FINDROOT);
+        // mUiHandler.removeCallbacksAndMessages(null);
     }
 
     /**
@@ -336,19 +374,19 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     }
 
     /** {@see Handler#post()} */
-    protected void post(Runnable r) {
+    /*protected void post(Runnable r) {
         mUiHandler.post(r);
-    }
+    }*/
 
     /** {@see Handler#postDelayed(Runnable, long)} */
-    protected void postDelayed(Runnable r, long duration) {
+    /*protected void postDelayed(Runnable r, long duration) {
         mUiHandler.postDelayed(r, duration);
-    }
+    }*/
 
     /** {@see Handler#removeCallbacks(Runnable)} */
-    protected void removeCallbacks(Runnable r) {
+    /*protected void removeCallbacks(Runnable r) {
         mUiHandler.removeCallbacks(r);
-    }
+    }*/
 
     @Override
     protected void logV(String msg) {
@@ -386,8 +424,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         return spannable;
     }
 
-    // TODO: Provisorsich CPU auslesen ****************************************/
-    /* maximum speeds.
+    /** Use this to get the Max CPU Frequence in MHz
      *
      * @return cpu frequency in MHz
      */
@@ -440,9 +477,8 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     /** possible States of Application */
     public enum State {
         UNKNOWN,
-        DISCOVERING,
-        ADVERTISING,
-        CONNECTED,
+        NODE,
+        ROOT,
         FINDROOT
     }
 }

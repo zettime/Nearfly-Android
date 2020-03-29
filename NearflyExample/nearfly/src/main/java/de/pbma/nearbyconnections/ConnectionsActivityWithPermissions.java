@@ -1,20 +1,18 @@
-package com.google.location.nearby.apps.walkietalkie;
+package de.pbma.nearbyconnections;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.nearby.Nearby;
+import de.pbma.nearfly.R;
 
 public class ConnectionsActivityWithPermissions extends AppCompatActivity {
     /**

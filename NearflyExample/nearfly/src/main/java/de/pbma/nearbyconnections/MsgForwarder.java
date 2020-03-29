@@ -1,4 +1,4 @@
-package com.google.location.nearby.apps.walkietalkie;
+package de.pbma.nearbyconnections;
 
 import com.google.android.gms.nearby.connection.Payload;
 

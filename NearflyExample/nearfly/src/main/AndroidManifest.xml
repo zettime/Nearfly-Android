@@ -7,6 +7,9 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- MQTT -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <meta-data
         android:name="com.google.android.nearby.messages.API_KEY"
         android:value="AIzaSyDLc8O25IU3s5IHW8YDpQyPr9-RhIbsokw" />

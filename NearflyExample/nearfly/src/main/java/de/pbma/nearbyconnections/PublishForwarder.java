@@ -1,11 +1,8 @@
-package com.google.location.nearby.apps.walkietalkie;
+package de.pbma.nearbyconnections;
 
 // Unpublisht die Nearby-Nachrichten nach einer gewissen Zeit, um ein ähnlicheres Verhalten zu
 // MQTT zu kreieren d.h. publishen und dann Weg
 
-import android.content.Context;
-
-import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.Payload;
 
 import java.util.LinkedList;

@@ -1,18 +1,19 @@
-package com.google.location.nearby.apps.walkietalkie;
+package de.pbma.nearbyconnections;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.nearby.Nearby;
@@ -41,7 +42,10 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import static com.google.location.nearby.apps.walkietalkie.Constants.TAG;
+import de.pbma.nearfly.ExtMessage;
+import de.pbma.nearfly.R;
+
+import static de.pbma.nearfly.Constants.TAG;
 
 /** A class that connects to Nearby Connections and provides convenience methods and callbacks. */
 public abstract class ConnectionsActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package com.google.location.nearby.apps.walkietalkie;
+package de.pbma.nearbyconnections;
 
 import android.content.Context;
 import android.util.Log;
@@ -36,7 +36,9 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import static com.google.location.nearby.apps.walkietalkie.Constants.TAG;
+import de.pbma.nearfly.ExtMessage;
+
+import static de.pbma.nearfly.Constants.TAG;
 
 /** A class that connects to Nearby Connections and provides convenience methods and callbacks. */
 public abstract class MyNearbyConnectionsAbstract {
@@ -453,8 +455,12 @@ public abstract class MyNearbyConnectionsAbstract {
   }
 
   private void send(Payload payload, Set<String> endpoints) {
+    ArrayList<String> entpointsList = new ArrayList<>(endpoints);
+    // TODO: provisorisch
+    // entpointsList.add(id);
+
     mConnectionsClient
-        .sendPayload(new ArrayList<>(endpoints), payload)
+        .sendPayload(entpointsList, payload)
         .addOnFailureListener(
             new OnFailureListener() {
               @Override
@@ -470,6 +476,7 @@ public abstract class MyNearbyConnectionsAbstract {
       public void run() {
         super.run();
 
+        /* TODO: Removes Sender from list to avoid a endless loop */
         ArrayList<String> broadcastList =  new ArrayList<String>(mEstablishedConnections.keySet());
         broadcastList.remove(excludedEntpointId);
 

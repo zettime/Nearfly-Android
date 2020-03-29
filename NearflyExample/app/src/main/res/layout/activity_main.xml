@@ -7,8 +7,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="60dp">
+        android:orientation="horizontal">
 
         <!-- <Button
             android:layout_width="wrap_content"
@@ -25,8 +24,8 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="startNearflyService"
-            android:text="startNearflyService" />
+            android:onClick="changeTech"
+            android:text="change tech" />
 
         <TextView
             android:id="@+id/name"
@@ -64,7 +63,7 @@
             android:id="@+id/tv_root_node"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="wait..."
+            android:text="self"
             android:textColor="@color/white"
             />
     </LinearLayout>
