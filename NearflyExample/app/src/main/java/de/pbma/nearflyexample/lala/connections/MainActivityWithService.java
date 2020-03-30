@@ -40,26 +40,30 @@ public class MainActivityWithService extends ConnectionsActivityWithPermissions 
     NearflyListener nearflyListener = new NearflyListener() {
         @Override
         public void onLogMessage(CharSequence msg) {
-            runOnUiThread(() -> {
-                mDebugLogView.append(msg + "\n");
-            });
+            if (DEBUG==true)
+                runOnUiThread(() -> {
+
+                    mDebugLogView.append(msg + "\n");
+                });
         }
 
         @Override
         public void onStateChanged(String state) {
-            runOnUiThread(() -> {
-                mDebugLogView.append(state + "\n");
-                tvCurrentState.setText(state);
-            });
+            if (DEBUG==true)
+                runOnUiThread(() -> {
+                    mDebugLogView.append(state + "\n");
+                    tvCurrentState.setText(state);
+                });
         }
 
         @Override
         public void onRootNodeChanged(String rootNode) {
-                runOnUiThread(() -> {
-                    mDebugLogView.append(rootNode + "\n");
-                    tvRootNode.setText(rootNode);
-                });
-            }
+            if (DEBUG==true)
+                    runOnUiThread(() -> {
+                        mDebugLogView.append(rootNode + "\n");
+                        tvRootNode.setText(rootNode);
+                    });
+                }
 
         @Override
         public void onMessage(String message) {
@@ -74,7 +78,8 @@ public class MainActivityWithService extends ConnectionsActivityWithPermissions 
         public void onServiceConnected(ComponentName name, IBinder service) {
             logIt("onServiceConnected");
             nearflyService = ((NearflyService.LocalBinder) service).getNearflyService();
-            nearflyService.addSubCallback("channel", nearflyListener);
+            nearflyService.addSubCallback(nearflyListener);
+            nearflyService.subIt("19moa18/test");
             nearflyServiceBound = true;
 
             startNearflyService();
@@ -94,11 +99,8 @@ public class MainActivityWithService extends ConnectionsActivityWithPermissions 
         setContentView(R.layout.activity_main);
 
         mDebugLogView = findViewById(R.id.debug_log);
-        mDebugLogView.setVisibility(DEBUG ? View.VISIBLE : View.GONE);
+        // mDebugLogView.setVisibility(DEBUG ? View.VISIBLE : View.GONE);
         mDebugLogView.setMovementMethod(new ScrollingMovementMethod());
-
-        mDebugLogView.setText("test10 \n");
-        mDebugLogView.append("test2 \n");
 
         tvCurrentState = findViewById(R.id.tv_current_state);
         tvRootNode = findViewById(R.id.tv_root_node);

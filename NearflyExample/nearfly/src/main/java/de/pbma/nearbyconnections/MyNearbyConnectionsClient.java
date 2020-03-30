@@ -5,16 +5,23 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
 import com.google.android.gms.nearby.connection.Strategy;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Random;
+
+import javax.sql.StatementEvent;
 
 import de.pbma.nearfly.ExtMessage;
 
@@ -44,6 +51,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     private static final String STATE_CONNECTED  = "connected";
     private static final String STATE_FINDROOT  = "findroot";
 
+    private ArrayList<String> subscribedChannels;
     /**
      * The connection strategy we'll use for Nearby Connections. In this case, we've decided on
      * P2P_STAR, which is a combination of Bluetooth Classic and WiFi Hotspots.
@@ -61,7 +69,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
      * The state of the app. As the app changes states, the UI will update and advertising/discovery
      * will start/stop.
      */
-    private State mState = State.UNKNOWN;
+    private State mState = State.FINDROOT;
 
     /** A random UID used as this device's endpoint name. */
     private String mName;
@@ -94,22 +102,33 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     }
     MyConnectionsListener myConnectionsListener;
 
-    public void onCreate(Context context, MyConnectionsListener myConnectionsListener) {
-        this.myConnectionsListener = myConnectionsListener;
+    public void initClient(Context context, MyConnectionsListener myConnectionsListener) {
         initService(context);
+        this.myConnectionsListener = myConnectionsListener;
         mName = generateRandomName();
         rootNode = mName;
-
+        subscribedChannels = new ArrayList<>();
     }
+
+    /** Just One possible **/
+    // public void registerNearbyListener(MyConnectionsListener myConnectionsListener){
+    // }
+
+    /*public void deregisterNearbyListener(MyConnectionsListener myConnectionsListener){
+        if (myConnectionsListener.equals(this.myConnectionsListener))
+            this.myConnectionsListener = null;
+    }*/
 
     public void setRootNode(String endpointId){
         rootNode = endpointId;
-        myConnectionsListener.onRootNodeChanged(endpointId);
+        if (myConnectionsListener!=null)
+            myConnectionsListener.onRootNodeChanged(endpointId);
     }
 
 
     public void onStart() {
         // Call this at Start
+        setState(State.UNKNOWN);
         setState(State.FINDROOT);
     }
 
@@ -150,18 +169,19 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
 
                 // Nur senden, wenn anderer Root
                 connectToEndpoint(endpoint);
-            }
-        }*/if (getState()==State.FINDROOT){
-            if (endpoint.getName().compareTo(getName()) > 0) {
-                setRootNode(endpoint.getName());
-
-                setState(State.NODE); // Wechselt in Zustand Node
-            }else{
-                setState(State.ROOT);
-            }
-        }
+            }*/
         // Nur senden, wenn anderer Root
-        connectToEndpoint(endpoint);
+        if (getState()==State.FINDROOT){
+            findOutRightState(endpoint.getName());
+            connectToEndpoint(endpoint);
+        }
+
+        if (endpoint.getName().compareTo(rootNode)>0){
+            disconnectFromAllEndpoints();
+            stopAllEndpoints();
+            connectToEndpoint(endpoint);
+        }
+        Log.v("qua", getDiscoveredEndpoints().toString());
 
 
         // if (getState()==State.NODE){
@@ -191,12 +211,23 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         // if (endpoint.getName().compareTo(getName()) < 0 ) {
             // A connection to another device has been initiated! We'll accept the connection immediately.
             acceptConnection(endpoint);
+            if (getState()==State.FINDROOT)
+                findOutRightState(endpoint.getName());
 
-            /*if (getName().equals(rootNode)){
-                setState(State.ROOT);
-            }*/
+            if (getState()==State.NODE)
+                setState(State.CONNODE);
         // }
 
+    }
+
+    public void findOutRightState(String endpointId){
+            if (endpointId.compareTo(getName()) > 0) {
+                setRootNode(endpointId);
+
+                setState(State.NODE); // Wechselt in Zustand Node
+            }else{
+                setState(State.ROOT);
+            }
     }
 
     @Override
@@ -239,11 +270,19 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     @Override
     protected void onConnectionFailed(Endpoint endpoint) {
         // Let's try someone else.
+        if (!getDiscoveredEndpoints().isEmpty())
+            connectToEndpoint(pickRandomElem(getDiscoveredEndpoints()));
+        setState(State.FINDROOT);/*
         if (getState() == State.NODE && !getDiscoveredEndpoints().isEmpty()) {
             connectToEndpoint(pickRandomElem(getDiscoveredEndpoints()));
+
+            // Occurs only for Nodes, cause Root don't ask
+            //disconnectFromAllEndpoints();
+            //stopAllEndpoints();
             setState(State.FINDROOT);
-            /*connectionAttemp++; /* TODO */
-        }
+
+            /*connectionAttemp++; /* TODO *//*
+        }*/
 
         /* TODO: Endpoint seems not to be an advisor */
     /*if (connectionAttemp>1){
@@ -267,7 +306,8 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         // TODO: 2503
         // tvCurrentState.setText(state.toString()
         // );
-        myConnectionsListener.onStateChanged(state.toString());
+        if (myConnectionsListener!=null)
+            myConnectionsListener.onStateChanged(state.toString());
 
         State oldState = mState;
         mState = state;
@@ -337,11 +377,24 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         logD(message + " published");
     }
 
+    public void subscribe(String channel){
+        if (!subscribedChannels.contains(channel))
+            subscribedChannels.add(channel);
+    }
+
+    public void unsubscribe(String channel){
+        subscribedChannels.remove(channel);
+    }
+
     /** {@see ConnectionsActivity#onReceive(Endpoint, Payload)} */
     @Override
     protected void onReceive(Endpoint endpoint, Payload payload) {
         // logD(new String(payload.asBytes()) + "from" + endpoint);
-        myConnectionsListener.onMessage(new String(payload.asBytes()));
+        ExtMessage msg = ExtMessage.createExtMessage(payload);
+
+        if (subscribedChannels.contains(msg.getChannel()) && myConnectionsListener!=null){
+            myConnectionsListener.onMessage(msg.getPayload());
+        }
     }
 
     @Override
@@ -391,31 +444,36 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     @Override
     protected void logV(String msg) {
         super.logV(msg);
-        myConnectionsListener.onLogMessage(toColor(msg, 0xFFFFFFFF));
+        if (myConnectionsListener!=null)
+            myConnectionsListener.onLogMessage(toColor(msg, 0xFFFFFFFF));
     }
 
     @Override
     protected void logD(String msg) {
         super.logD(msg);
-        myConnectionsListener.onLogMessage(toColor(msg, 0xFFEEEEEE));
+        if (myConnectionsListener!=null)
+            myConnectionsListener.onLogMessage(toColor(msg, 0xFFEEEEEE));
     }
 
     @Override
     protected void logW(String msg) {
         super.logW(msg);
-        myConnectionsListener.onLogMessage(toColor(msg, 0xFFE57373));
+        if (myConnectionsListener!=null)
+            myConnectionsListener.onLogMessage(toColor(msg, 0xFFE57373));
     }
 
     @Override
     protected void logW(String msg, Throwable e) {
         super.logW(msg, e);
-        myConnectionsListener.onLogMessage(toColor(msg, 0xFFE57373));
+        if (myConnectionsListener!=null)
+            myConnectionsListener.onLogMessage(toColor(msg, 0xFFE57373));
     }
 
     @Override
     protected void logE(String msg, Throwable e) {
         super.logE(msg, e);
-        myConnectionsListener.onLogMessage(toColor(msg, 0xFFF44336));
+        if (myConnectionsListener!=null)
+            myConnectionsListener.onLogMessage(toColor(msg, 0xFFF44336));
     }
 
     private static CharSequence toColor(String msg, int color) {
@@ -479,6 +537,14 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         UNKNOWN,
         NODE,
         ROOT,
-        FINDROOT
+        FINDROOT,
+        CONNODE
+    }
+
+    public boolean isConnected(){
+        if (getState()==State.CONNODE || getState()==State.ROOT){
+            return true;
+        }
+        return false;
     }
 }

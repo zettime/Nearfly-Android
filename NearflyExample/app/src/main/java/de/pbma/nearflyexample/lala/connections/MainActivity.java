@@ -46,7 +46,7 @@ public class MainActivity extends ConnectionsActivityWithPermissions {
         tvRootNode = findViewById(R.id.tv_root_node);
 
 
-        myNearbyConnectionsClient.onCreate(this, new MyNearbyConnectionsClient.MyConnectionsListener(){
+        myNearbyConnectionsClient.initClient(getApplicationContext(), new MyNearbyConnectionsClient.MyConnectionsListener(){
 
             @Override
             public void onLogMessage(CharSequence msg) {

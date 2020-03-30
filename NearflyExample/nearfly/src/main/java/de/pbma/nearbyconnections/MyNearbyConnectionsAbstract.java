@@ -129,8 +129,7 @@ public abstract class MyNearbyConnectionsAbstract {
         @Override
         public void onPayloadReceived(String endpointId, Payload payload) {
           // logD(String.format("onPayloadReceived(endpointId=%s, payload=%s)", endpointId, new String(payload.asBytes())));
-          ExtMessage msg = ExtMessage.createExtMessage(payload.asBytes());
-          logD(String.format("onPayloadReceived(endpointId=%s, channel=%s, payload=%s)", endpointId, msg.getChannel(), msg.getPayload()));
+          logD(String.format("onPayloadReceived(endpointId=%s, payload=%s)", endpointId, new String(payload.asBytes())));
 
           // TODO: Provisorisch
           if (mEstablishedConnections.keySet().size()>1){

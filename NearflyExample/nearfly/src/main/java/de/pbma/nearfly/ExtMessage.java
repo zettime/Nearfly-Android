@@ -1,5 +1,7 @@
 package de.pbma.nearfly;
 
+import com.google.android.gms.nearby.connection.Payload;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,6 +47,20 @@ public class ExtMessage {
     public static ExtMessage createExtMessage(byte[] message){
         try {
             JSONObject jsonObject= new JSONObject(new String(message));
+
+            return new ExtMessage(
+                    jsonObject.getString(ExtMessage.PAYLOAD),
+                    jsonObject.getString(ExtMessage.CHANNEL)
+            );
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ExtMessage createExtMessage(Payload payload){
+        try {
+            JSONObject jsonObject= new JSONObject(new String(payload.asBytes()));
 
             return new ExtMessage(
                     jsonObject.getString(ExtMessage.PAYLOAD),

@@ -179,7 +179,7 @@ public class MyMQTTClient {
 
         // connect
         mqttMessaging.connect(MQTT_CONNECTION_URL, options); // secure via URL
-        mqttMessaging.subscribe("19moa18/#");
+        // mqttMessaging.subscribe("19moa18/#");
         // mqttMessaging.subscribe("19moa18/test2");
     }
 
@@ -195,7 +195,7 @@ public class MyMQTTClient {
     public void disconnect() {
         Log.v(TAG, "disconnect");
         if (mqttMessaging != null) {
-            mqttMessaging.unsubscribe("19moa18/#");
+            // mqttMessaging.unsubscribe("19moa18/#");
             // mqttMessaging.unsubscribe(MQTT_SUB_TOPIC);
             // mqttMessaging.unsubscribe("19moa18/test1");
             // mqttMessaging.unsubscribe("19moa18/test2");
