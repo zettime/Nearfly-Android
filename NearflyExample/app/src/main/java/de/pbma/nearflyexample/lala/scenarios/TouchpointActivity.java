@@ -1,13 +1,7 @@
 package de.pbma.nearflyexample.lala.scenarios;
-
-
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.method.ScrollingMovementMethod;
-import android.view.View;
-import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 
 import org.json.JSONException;
@@ -17,7 +11,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.pbma.nearfly.NearflyListener;
-import de.pbma.nearflyexample.R;
 
 public class TouchpointActivity extends NearflyBindingAktivity {
     /** If true, debug logs are shown on the device. */
@@ -25,19 +18,10 @@ public class TouchpointActivity extends NearflyBindingAktivity {
 
     private final String TAG = "TouchpointActivity";
 
-    /** Displays the current state. */
-    private TextView tvCurrentState;
-
-    private TextView tvRootNode;
-
-    /** A running log of debug messages. Only visible when DEBUG=true. */
-    private TextView mDebugLogView;
-    private Integer cnt = 0;
-
+    /** components used for the gameloop **/
     CustomView gameView;
     private Handler handler = new Handler();
     private final long FRAME_RATE = 30;
-
 
     @Override
     public void onNearflyServiceConnected() {
@@ -69,32 +53,30 @@ public class TouchpointActivity extends NearflyBindingAktivity {
             logIt(message);
 
             JSONObject msg = null;
-            float tpX = gameView.RESET_X;
-            float tpY = gameView.RESET_Y;
-            int tpColor = Color.BLACK;
+            float percTpX = gameView.RESET_X;
+            float percTpY = gameView.RESET_Y;
+            int tpColorIndex = Color.BLACK;
 
             try {
                 msg = new JSONObject(new String(message));
 
-                tpX = (float) msg.getDouble("xPos");
-                tpY = (float) msg.getDouble("yPos");
-                tpColor = msg.getInt("tpColor");
+                percTpX = (float) msg.getDouble("xPos");
+                percTpY = (float) msg.getDouble("yPos");
+                tpColorIndex = msg.getInt("tpColorIndex");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-
-            gameView.createTouchpoint(tpX, tpY, tpColor);
+            gameView.createTouchpoint(percTpX, percTpY, tpColorIndex);
         }
     };
 
-    public void publish(float tpX, float tpY, int tpColor){
+    public void publish(float percTpX, float percTpY, int tpColorIndex){
         JSONObject msg = new JSONObject();
         try {
-
-            msg.put("xPos", tpX);
-            msg.put("yPos", tpY);
-            msg.put("tpColor", tpColor);
+            msg.put("xPos", percTpX);
+            msg.put("yPos", percTpY);
+            msg.put("tpColorIndex", tpColorIndex);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -105,15 +87,17 @@ public class TouchpointActivity extends NearflyBindingAktivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
+
+        /** Listener for the {@linkplain CustomView} **/
         gameView = new CustomView(this, new CustomView.CustomViewListener() {
             @Override
-            public void onAction(float tpX, float tpY, int tpColor) {
-                publish(tpX, tpY, tpColor);
+            public void sendTouchpoint(float percTpX, float percTpY, int tpColorIndex) {
+                publish(percTpX, percTpY, tpColorIndex);
             }
         });
         setContentView(gameView);
 
+        /** Creates the Gameloop that is updated every {@link #FRAME_RATE} seconds **/
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override

@@ -51,7 +51,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     private static final String STATE_CONNECTED  = "connected";
     private static final String STATE_FINDROOT  = "findroot";
 
-    private ArrayList<String> subscribedChannels;
+    private ArrayList<String> subscribedChannels = subscribedChannels = new ArrayList<>();
     /**
      * The connection strategy we'll use for Nearby Connections. In this case, we've decided on
      * P2P_STAR, which is a combination of Bluetooth Classic and WiFi Hotspots.
@@ -107,7 +107,6 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         this.myConnectionsListener = myConnectionsListener;
         mName = generateRandomName();
         rootNode = mName;
-        subscribedChannels = new ArrayList<>();
     }
 
     /** Just One possible **/

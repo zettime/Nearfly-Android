@@ -26,9 +26,11 @@ public class NearflyService extends Service {
     public @interface ConnectionMode {}
     public final static String USE_MQTT = "MQTT";
     public final static String USE_NEARBY = "Nearby";
+    public final static String DONT_SWITCH = "None";
 
+    /** Technology to use(MQTT or Nearby) **/
     public String USED_TECH = NearflyService.USE_NEARBY;
-    private String changeTechWhenReady = USED_TECH;
+    private String changeTechWhenReady = DONT_SWITCH;
 
     public String TAG = "NearflyServices";
     private ArrayList<String> subscribedChannels;
@@ -56,6 +58,7 @@ public class NearflyService extends Service {
                     && changeTechWhenReady==USE_NEARBY){
                 /** Actually change of Technology **/
                 USED_TECH = USE_NEARBY;
+                changeTechWhenReady=DONT_SWITCH;
                 disconnectToMQTT();
             }
         }
@@ -85,6 +88,7 @@ public class NearflyService extends Service {
 
             if (changeTechWhenReady==USE_MQTT){
                 USED_TECH=USE_MQTT;
+                changeTechWhenReady=DONT_SWITCH;
                 disconnectToNearby();
             }
         }

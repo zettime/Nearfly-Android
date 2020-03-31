@@ -6,57 +6,73 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
 
 import java.util.Random;
 
 public class CustomView extends View{
-    private int[] avaibleColors = {Color.RED, Color.GREEN, Color.BLUE,
-            Color.YELLOW, Color.CYAN, Color.MAGENTA
-    };
-    private Paint paint;
-
     final String TAG = "CustomView";
+
+    private int cHeight;
+    private int cWidth;
+
+    /** The following vectors are used as a kind of limited queue, whereby
+     * the non-doing touchpoints are always modified and the first 10 elements of each vector
+     * are reserved for up to 10 multi-touch capable host device
+     */
 
     final int MAX_TP = 100;
     private float[] tpX = new float[MAX_TP];
     private float[] tpY = new float[MAX_TP];
     private float[] tpRadius = new float[MAX_TP];
-    private int tpColor;
+    private int[] tpColorIndex = new int[MAX_TP];
 
-    public final float RESET_X = -500;
-    public final float RESET_Y = -500;
-    public final float RESET_R = 200;
+    AvailableColors avaibleColors;
+
+    public float RESET_X = -500;
+    public float RESET_Y = -500;
+    public float RESET_R = 200;
 
     interface CustomViewListener{
-        void onAction(float tpX, float tpY, int tpColor);
+        void sendTouchpoint(float tpX, float tpY, int tpColorIndex);
     }
     CustomViewListener customViewListener;
 
     public CustomView(Context context, CustomViewListener customViewListener) {
         super(context);
         this.customViewListener = customViewListener;
+        avaibleColors = new AvailableColors();
 
-        // Init Touchpoints(TPs)
-        tpColor = avaibleColors[new Random().nextInt(avaibleColors.length)];
-        paint = new Paint();
-        paint.setColor(tpColor);
+        // Init own Touchpoint(TP)-Color
+        tpColorIndex[0] = avaibleColors.getRandomTpColorIndex();
 
+        // Init the vectors
         for (int i = 0; i < MAX_TP; i++) {
             tpX[i] = RESET_X;
             tpY[i] = RESET_Y;
             tpRadius[i] = 0;
+            tpColorIndex[i] = tpColorIndex[0];
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(Color.WHITE);
+        final int canvasWidth = canvas.getWidth();
 
+        // Update Canvas Metrics
+        if (cWidth!=canvasWidth) {
+            cHeight = canvas.getHeight();
+            cWidth = canvasWidth;
+            RESET_R = canvasWidth/8;
+            RESET_X = -canvasWidth;
+            RESET_Y = -canvasWidth;
+        }
+
+        // Make Touchpoint get smaller with Time
         for (int i = 0; i < MAX_TP; i++) {
             if (tpRadius[i] > 1){
-                canvas.drawCircle(tpX[i], tpY[i], tpRadius[i], paint);
+                canvas.drawCircle(tpX[i], tpY[i], tpRadius[i], avaibleColors.getPaint(tpColorIndex[i]));
                 tpRadius[i] *= 0.8;
             }
             if (tpRadius[i] < 1 && tpRadius[i]!= 0) {
@@ -86,18 +102,19 @@ public class CustomView extends View{
                 tpY[pId] = event.getY(pId);
                 tpRadius[pId] = RESET_R;
 
-                customViewListener.onAction(tpX[pId], tpY[pId], tpColor);
+                customViewListener.sendTouchpoint(tpX[pId]/cWidth, tpY[pId]/cHeight, tpColorIndex[pId]);
                 break;
         }
         return true;
     }
 
-    public void createTouchpoint(float tpX, float tpY, int tpColor){
-        for (int i = 0; i < MAX_TP; i++) {
+    public void createTouchpoint(float percTpX, float percTpY, int tpColorIndex){
+        for (int i = 10; i < MAX_TP; i++) {
             if (tpRadius[i]==0) {
                 tpRadius[i] = RESET_R;
-                this.tpX[i] = tpX;
-                this.tpY[i] = tpY;
+                this.tpX[i] = percTpX*cWidth;
+                this.tpY[i] = percTpY*cHeight;
+                this.tpColorIndex[i] = tpColorIndex;
                 return;
             }
         }
