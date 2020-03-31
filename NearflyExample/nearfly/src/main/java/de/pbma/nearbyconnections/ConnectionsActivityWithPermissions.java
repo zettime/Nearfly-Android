@@ -14,6 +14,11 @@ import androidx.core.content.ContextCompat;
 
 import de.pbma.nearfly.R;
 
+/**
+ * This Aktivity is responsible for getting the right permissions for a properly
+ * functioning Nearby Service. The code available here was selected with a few
+ * changes from the Nearby Connections activity.
+ */
 public class ConnectionsActivityWithPermissions extends AppCompatActivity {
     /**
      * These permissions are required before connecting to Nearby Connections. Only {@link

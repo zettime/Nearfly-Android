@@ -134,11 +134,11 @@ public class NearflyService extends Service {
                 nearflyListener.onLogMessage("not Connected");
                 return false;
             }
-            nearbyConnectionsClient.pubIt(channel, "N: " + message);
+            nearbyConnectionsClient.pubIt(channel, message);
             return false;
         }
         else{
-            mqttClient.publishIt("M:" + channel, message);
+            mqttClient.publishIt(channel, message);
         }
         return true;
     }
