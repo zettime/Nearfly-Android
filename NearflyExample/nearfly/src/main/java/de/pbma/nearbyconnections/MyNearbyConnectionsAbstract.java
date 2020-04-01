@@ -36,8 +36,6 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import de.pbma.nearfly.ExtMessage;
-
 import static de.pbma.nearfly.Constants.TAG;
 
 /** A class that connects to Nearby Connections and provides convenience methods and callbacks. */
@@ -77,7 +75,7 @@ public abstract class MyNearbyConnectionsAbstract {
   private boolean mIsAdvertising = false;
 
   // TODO: PublishForwarder
-  ThreadPoolExecutor executorMsgForwarder = (ThreadPoolExecutor) Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()/2);
+  ThreadPoolExecutor msgForwardExecutor;
   // PublishForwarder publishForwarder;
 
   /** Callbacks for connections to other devices. */
@@ -206,12 +204,25 @@ public abstract class MyNearbyConnectionsAbstract {
                 onAdvertisingFailed();
               }
             });
+
+    // TODO: Start Executor
+    if (msgForwardExecutor != null)
+      msgForwardExecutor.shutdown();
+
+    msgForwardExecutor = (ThreadPoolExecutor)
+            Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()*3);
   }
 
   /** Stops advertising. */
   protected void stopAdvertising() {
     mIsAdvertising = false;
     mConnectionsClient.stopAdvertising();
+
+
+    if (!msgForwardExecutor.isShutdown()){
+      msgForwardExecutor.shutdownNow();
+      msgForwardExecutor = null;
+    }
   }
 
   /** Returns {@code true} if currently advertising. */
@@ -470,7 +481,7 @@ public abstract class MyNearbyConnectionsAbstract {
   }
   // TODO: Provisorisch ******************************************************
   private void forward(final Payload payload, final String excludedEntpointId){
-    executorMsgForwarder.execute(new MsgForwarder(payload, excludedEntpointId){
+    msgForwardExecutor.execute(new MsgForwarder(payload, excludedEntpointId){
       @Override
       public void run() {
         super.run();
