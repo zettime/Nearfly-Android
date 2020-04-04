@@ -376,6 +376,12 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         logD(message + " published");
     }
 
+    public void pubBinary(String channel, byte[] bytes){
+        ExtMessage extMessage = new ExtMessage(message, channel);
+        send(Payload.fromFile());
+        logD(message + " published");
+    }
+
     public void subscribe(String channel){
         if (!subscribedChannels.contains(channel))
             subscribedChannels.add(channel);

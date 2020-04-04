@@ -29,7 +29,7 @@ public class NearflyService extends Service {
     public final static String DONT_SWITCH = "None";
 
     /** Technology to use(MQTT or Nearby) **/
-    public String USED_TECH = NearflyService.USE_NEARBY;
+    public String USED_TECH = NearflyService.USE_MQTT;
     private String changeTechWhenReady = DONT_SWITCH;
 
     public String TAG = "NearflyServices";
@@ -146,6 +146,22 @@ public class NearflyService extends Service {
         }
         return true;
     }
+
+    /*public boolean pubBytes(String channel, byte[] bytes) {
+        if (USED_TECH=="Nearby"){
+            // NEARBY
+            if (!nearbyConnectionsClient.isConnected()){
+                nearflyListener.onLogMessage("not Connected");
+                return false;
+            }
+            nearbyConnectionsClient.pubIt(channel, bytes);
+            return false;
+        }
+        else{
+            mqttClient.publishBytes(channel, bytes);
+        }
+        return true;
+    }*/
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

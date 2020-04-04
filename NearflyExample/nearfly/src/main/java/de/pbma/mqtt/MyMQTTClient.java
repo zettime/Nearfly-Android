@@ -55,6 +55,11 @@ public class MyMQTTClient {
         mqttMessaging.send(topic, str);
     }
 
+    /** Test **/
+    /*public void publishBytes(String topic, byte[] bytes) {
+        mqttMessaging.sendBytes(topic, bytes);
+    }*/
+
     // end methods to call from a connected activity
     public class LocalBinder extends Binder {
         public MyMQTTClient getMQTTService() {

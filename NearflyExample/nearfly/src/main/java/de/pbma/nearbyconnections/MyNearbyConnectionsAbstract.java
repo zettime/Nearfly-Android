@@ -502,7 +502,8 @@ public abstract class MyNearbyConnectionsAbstract {
       }
     });
 
-  }/*************************************************************************/
+  }
+  /*************************************************************************/
 
   /**
    * Someone connected to us has sent us data. Override this method to act on the event.

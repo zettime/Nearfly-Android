@@ -29,6 +29,7 @@ public abstract class NearflyBindingAktivity extends ConnectionsActivityWithPerm
 
     public NearflyService nearflyService;
     public boolean nearflyServiceBound;
+    private boolean mNearflyServiceStarted = false;
 
     /** Try to force the dev to override the nearflyListener **/
     private NearflyListener nearflyListener;
@@ -48,7 +49,8 @@ public abstract class NearflyBindingAktivity extends ConnectionsActivityWithPerm
             nearflyService.subIt("19moa18/test");*/
             nearflyServiceBound = true;
 
-            startNearflyService();
+            if (!mNearflyServiceStarted)
+                startNearflyService();
         }
 
         @Override
@@ -84,6 +86,7 @@ public abstract class NearflyBindingAktivity extends ConnectionsActivityWithPerm
         Intent intent = new Intent(this, NearflyService.class);
         intent.setAction(NearflyService.ACTION_START);
         startService(intent);
+        mNearflyServiceStarted = true;
     }
 
 
@@ -92,6 +95,7 @@ public abstract class NearflyBindingAktivity extends ConnectionsActivityWithPerm
         Intent intent = new Intent(this, NearflyService.class);
         intent.setAction(NearflyService.ACTION_STOP);
         startService(intent); // to stop
+        mNearflyServiceStarted = false;
     }
 
     private void bindNearflyService() {

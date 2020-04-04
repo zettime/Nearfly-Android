@@ -277,6 +277,33 @@ public class MqttMessaging {
         });
     }
 
+    // TODO START: Send Bytes *********************************************************
+    /*public void sendBytes(final String topic, byte[] bytes) {
+        if (!ready.get() && !connectPending.get()) {
+            throw new RuntimeException("connect not yet called");
+        }
+        final long id = pendingMessageId.incrementAndGet();
+        pendingMessages.put(id, Pair.createPair(topic,  bytes.toString()));
+        mqttExecutor.execute(() -> {
+            try {
+                pendingMessages.remove(id); // we are processing it
+                Log.v(TAG, String.format("sendBytes: topic=%s, msg=%s",topic, bytes.toString()));
+                MqttMessage message = new MqttMessage();
+                message.setPayload(bytes);
+                message.setQos(1); // we always do 1
+                MqttClient c = client;
+                if (c != null) {
+                    pendingMessages.remove(id);
+                    c.publish(topic, message);
+                }
+            } catch (MqttException e) {
+                Log.e(TAG, String.format("  sendBytes failed: topic=%s, msg=%s, cause=%s", topic, bytes.toString(), e.getMessage()));
+                doMessageFailure(e, topic, bytes.toString());
+            }
+        });
+    }*/
+    // TODO END: Send Bytes *********************************************************
+
     public String getClientId() {
         return clientId;
     }

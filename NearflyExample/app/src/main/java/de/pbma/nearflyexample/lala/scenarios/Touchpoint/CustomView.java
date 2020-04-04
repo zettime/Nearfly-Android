@@ -1,14 +1,20 @@
-package de.pbma.nearflyexample.lala.scenarios;
+package de.pbma.nearflyexample.lala.scenarios.Touchpoint;
 
 import android.content.Context;
+import android.graphics.BlendMode;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import java.util.Random;
+
+import de.pbma.nearflyexample.lala.scenarios.AvailableColors;
 
 public class CustomView extends View{
     final String TAG = "CustomView";
@@ -33,13 +39,25 @@ public class CustomView extends View{
     public float RESET_Y = -500;
     public float RESET_R = 200;
 
+    public CustomView(Context context) {
+        super(context);
+    }
+
+    public CustomView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public CustomView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
     interface CustomViewListener{
         void sendTouchpoint(float tpX, float tpY, int tpColorIndex);
     }
     CustomViewListener customViewListener;
 
-    public CustomView(Context context, CustomViewListener customViewListener) {
-        super(context);
+    public void registerListener(CustomViewListener customViewListener) {
+        // super(context);
         this.customViewListener = customViewListener;
         avaibleColors = new AvailableColors();
 
@@ -118,6 +136,11 @@ public class CustomView extends View{
                 return;
             }
         }
+    }
+
+    public int getMyColor(){
+        return avaibleColors.getPaint(tpColorIndex[0]).getColor();
+
     }
 
     private void lg(String str) {

@@ -1,3 +1,5 @@
-# 20thesis04
+#### 20thesis04 - Alexis dos Santos
 
-Nearby Messages und Mqtt gewrappt
+# Nearfly-Android
+
+Entwicklung einer Android-Bibliothek, welche Nearby Connections und Mqtt wrappt.

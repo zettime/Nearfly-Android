@@ -22,8 +22,10 @@
         android:theme="@style/AppTheme">
 
         <!-- <activity android:name="de.pbma.nearflyexample.lala.connections.MainActivityWithService" -->
-        <activity android:name="de.pbma.nearflyexample.lala.scenarios.TouchpointActivity"
-            android:screenOrientation="portrait">
+        <!-- <activity android:name="de.pbma.nearflyexample.lala.scenarios.Touchpoint.TouchpointActivity" -->
+        <activity android:name="de.pbma.nearflyexample.lala.scenarios.Messenger.MessengerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

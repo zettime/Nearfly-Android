@@ -6,25 +6,25 @@ import android.graphics.Paint;
 import java.util.Random;
 
 public class AvailableColors {
-    private int[] intColors = {Color.RED, Color.GREEN, Color.BLUE, Color.BLACK,
+    private int[] mIntColors = {Color.RED, Color.GREEN, Color.BLUE, Color.BLACK,
             Color.YELLOW, Color.CYAN, Color.MAGENTA,
             Color.DKGRAY, Color.GRAY, Color.LTGRAY
     };
 
-    private Paint[] paintColors = new Paint[intColors.length];
+    private Paint[] mPaintColors = new Paint[mIntColors.length];
 
     public AvailableColors() {
-        for (int i=0; i<intColors.length; i++){
-            paintColors[i] = new Paint();
-            paintColors[i].setColor(intColors[i]);
+        for (int i = 0; i< mIntColors.length; i++){
+            mPaintColors[i] = new Paint();
+            mPaintColors[i].setColor(mIntColors[i]);
         }
     }
 
     public int getRandomTpColorIndex(){
-        return new Random().nextInt(intColors.length);
+        return new Random().nextInt(mIntColors.length);
     }
 
     public Paint getPaint(int index){
-        return paintColors[index];
+        return mPaintColors[index];
     }
 }

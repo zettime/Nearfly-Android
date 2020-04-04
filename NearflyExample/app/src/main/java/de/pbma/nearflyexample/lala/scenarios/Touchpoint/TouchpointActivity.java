@@ -1,7 +1,11 @@
-package de.pbma.nearflyexample.lala.scenarios;
+package de.pbma.nearflyexample.lala.scenarios.Touchpoint;
+import android.content.res.ColorStateList;
+import android.graphics.BlendMode;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.RadioButton;
+
 import androidx.annotation.Nullable;
 
 import org.json.JSONException;
@@ -11,12 +15,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.pbma.nearfly.NearflyListener;
+import de.pbma.nearflyexample.R;
+import de.pbma.nearflyexample.lala.scenarios.AvailableColors;
+import de.pbma.nearflyexample.lala.scenarios.NearflyBindingAktivity;
 
 public class TouchpointActivity extends NearflyBindingAktivity {
     /** If true, debug logs are shown on the device. */
     private static final boolean DEBUG = true;
 
     private final String TAG = "TouchpointActivity";
+    RadioButton btnUColor;
 
     /** components used for the gameloop **/
     CustomView gameView;
@@ -88,14 +96,15 @@ public class TouchpointActivity extends NearflyBindingAktivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.touchpoint);
+        btnUColor = findViewById(R.id.btn_ucolor);
+
         /** Listener for the {@linkplain CustomView} **/
-        gameView = new CustomView(this, new CustomView.CustomViewListener() {
-            @Override
-            public void sendTouchpoint(float percTpX, float percTpY, int tpColorIndex) {
+        gameView = findViewById(R.id.custom_view);
+        gameView.registerListener((percTpX, percTpY, tpColorIndex) -> {
                 publish(percTpX, percTpY, tpColorIndex);
-            }
-        });
-        setContentView(gameView);
+            });
+        btnUColor.setButtonTintList(ColorStateList.valueOf(gameView.getMyColor()));
 
         /** Creates the Gameloop that is updated every {@link #FRAME_RATE} seconds **/
         Timer timer = new Timer();
@@ -111,7 +120,6 @@ public class TouchpointActivity extends NearflyBindingAktivity {
             }
         }, 0, FRAME_RATE);
     }
-
 
     public void logIt(String str){
         super.logIt(str);

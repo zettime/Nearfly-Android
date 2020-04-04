@@ -8,12 +8,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="28sp"
-        android:padding="30dp"
+        android:paddingTop="30dp"
         android:backgroundTint="@color/black"
         android:gravity="center"
-        android:text="TouchpointAktivity"/>
+        android:text="Touchpoint Scenario"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="30dp"
+        android:layout_gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="color: "/>
+        <RadioButton
+            android:id="@+id/btn_ucolor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:checked="true"
+            android:buttonTint="@color/black"/>
+    </LinearLayout>
 
-    <de.pbma.nearflyexample.lala.scenarios.CustomView
+    <de.pbma.nearflyexample.lala.scenarios.Touchpoint.CustomView
+        android:id="@+id/custom_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
 
         />
 </LinearLayout>
