@@ -39,3 +39,4 @@ Ignoriert/*
 *.tmp
 ~$*
 Bachelorarbeit.pdf
+*.idea
