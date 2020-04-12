@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.nearby.connection.Payload;
+
 import de.pbma.nearbyconnections.ConnectionsActivityWithPermissions;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
@@ -71,6 +73,17 @@ public class MainActivityWithService extends ConnectionsActivityWithPermissions 
                     mDebugLogView.append(message + "\n");
                 });
             }
+
+        @Override
+        public void onStream(Payload payload) {}
+
+        @Override
+        public void onBinary(Payload payload) {
+
+        }
+
+        @Override
+        public void onFile(String path){}
     };
 
     private ServiceConnection serviceConnection = new ServiceConnection() {

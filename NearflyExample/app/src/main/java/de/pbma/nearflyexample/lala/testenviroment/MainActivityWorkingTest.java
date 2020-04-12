@@ -1,25 +1,41 @@
-package de.pbma.nearflyexample.lala.connections;
+package de.pbma.nearflyexample.lala.testenviroment;
 
 import android.animation.Animator;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.ParcelFileDescriptor;
 import android.text.SpannableString;
 import android.text.format.DateFormat;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.collection.SimpleArrayMap;
 
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
+import com.google.android.gms.nearby.connection.PayloadCallback;
+import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import com.google.android.gms.nearby.connection.Strategy;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Random;
 
@@ -43,7 +59,7 @@ import de.pbma.nearflyexample.R;
  * down the volume keys and speaking into the phone. We'll continue to advertise (if we were already
  * advertising) so that more people can connect to us.
  */
-public class MainActivityWorking extends ConnectionsActivity {
+public class MainActivityWorkingTest extends ConnectionsActivityTest {
     /** If true, debug logs are shown on the device. */
     private static final boolean DEBUG = true;
 
@@ -180,7 +196,7 @@ public class MainActivityWorking extends ConnectionsActivity {
     return super.dispatchKeyEvent(event);
   }*/
 
-    @Override
+    /*@Override
     protected void onStart() {
         super.onStart();
         // mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
@@ -193,9 +209,9 @@ public class MainActivityWorking extends ConnectionsActivity {
         AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
 */
         // TODO: 2503
-        setState(State.FINDROOT);
+        //setState(State.FINDROOT);
         // setState(State.DISCOVERING);
-    }
+    //}
 
     @Override
     protected void onStop() {
@@ -403,68 +419,18 @@ public class MainActivityWorking extends ConnectionsActivity {
 
     public int cnt = 0;
     public void publish(View view){
-        ExtMessage extMessage = new ExtMessage(String.valueOf(++cnt), "test", ExtMessage.STRING);
+        /*ExtMessage extMessage = new ExtMessage(String.valueOf(++cnt), "test");
 
-        send(Payload.fromBytes(extMessage.getBytes()));
+        send(Payload.fromBytes(extMessage.getBytes()));*/
+        showImageChooser();
+
         logD(cnt + " published");
     }
 
-    /** The device has moved. We need to decide if it was intentional or not. */
-  /*@Override
-  public void onSensorChanged(SensorEvent sensorEvent) {
-    float x = sensorEvent.values[0];
-    float y = sensorEvent.values[1];
-    float z = sensorEvent.values[2];
-
-    float gX = x / SensorManager.GRAVITY_EARTH;
-    float gY = y / SensorManager.GRAVITY_EARTH;
-    float gZ = z / SensorManager.GRAVITY_EARTH;
-
-    double gForce = Math.sqrt(gX * gX + gY * gY + gZ * gZ);
-
-    if (gForce > SHAKE_THRESHOLD_GRAVITY && getState() == State.DISCOVERING) {
-      logD("Device shaken");
-      vibrate();
-      setState(State.ADVERTISING);
-      postDelayed(mDiscoverRunnable, ADVERTISING_DURATION);
-    }
-  }*/
-
-  /*@Override
-  public void onAccuracyChanged(Sensor sensor, int accuracy) {}*/
-
-    /** Vibrates the phone. */
-  /* private void vibrate() {
-    Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-    if (hasPermissions(this, Manifest.permission.VIBRATE) && vibrator.hasVibrator()) {
-      vibrator.vibrate(VIBRATION_STRENGTH);
-    }
-  }*/
 
     /** {@see ConnectionsActivity#onReceive(Endpoint, Payload)} */
     @Override
     protected void onReceive(Endpoint endpoint, Payload payload) {
-    /*if (payload.getType() == Payload.Type.STREAM) {
-      AudioPlayer player =
-          new AudioPlayer(payload.asStream().asInputStream()) {
-            @WorkerThread
-            @Override
-            protected void onFinish() {
-              /*final AudioPlayer audioPlayer = this;
-              post(
-                  new Runnable() {
-                    @UiThread
-                    @Override
-                    public void run() {
-                      // mAudioPlayers.remove(audioPlayer);
-                    }
-                  });*/
-        // }
-        // };
-        // mAudioPlayers.add(player);
-        // player.start();
-        // }
-        // logD(new String(payload.asBytes()) + "from" + endpoint);
     }
 
     @Override
@@ -474,68 +440,6 @@ public class MainActivityWorking extends ConnectionsActivity {
         setState(State.DISCOVERING);
         mUiHandler.removeCallbacksAndMessages(null);
     }
-
-    /** Stops all currently streaming audio tracks. */
-  /*private void stopPlaying() {
-    logV("stopPlaying()");
-    for (AudioPlayer player : mAudioPlayers) {
-      player.stop();
-    }
-    mAudioPlayers.clear();
-  }*/
-
-    /** @return True if currently playing. */
-  /*private boolean isPlaying() {
-    return !mAudioPlayers.isEmpty();
-  }*/
-
-    /** Starts recording sound from the microphone and streaming it to all connected devices. */
-  /*private void startRecording() {
-    logV("startRecording()");
-    try {
-      ParcelFileDescriptor[] payloadPipe = ParcelFileDescriptor.createPipe();
-
-      // Send the first half of the payload (the read side) to Nearby Connections.
-      send(Payload.fromStream(payloadPipe[0]));
-
-      // Use the second half of the payload (the write side) in AudioRecorder.
-      mRecorder = new AudioRecorder(payloadPipe[1]);
-      mRecorder.start();
-    } catch (IOException e) {
-      logE("startRecording() failed", e);
-    }
-  }*/
-
-    /** Stops streaming sound from the microphone. */
-  /* private void stopRecording() {
-    logV("stopRecording()");
-    if (mRecorder != null) {
-      mRecorder.stop();
-      mRecorder = null;
-    }
-  }*/
-
-    /** @return True if currently streaming from the microphone. */
-  /*private boolean isRecording() {
-    return mRecorder != null && mRecorder.isRecording();
-  }*/
-
-    /** {@see ConnectionsActivity#getRequiredPermissions()} */
-  /*@Override
-  protected String[] getRequiredPermissions() {
-    return join(
-        super.getRequiredPermissions(),
-        Manifest.permission.RECORD_AUDIO);
-  }*/
-
-    /** Joins 2 arrays together. */
-  /*private static String[] join(String[] a, String... b) {
-    String[] join = new String[a.length + b.length];
-    System.arraycopy(a, 0, join, 0, a.length);
-    System.arraycopy(b, 0, join, a.length, b.length);
-    return join;
-  }*/
-
     /**
      * Queries the phone's contacts for their own profile, and returns their name. Used when
      * connecting to another device.
@@ -690,5 +594,54 @@ public class MainActivityWorking extends ConnectionsActivity {
         ADVERTISING,
         CONNECTED,
         FINDROOT
+    }
+
+    /* TODO //////////////////////////////////////////////////////////////////////////////////////// */
+    private static final int READ_REQUEST_CODE = 42;
+
+    /**
+     * Fires an intent to spin up the file chooser UI and select an image for sending to endpointId.
+     */
+    private void showImageChooser() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+        // intent.putExtra(ENDPOINT_ID_EXTRA, endpointId);
+        startActivityForResult(intent, READ_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        if (requestCode == READ_REQUEST_CODE
+                && resultCode == Activity.RESULT_OK
+                && resultData != null) {
+            // String endpointId = resultData.getStringExtra(ENDPOINT_ID_EXTRA);
+
+            // The URI of the file selected by the user.
+            Uri uri = resultData.getData();
+
+            Payload filePayload;
+            try {
+                // Open the ParcelFileDescriptor for this URI with read access.
+                ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "r");
+                filePayload = Payload.fromFile(pfd);
+            } catch (FileNotFoundException e) {
+                Log.e("MyApp", "File not found", e);
+                return;
+            }
+
+            // Construct a simple message mapping the ID of the file payload to the desired filename.
+            String filenameMessage = filePayload.getId() + ":" + uri.getLastPathSegment();
+
+            // Send the filename message as a bytes payload.
+            Payload filenameBytesPayload =
+                    Payload.fromBytes(filenameMessage.getBytes(StandardCharsets.UTF_8));
+            // Nearby.getConnectionsClient(context).sendPayload(endpointId, filenameBytesPayload);
+            send(filenameBytesPayload);
+
+            // Finally, send the file payload.
+            // Nearby.getConnectionsClient(context).sendPayload(endpointId, filePayload);
+            send(filePayload);
+        }
     }
 }

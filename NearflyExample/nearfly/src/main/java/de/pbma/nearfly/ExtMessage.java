@@ -1,9 +1,16 @@
 package de.pbma.nearfly;
 
+import androidx.annotation.StringDef;
+
 import com.google.android.gms.nearby.connection.Payload;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.annotation.Retention;
+import java.nio.charset.StandardCharsets;
+
+import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class ExtMessage {
     /*public static String SEPERATOR;
@@ -16,9 +23,18 @@ public class ExtMessage {
     }*/
     final static private String PAYLOAD = "p";
     final static String CHANNEL = "c";
+    final static String TYPE = "t";
+
+    @Retention(SOURCE)
+    @StringDef({STRING , FILEINFORMATION})
+    public @interface ConnectionMode {}
+    public final static String STRING = "string";
+    public final static String FILEINFORMATION = "fileinf";
+
 
     private String payload;
     private String channel;
+    private String type;
     private JSONObject message;
     public Long time;
 
@@ -28,9 +44,10 @@ public class ExtMessage {
     // public void setChannel(String channel) {this.channel=channel; buildMessage(); }
     // public Message getMessage() { return message; }
 
-    public ExtMessage(String payload, String channel){
+    public ExtMessage(String payload, String channel, String type){
         this.payload = payload;
         this.channel = channel;
+        this.type = type;
         this.time = System.currentTimeMillis();
 
         buildMessage();
@@ -50,7 +67,8 @@ public class ExtMessage {
 
             return new ExtMessage(
                     jsonObject.getString(ExtMessage.PAYLOAD),
-                    jsonObject.getString(ExtMessage.CHANNEL)
+                    jsonObject.getString(ExtMessage.CHANNEL),
+                    jsonObject.getString(ExtMessage.TYPE)
             );
         } catch (JSONException e) {
             e.printStackTrace();
@@ -64,7 +82,8 @@ public class ExtMessage {
 
             return new ExtMessage(
                     jsonObject.getString(ExtMessage.PAYLOAD),
-                    jsonObject.getString(ExtMessage.CHANNEL)
+                    jsonObject.getString(ExtMessage.CHANNEL),
+                    jsonObject.getString(ExtMessage.TYPE)
             );
         } catch (JSONException e) {
             e.printStackTrace();
@@ -74,7 +93,11 @@ public class ExtMessage {
 
     public byte[] getBytes(){
         // return (channel + ExtMessage.SEPERATOR + payload).getBytes();
-        return message.toString().getBytes();
+        return message.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    public String getType(){
+        return type;
     }
 
     private void buildMessage(){
@@ -85,6 +108,7 @@ public class ExtMessage {
         try {
             message.put(ExtMessage.PAYLOAD, payload);
             message.put(ExtMessage.CHANNEL, channel);
+            message.put(ExtMessage.TYPE, type);
         } catch (JSONException e) {
             e.printStackTrace();
         }

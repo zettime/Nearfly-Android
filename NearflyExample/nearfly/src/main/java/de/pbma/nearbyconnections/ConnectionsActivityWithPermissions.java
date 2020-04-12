@@ -33,9 +33,11 @@ public class ConnectionsActivityWithPermissions extends AppCompatActivity {
                     Manifest.permission.CHANGE_WIFI_STATE,
                     Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
             };
 
-    private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 1;
+    private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 18504;
 
     /**
      * Called when our Activity has been made visible to the user.

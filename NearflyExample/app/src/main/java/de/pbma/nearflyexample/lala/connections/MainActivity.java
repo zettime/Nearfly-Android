@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.nearby.connection.Payload;
+
 import de.pbma.nearbyconnections.ConnectionsActivityWithPermissions;
 import de.pbma.nearbyconnections.MyNearbyConnectionsClient;
 import de.pbma.nearflyexample.R;
@@ -67,6 +69,17 @@ public class MainActivity extends ConnectionsActivityWithPermissions {
 
             @Override
             public void onMessage(String msg) { }
+
+            @Override
+            public void onStream(Payload payload) {}
+
+            @Override
+            public void onBinary(Payload payload) {
+
+            }
+
+            @Override
+            public void onFile(String path){}
         });
     }
 

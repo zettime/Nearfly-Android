@@ -5,11 +5,16 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Parcel;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringDef;
 
+import com.google.android.gms.nearby.connection.Payload;
+
+import java.io.File;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
 
@@ -29,7 +34,7 @@ public class NearflyService extends Service {
     public final static String DONT_SWITCH = "None";
 
     /** Technology to use(MQTT or Nearby) **/
-    public String USED_TECH = NearflyService.USE_MQTT;
+    public String USED_TECH = NearflyService.USE_NEARBY;
     private String changeTechWhenReady = DONT_SWITCH;
 
     public String TAG = "NearflyServices";
@@ -43,7 +48,7 @@ public class NearflyService extends Service {
 
     // Nearby
     // MyNearbyConnectionsClient nearbyConnectionsClient;
-    MyNearbyConnectionsClient nearbyConnectionsClient = new MyNearbyConnectionsClient();
+    public MyNearbyConnectionsClient nearbyConnectionsClient = new MyNearbyConnectionsClient();
     MyNearbyConnectionsClient.MyConnectionsListener nearbyConnectionListener =new MyNearbyConnectionsClient.MyConnectionsListener() {
         @Override
         public void onLogMessage(CharSequence msg) {/*Wahrscheinlich nicht relevant für Nutzer*/
@@ -71,6 +76,19 @@ public class NearflyService extends Service {
         @Override
         public void onMessage(String msg) {
             nearflyListener.onMessage(msg);
+        }
+
+        @Override
+        public void onStream(Payload payload) { nearflyListener.onStream(payload); }
+
+        @Override
+        public void onBinary(Payload payload) {
+            nearflyListener.onBinary(payload);
+        }
+
+        @Override
+        public void onFile(String path) {
+            nearflyListener.onFile(path);
         }
     };
 
@@ -147,21 +165,30 @@ public class NearflyService extends Service {
         return true;
     }
 
-    /*public boolean pubBytes(String channel, byte[] bytes) {
+    public boolean pubFile(String channel, ParcelFileDescriptor pfd) {
         if (USED_TECH=="Nearby"){
             // NEARBY
             if (!nearbyConnectionsClient.isConnected()){
                 nearflyListener.onLogMessage("not Connected");
                 return false;
             }
-            nearbyConnectionsClient.pubIt(channel, bytes);
+            nearbyConnectionsClient.pubFile(channel, pfd);
             return false;
         }
-        else{
+        /*else{
             mqttClient.publishBytes(channel, bytes);
-        }
+        }*/
         return true;
-    }*/
+    }
+
+    public void pubBinaryTST(byte[] bytes) {
+        nearbyConnectionsClient.pubBinaryTST(bytes);
+    }
+
+    public void pubStream(Payload stream) {
+        nearbyConnectionsClient.pubStream(stream);
+    }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -249,6 +276,7 @@ public class NearflyService extends Service {
     @Override
     public void onDestroy() {
         Log.d(TAG, "onStop");
+        // TODO
         if (USED_TECH=="Nearby")
             disconnectToNearby();
         else
@@ -306,6 +334,7 @@ public class NearflyService extends Service {
         for (String channel : subscribedChannels){
             nearbyConnectionsClient.unsubscribe(channel);
         }
+
         nearbyConnectionsClient.onStop();
         nearbyConnectionsClient = null;
         // nearbyConnectionsClient.deregisterNearbyListener(nearbyConnectionListener);

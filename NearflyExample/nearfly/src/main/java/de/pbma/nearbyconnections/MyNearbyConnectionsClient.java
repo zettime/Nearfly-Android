@@ -1,12 +1,17 @@
 package de.pbma.nearbyconnections;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Parcel;
+import android.os.ParcelFileDescriptor;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.CallSuper;
 
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
@@ -14,8 +19,12 @@ import com.google.android.gms.nearby.connection.Strategy;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -46,10 +55,10 @@ import de.pbma.nearfly.ExtMessage;
 
 public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     private static final String STATE_UNKNOWN = "unknown";
-    private static final String STATE_DISCOVERING  = "discovering";
-    private static final String STATE_ADVERTISING  = "advertising";
-    private static final String STATE_CONNECTED  = "connected";
-    private static final String STATE_FINDROOT  = "findroot";
+    private static final String STATE_DISCOVERING = "discovering";
+    private static final String STATE_ADVERTISING = "advertising";
+    private static final String STATE_CONNECTED = "connected";
+    private static final String STATE_FINDROOT = "findroot";
 
     private ArrayList<String> subscribedChannels = subscribedChannels = new ArrayList<>();
     /**
@@ -71,11 +80,15 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
      */
     private State mState = State.FINDROOT;
 
-    /** A random UID used as this device's endpoint name. */
+    /**
+     * A random UID used as this device's endpoint name.
+     */
     private String mName;
 
 
-    /** Current state. */
+    /**
+     * Current state.
+     */
     private String rootNode;
 
     /**
@@ -84,7 +97,9 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
      */
     // private final Handler mUiHandler = new Handler(Looper.getMainLooper());
 
-    /** Starts discovery. Used in a postDelayed manor with {@link #mUiHandler}. */
+    /**
+     * Starts discovery. Used in a postDelayed manor with {@link #mUiHandler}.
+     */
     /*private final Runnable mDiscoverRunnable =
             new Runnable() {
                 @Override
@@ -94,12 +109,22 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
             };*/
 
     // TODO: Listener that includes all relevant Informations
-    public interface MyConnectionsListener{
+    public interface MyConnectionsListener {
         void onLogMessage(CharSequence msg);
+
         void onStateChanged(String state);
+
         void onRootNodeChanged(String rootNode);
+
         void onMessage(String msg);
+
+        void onStream(Payload payload);
+
+        void onBinary(Payload payload);
+
+        void onFile(String path);
     }
+
     MyConnectionsListener myConnectionsListener;
 
     public void initClient(Context context, MyConnectionsListener myConnectionsListener) {
@@ -109,7 +134,9 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         rootNode = mName;
     }
 
-    /** Just One possible **/
+    /**
+     * Just One possible
+     **/
     // public void registerNearbyListener(MyConnectionsListener myConnectionsListener){
     // }
 
@@ -117,10 +144,9 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         if (myConnectionsListener.equals(this.myConnectionsListener))
             this.myConnectionsListener = null;
     }*/
-
-    public void setRootNode(String endpointId){
+    public void setRootNode(String endpointId) {
         rootNode = endpointId;
-        if (myConnectionsListener!=null)
+        if (myConnectionsListener != null)
             myConnectionsListener.onRootNodeChanged(endpointId);
     }
 
@@ -170,12 +196,12 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
                 connectToEndpoint(endpoint);
             }*/
         // Nur senden, wenn anderer Root
-        if (getState()==State.FINDROOT){
+        if (getState() == State.FINDROOT) {
             findOutRightState(endpoint.getName());
             connectToEndpoint(endpoint);
         }
 
-        if (endpoint.getName().compareTo(rootNode)>0){
+        if (endpoint.getName().compareTo(rootNode) > 0) {
             disconnectFromAllEndpoints();
             stopAllEndpoints();
             connectToEndpoint(endpoint);
@@ -208,25 +234,25 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         }*/
 
         // if (endpoint.getName().compareTo(getName()) < 0 ) {
-            // A connection to another device has been initiated! We'll accept the connection immediately.
-            acceptConnection(endpoint);
-            if (getState()==State.FINDROOT)
-                findOutRightState(endpoint.getName());
+        // A connection to another device has been initiated! We'll accept the connection immediately.
+        acceptConnection(endpoint);
+        if (getState() == State.FINDROOT)
+            findOutRightState(endpoint.getName());
 
-            if (getState()==State.NODE)
-                setState(State.CONNODE);
+        if (getState() == State.NODE)
+            setState(State.CONNODE);
         // }
 
     }
 
-    public void findOutRightState(String endpointId){
-            if (endpointId.compareTo(getName()) > 0) {
-                setRootNode(endpointId);
+    public void findOutRightState(String endpointId) {
+        if (endpointId.compareTo(getName()) > 0) {
+            setRootNode(endpointId);
 
-                setState(State.NODE); // Wechselt in Zustand Node
-            }else{
-                setState(State.ROOT);
-            }
+            setState(State.NODE); // Wechselt in Zustand Node
+        } else {
+            setState(State.ROOT);
+        }
     }
 
     @Override
@@ -259,7 +285,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         // If we lost all our endpoints, then we should reset the state of our app and go back
         // to our initial state (discovering).
         // if (getConnectedEndpoints().isEmpty()) {
-        if (rootNode!=getName()){
+        if (rootNode != getName()) {
             // TODO: New init State
             setState(State.FINDROOT);
             setRootNode(getName());
@@ -305,7 +331,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         // TODO: 2503
         // tvCurrentState.setText(state.toString()
         // );
-        if (myConnectionsListener!=null)
+        if (myConnectionsListener != null)
             myConnectionsListener.onStateChanged(state.toString());
 
         State oldState = mState;
@@ -313,7 +339,9 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         onStateChanged(oldState, state);
     }
 
-    /** @return The current state. */
+    /**
+     * @return The current state.
+     */
     private State getState() {
         return mState;
     }
@@ -345,6 +373,10 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
                 if (!isAdvertising())
                     startAdvertising();
                 break;
+            /*case CONNODE: // Cost Less Battery
+                if (isDiscovering()) {
+                    stopDiscovering();
+                }*/
             case UNKNOWN:
                 stopAllEndpoints();
                 break;
@@ -370,36 +402,81 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         postDelayed(mDiscoverRunnable, ADVERTISING_DURATION);
     }*/
 
-    public void pubIt(String channel, String message){
-        ExtMessage extMessage = new ExtMessage(message, channel);
+    public void pubIt(String channel, String message) {
+        ExtMessage extMessage = new ExtMessage(message, channel, ExtMessage.STRING);
         send(Payload.fromBytes(extMessage.getBytes()));
         logD(message + " published");
     }
 
-    public void pubBinary(String channel, byte[] bytes){
-        ExtMessage extMessage = new ExtMessage(message, channel);
-        send(Payload.fromFile());
-        logD(message + " published");
+    public void pubFile(String channel, ParcelFileDescriptor pfd) {
+        /*ExtMessage extMessage = new ExtMessage(message, channel);*/
+
+        Payload fileAsPayload= Payload.fromFile(pfd);
+
+        String fileinformations = channel + ":" + fileAsPayload.getId();
+        // Payload channelPayload = Payload.fromBytes(fileinformations.getBytes(StandardCharsets.UTF_8));
+
+
+        ExtMessage extMessage = new ExtMessage(fileinformations, channel, ExtMessage.FILEINFORMATION);
+        // send(channelPayload);
+        send(Payload.fromBytes(extMessage.getBytes()));
+        send(fileAsPayload);
+
+        logD(fileAsPayload.toString() + " published");
     }
 
-    public void subscribe(String channel){
+    public void pubBinaryTST(byte[] bytes) {
+        send(Payload.fromStream(new ByteArrayInputStream(bytes)));
+        logD(bytes + " published");
+    }
+
+    private byte[] ByteUnboxing(Byte[] bytes) {
+        byte[] primitiveBytes = new byte[bytes.length];
+        int j = 0;
+
+        for (Byte b : primitiveBytes)
+            bytes[j++] = b.byteValue();
+
+        return primitiveBytes;
+    }
+
+    public void pubStream(Payload stream) {
+        send(stream);
+        logD(stream.toString() + " published");
+    }
+
+    public void subscribe(String channel) {
         if (!subscribedChannels.contains(channel))
             subscribedChannels.add(channel);
     }
 
-    public void unsubscribe(String channel){
+    public void unsubscribe(String channel) {
         subscribedChannels.remove(channel);
     }
 
-    /** {@see ConnectionsActivity#onReceive(Endpoint, Payload)} */
+    /**
+     * {@see ConnectionsActivity#onReceive(Endpoint, Payload)}
+     */
     @Override
+    @CallSuper
     protected void onReceive(Endpoint endpoint, Payload payload) {
         // logD(new String(payload.asBytes()) + "from" + endpoint);
-        ExtMessage msg = ExtMessage.createExtMessage(payload);
+       ExtMessage msg = ExtMessage.createExtMessage(payload);
 
         if (subscribedChannels.contains(msg.getChannel()) && myConnectionsListener!=null){
             myConnectionsListener.onMessage(msg.getPayload());
         }
+
+        /*if (payload.getType() == Payload.Type.STREAM)
+            myConnectionsListener.onStream(payload);
+        else
+            // myConnectionsListener.onMessage(new String(payload.asBytes()));
+            myConnectionsListener.onBinary(payload);*/
+    }
+
+    @Override
+    protected void onFile(Endpoint endpoint, String path) {
+        myConnectionsListener.onFile(path);
     }
 
     @Override
@@ -419,13 +496,17 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         return mName;
     }
 
-    /** {@see ConnectionsActivity#getServiceId()} */
+    /**
+     * {@see ConnectionsActivity#getServiceId()}
+     */
     @Override
     public String getServiceId() {
         return SERVICE_ID;
     }
 
-    /** {@see ConnectionsActivity#getStrategy()} */
+    /**
+     * {@see ConnectionsActivity#getStrategy()}
+     */
     @Override
     public Strategy getStrategy() {
         return STRATEGY;
@@ -441,43 +522,44 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         mUiHandler.postDelayed(r, duration);
     }*/
 
-    /** {@see Handler#removeCallbacks(Runnable)} */
+    /**
+     * {@see Handler#removeCallbacks(Runnable)}
+     */
     /*protected void removeCallbacks(Runnable r) {
         mUiHandler.removeCallbacks(r);
     }*/
-
     @Override
     protected void logV(String msg) {
         super.logV(msg);
-        if (myConnectionsListener!=null)
+        if (myConnectionsListener != null)
             myConnectionsListener.onLogMessage(toColor(msg, 0xFFFFFFFF));
     }
 
     @Override
     protected void logD(String msg) {
         super.logD(msg);
-        if (myConnectionsListener!=null)
+        if (myConnectionsListener != null)
             myConnectionsListener.onLogMessage(toColor(msg, 0xFFEEEEEE));
     }
 
     @Override
     protected void logW(String msg) {
         super.logW(msg);
-        if (myConnectionsListener!=null)
+        if (myConnectionsListener != null)
             myConnectionsListener.onLogMessage(toColor(msg, 0xFFE57373));
     }
 
     @Override
     protected void logW(String msg, Throwable e) {
         super.logW(msg, e);
-        if (myConnectionsListener!=null)
+        if (myConnectionsListener != null)
             myConnectionsListener.onLogMessage(toColor(msg, 0xFFE57373));
     }
 
     @Override
     protected void logE(String msg, Throwable e) {
         super.logE(msg, e);
-        if (myConnectionsListener!=null)
+        if (myConnectionsListener != null)
             myConnectionsListener.onLogMessage(toColor(msg, 0xFFF44336));
     }
 
@@ -487,7 +569,8 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         return spannable;
     }
 
-    /** Use this to get the Max CPU Frequence in MHz
+    /**
+     * Use this to get the Max CPU Frequence in MHz
      *
      * @return cpu frequency in MHz
      */
@@ -496,32 +579,33 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         int maxFreq = -1;
         try {
 
-            RandomAccessFile reader = new RandomAccessFile( "/sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state", "r" );
+            RandomAccessFile reader = new RandomAccessFile("/sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state", "r");
 
             boolean done = false;
-            while ( ! done ) {
+            while (!done) {
                 String line = reader.readLine();
-                if ( null == line ) {
+                if (null == line) {
                     done = true;
                     break;
                 }
-                String[] splits = line.split( "\\s+" );
-                assert ( splits.length == 2 );
-                int timeInState = Integer.parseInt( splits[1] );
-                if ( timeInState > 0 ) {
-                    int freq = Integer.parseInt( splits[0] ) / 1000;
-                    if ( freq > maxFreq ) {
+                String[] splits = line.split("\\s+");
+                assert (splits.length == 2);
+                int timeInState = Integer.parseInt(splits[1]);
+                if (timeInState > 0) {
+                    int freq = Integer.parseInt(splits[0]) / 1000;
+                    if (freq > maxFreq) {
                         maxFreq = freq;
                     }
                 }
             }
 
-        } catch ( IOException ex ) {
+        } catch (IOException ex) {
             // ex.printStackTrace();
         }
 
         return maxFreq;
     }
+
     /******************************************************************/
     private static String generateRandomName() {
         String name = "";
@@ -537,7 +621,9 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         return (T) collection.toArray()[new Random().nextInt(collection.size())];
     }
 
-    /** possible States of Application */
+    /**
+     * possible States of Application
+     */
     public enum State {
         UNKNOWN,
         NODE,
@@ -546,8 +632,8 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         CONNODE
     }
 
-    public boolean isConnected(){
-        if (getState()==State.CONNODE || getState()==State.ROOT){
+    public boolean isConnected() {
+        if (getState() == State.CONNODE || getState() == State.ROOT) {
             return true;
         }
         return false;
