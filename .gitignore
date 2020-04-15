@@ -31,7 +31,6 @@ obj/
 # Exclude everything in folder
 Ignoriert/*
 
-
 *.tmp
 ~$*
 Bachelorarbeit.pdf
