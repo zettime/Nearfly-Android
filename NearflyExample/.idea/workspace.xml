@@ -14,42 +14,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5758ae1c-369b-4404-92cf-8d363070ef24" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_base_16_0_1_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_basement_16_0_1_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_nearby_16_0_0_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_tasks_16_0_1_aar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/testenviroment/ConnectionsActivityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/testenviroment/MainActivityWorkingTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/.idea/layout.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/messenger_image.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/messenger_text.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveWithProgressCallback.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Bachelorarbeit.docx" beforeDir="false" afterPath="$PROJECT_DIR$/../Bachelorarbeit.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Bachelorarbeit.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../Bachelorarbeit.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NearflyExample.iml" beforeDir="false" afterPath="$PROJECT_DIR$/NearflyExample.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWithService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWithService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWorking.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWorking.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Standard.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Standard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/TouchpointActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/TouchpointActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/messenger.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/messenger.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nearfly/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ConnectionsActivityWithPermissions.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ConnectionsActivityWithPermissions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsAbstract.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsAbstract.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Orga/BA_anmeldung_ausgefüllt.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../Orga/BA_anmeldung_ausgefüllt.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../~WRL0003.tmp" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -60,7 +30,7 @@
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="ad07160308c9969b6f" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Nexus_S_API_28" />
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
@@ -84,15 +54,16 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="313">
-                  <caret line="135" column="48" lean-forward="true" selection-start-line="135" selection-start-column="48" selection-end-line="135" selection-end-column="48" />
+                <state relative-caret-position="1690">
+                  <caret line="132" column="37" selection-start-line="132" selection-start-column="37" selection-end-line="132" selection-end-column="37" />
                   <folding>
                     <element signature="imports" expanded="true" />
                     <element signature="method#onMessageForBase64#0;class#MessengerActivity#0" />
                     <element signature="method#openPhotoTaker#0;class#MessengerActivity#0" />
+                    <element signature="e#22456#22457#0" expanded="true" />
                     <element signature="e#22488#22489#0" expanded="true" />
                   </folding>
                 </state>
@@ -102,7 +73,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="180">
+                <state relative-caret-position="901">
                   <caret line="77" column="37" selection-start-line="77" selection-start-column="28" selection-end-line="77" selection-end-column="37" />
                 </state>
               </provider>
@@ -111,7 +82,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger.xml">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="294">
+                <state relative-caret-position="1513">
                   <caret line="89" column="28" selection-start-line="89" selection-start-column="28" selection-end-line="89" selection-end-column="28" />
                 </state>
               </provider>
@@ -137,26 +108,36 @@
               </provider>
             </entry>
           </file>
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsAbstract.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="180">
-                  <caret line="249" column="25" selection-start-line="249" selection-start-column="16" selection-end-line="249" selection-end-column="25" />
+                <state relative-caret-position="208">
+                  <caret line="169" column="59" selection-start-line="169" selection-start-column="45" selection-end-line="169" selection-end-column="59" />
                   <folding>
                     <element signature="imports" expanded="true" />
+                    <element signature="e#12538#12539#0" expanded="true" />
                     <element signature="e#12575#12576#0" expanded="true" />
-                    <element signature="e#16497#16498#0" expanded="true" />
-                    <element signature="e#16581#16582#0" expanded="true" />
+                    <element signature="e#17325#17326#0" expanded="true" />
                     <element signature="e#17362#17363#0" expanded="true" />
+                    <element signature="e#20084#20085#0" expanded="true" />
                     <element signature="e#20120#20121#0" expanded="true" />
+                    <element signature="e#22637#22638#0" expanded="true" />
                     <element signature="e#22700#22701#0" expanded="true" />
+                    <element signature="e#26206#26207#0" expanded="true" />
                     <element signature="e#26237#26238#0" expanded="true" />
+                    <element signature="e#26291#26292#0" expanded="true" />
                     <element signature="e#26322#26323#0" expanded="true" />
+                    <element signature="e#26376#26377#0" expanded="true" />
                     <element signature="e#26407#26408#0" expanded="true" />
+                    <element signature="e#26474#26475#0" expanded="true" />
                     <element signature="e#26508#26509#0" expanded="true" />
+                    <element signature="e#26575#26576#0" expanded="true" />
                     <element signature="e#26609#26610#0" expanded="true" />
+                    <element signature="e#29672#29673#0" expanded="true" />
                     <element signature="e#29700#29701#0" expanded="true" />
+                    <element signature="e#29801#29802#0" expanded="true" />
                     <element signature="e#29834#29835#0" expanded="true" />
+                    <element signature="e#30159#30160#0" expanded="true" />
                     <element signature="e#30190#30191#0" expanded="true" />
                   </folding>
                 </state>
@@ -166,13 +147,14 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsClient.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="180">
-                  <caret line="111" column="44" lean-forward="true" selection-start-line="111" selection-start-column="44" selection-end-line="111" selection-end-column="44" />
+                <state relative-caret-position="1343">
+                  <caret line="111" column="44" selection-start-line="111" selection-start-column="44" selection-end-line="111" selection-end-column="44" />
                   <folding>
-                    <element signature="e#15429#15430#0" expanded="true" />
-                    <element signature="e#15479#15480#0" expanded="true" />
+                    <element signature="e#15888#15889#0" expanded="true" />
                     <element signature="e#15916#15917#0" expanded="true" />
+                    <element signature="e#16031#16032#0" expanded="true" />
                     <element signature="e#16064#16065#0" expanded="true" />
+                    <element signature="e#16179#16180#0" expanded="true" />
                     <element signature="e#16210#16211#0" expanded="true" />
                   </folding>
                 </state>
@@ -182,7 +164,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/TouchpointActivity.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="309">
+                <state relative-caret-position="153">
                   <caret line="29" selection-start-line="29" selection-end-line="29" />
                   <folding>
                     <element signature="imports" expanded="true" />
@@ -207,7 +189,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityMQTT.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="459">
+                <state relative-caret-position="1003">
                   <caret line="72" column="9" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
                   <folding>
                     <element signature="imports" expanded="true" />
@@ -219,21 +201,29 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveFilePayloadCallback.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="180">
-                  <caret line="57" column="16" selection-start-line="57" selection-start-column="16" selection-end-line="57" selection-end-column="16" />
+                <state relative-caret-position="208">
+                  <caret line="45" column="9" selection-start-line="45" selection-start-column="9" selection-end-line="45" selection-end-column="9" />
                   <folding>
                     <element signature="imports" expanded="true" />
-                    <element signature="e#10971#10972#0" expanded="true" />
-                    <element signature="e#10989#10990#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
             </entry>
           </file>
           <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/nearfly/src/main/AndroidManifest.xml">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="17">
+                  <caret line="1" column="29" selection-start-line="1" selection-start-column="29" selection-end-line="1" selection-end-column="29" />
+                </state>
+              </provider>
+              <provider editor-type-id="android-manifest" />
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWorking.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="226">
+                <state relative-caret-position="6392">
                   <caret line="405" column="95" selection-start-line="405" selection-start-column="95" selection-end-line="405" selection-end-column="95" />
                 </state>
               </provider>
@@ -242,7 +232,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveWithProgressCallback.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1598">
+                <state relative-caret-position="1479">
                   <caret line="100" column="35" selection-start-line="100" selection-start-column="35" selection-end-line="100" selection-end-column="35" />
                   <folding>
                     <element signature="imports" expanded="true" />
@@ -254,12 +244,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/ExtMessage.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="425">
+                <state relative-caret-position="1564">
                   <caret line="104" column="73" selection-start-line="104" selection-start-column="65" selection-end-line="104" selection-end-column="73" />
-                  <folding>
-                    <element signature="e#3142#3143#0" expanded="true" />
-                    <element signature="e#3169#3170#0" expanded="true" />
-                  </folding>
                 </state>
               </provider>
             </entry>
@@ -281,8 +267,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>storae</find>
-      <find>publishBytes</find>
       <find>pub</find>
       <find>pro</find>
       <find>pubfil</find>
@@ -298,19 +282,21 @@
       <find>type</find>
       <find>onfile</find>
       <find>payloadCall</find>
-      <find>received</find>
       <find>Log.v\(TAG,</find>
       <find>getByte</find>
       <find>createExt</find>
       <find>getBytes</find>
       <find>getPaylo</find>
-      <find>getBytes</find>
       <find>getBYtes</find>
       <find>onByteMessage</find>
       <find>publish</find>
-      <find>onReceive</find>
       <find>onFile</find>
       <find>onMessage</find>
+      <find>onConnect</find>
+      <find>transfer</find>
+      <find>transferUpdate</find>
+      <find>onReceive</find>
+      <find>received</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -390,6 +376,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="Scope">
         <subPane subId="Scope 'Default Changelist'; set:Default Changelist; class com.intellij.packageDependencies.ChangeListScope">
           <expand>
@@ -401,38 +388,6 @@
               <item name="NearflyExample" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
               <item name="C:\Users\AcerPredator\Desktop\NearflyExample" type="442cc68d:ScopeViewTreeModel$RootNode" />
               <item name="app" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="PackagesPane" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="NearflyExample" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NearflyExample" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="NearflyExample" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NearflyExample" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="app" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="NearflyExample" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NearflyExample" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="app" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NearflyExample" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NearflyExample" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="gradle" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NearflyExample" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
           <select />
@@ -478,6 +433,11 @@
             <path>
               <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
               <item name="nearfly" type="feadf853:AndroidModuleNode" />
+              <item name="manifests" type="f94875db:AndroidManifestsGroupNode" />
+            </path>
+            <path>
+              <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
+              <item name="nearfly" type="feadf853:AndroidModuleNode" />
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
             </path>
             <path>
@@ -504,6 +464,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -918,11 +879,10 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" sideWeight="0.3983871" side_tool="true" weight="0.1748401" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.5983871" visible="true" weight="0.1748401" />
-      <window_info id="Structure" order="2" sideWeight="0.4016129" side_tool="true" visible="true" weight="0.1748401" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.59517044" visible="true" weight="0.17643923" />
+      <window_info id="Structure" order="2" sideWeight="0.40482953" side_tool="true" visible="true" weight="0.17643923" />
       <window_info id="Favorites" order="3" sideWeight="0.40086675" side_tool="true" weight="0.1748401" />
       <window_info id="Build Variants" order="4" sideWeight="0.40086675" side_tool="true" weight="0.1748401" />
       <window_info id="Image Layers" order="5" />
@@ -930,12 +890,12 @@
       <window_info id="Resources Explorer" order="7" sideWeight="0.4983871" weight="0.32995737" />
       <window_info id="Capture Tool" order="8" />
       <window_info anchor="bottom" id="Version Control" order="0" weight="0.32936078" />
-      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.54850745" visible="true" weight="0.32827735" />
+      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.54850745" weight="0.32827735" />
       <window_info anchor="bottom" id="TODO" order="2" weight="0.32827735" />
       <window_info anchor="bottom" id="Terminal" order="3" weight="0.3253012" />
       <window_info anchor="bottom" id="Event Log" order="4" sideWeight="0.45149255" side_tool="true" weight="0.32827735" />
-      <window_info anchor="bottom" id="Build" order="5" sideWeight="0.49573562" weight="0.23726977" />
-      <window_info anchor="bottom" id="Android Profiler" order="6" weight="0.32936078" />
+      <window_info anchor="bottom" id="Build" order="5" sideWeight="0.49573562" visible="true" weight="0.23726977" />
+      <window_info anchor="bottom" id="Android Profiler" order="6" show_stripe_button="false" weight="0.32936078" />
       <window_info anchor="bottom" id="Run" order="7" sideWeight="0.4989339" weight="0.3261105" />
       <window_info anchor="bottom" id="Debug" order="8" sideWeight="0.5463753" weight="0.35102925" />
       <window_info anchor="bottom" id="Find" order="9" weight="0.32936078" />
@@ -1396,18 +1356,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main_mqtt.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="30" selection-start-line="9" selection-start-column="30" selection-end-line="9" selection-end-column="30" />
+        <state relative-caret-position="34">
+          <caret line="2" column="36" selection-start-line="2" selection-start-column="36" selection-end-line="2" selection-end-column="36" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-manifest" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="9" selection-start-line="8" selection-start-column="9" selection-end-line="8" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="901">
+          <caret line="77" column="37" selection-start-line="77" selection-start-column="28" selection-end-line="77" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1513">
+          <caret line="89" column="28" selection-start-line="89" selection-start-column="28" selection-end-line="89" selection-end-column="28" />
         </state>
       </provider>
       <provider editor-type-id="android-designer2" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main_mqtt.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="89" column="28" selection-start-line="89" selection-start-column="28" selection-end-line="89" selection-end-column="28" />
+        <state relative-caret-position="153">
+          <caret line="9" column="30" selection-start-line="9" selection-start-column="30" selection-end-line="9" selection-end-column="30" />
         </state>
       </provider>
       <provider editor-type-id="android-designer2" />
@@ -1419,35 +1401,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/AndroidManifest.xml">
-      <provider editor-type-id="android-manifest" />
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="29" selection-start-line="1" selection-start-column="29" selection-end-line="1" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider editor-type-id="android-manifest" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="36" selection-start-line="2" selection-start-column="36" selection-end-line="2" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveWithProgressCallback.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1598">
-          <caret line="100" column="35" selection-start-line="100" selection-start-column="35" selection-end-line="100" selection-end-column="35" />
+        <state relative-caret-position="1343">
+          <caret line="111" column="44" selection-start-line="111" selection-start-column="44" selection-end-line="111" selection-end-column="44" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#15888#15889#0" expanded="true" />
+            <element signature="e#15916#15917#0" expanded="true" />
+            <element signature="e#16031#16032#0" expanded="true" />
+            <element signature="e#16064#16065#0" expanded="true" />
+            <element signature="e#16179#16180#0" expanded="true" />
+            <element signature="e#16210#16211#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/TouchpointActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="309">
+        <state relative-caret-position="153">
           <caret line="29" selection-start-line="29" selection-end-line="29" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1464,7 +1435,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityMQTT.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
+        <state relative-caret-position="1003">
           <caret line="72" column="9" selection-start-line="72" selection-start-column="9" selection-end-line="72" selection-end-column="9" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1474,95 +1445,90 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWorking.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="226">
+        <state relative-caret-position="6392">
           <caret line="405" column="95" selection-start-line="405" selection-start-column="95" selection-end-line="405" selection-end-column="95" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveWithProgressCallback.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1479">
+          <caret line="100" column="35" selection-start-line="100" selection-start-column="35" selection-end-line="100" selection-end-column="35" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/ExtMessage.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
+        <state relative-caret-position="1564">
           <caret line="104" column="73" selection-start-line="104" selection-start-column="65" selection-end-line="104" selection-end-column="73" />
-          <folding>
-            <element signature="e#3142#3143#0" expanded="true" />
-            <element signature="e#3169#3170#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveFilePayloadCallback.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="57" column="16" selection-start-line="57" selection-start-column="16" selection-end-line="57" selection-end-column="16" />
+        <state relative-caret-position="1690">
+          <caret line="132" column="37" selection-start-line="132" selection-start-column="37" selection-end-line="132" selection-end-column="37" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10971#10972#0" expanded="true" />
-            <element signature="e#10989#10990#0" expanded="true" />
+            <element signature="method#onMessageForBase64#0;class#MessengerActivity#0" />
+            <element signature="method#openPhotoTaker#0;class#MessengerActivity#0" />
+            <element signature="e#22456#22457#0" expanded="true" />
+            <element signature="e#22488#22489#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsAbstract.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="249" column="25" selection-start-line="249" selection-start-column="16" selection-end-line="249" selection-end-column="25" />
+        <state relative-caret-position="208">
+          <caret line="169" column="59" selection-start-line="169" selection-start-column="45" selection-end-line="169" selection-end-column="59" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#12538#12539#0" expanded="true" />
             <element signature="e#12575#12576#0" expanded="true" />
-            <element signature="e#16497#16498#0" expanded="true" />
-            <element signature="e#16581#16582#0" expanded="true" />
+            <element signature="e#17325#17326#0" expanded="true" />
             <element signature="e#17362#17363#0" expanded="true" />
+            <element signature="e#20084#20085#0" expanded="true" />
             <element signature="e#20120#20121#0" expanded="true" />
+            <element signature="e#22637#22638#0" expanded="true" />
             <element signature="e#22700#22701#0" expanded="true" />
+            <element signature="e#26206#26207#0" expanded="true" />
             <element signature="e#26237#26238#0" expanded="true" />
+            <element signature="e#26291#26292#0" expanded="true" />
             <element signature="e#26322#26323#0" expanded="true" />
+            <element signature="e#26376#26377#0" expanded="true" />
             <element signature="e#26407#26408#0" expanded="true" />
+            <element signature="e#26474#26475#0" expanded="true" />
             <element signature="e#26508#26509#0" expanded="true" />
+            <element signature="e#26575#26576#0" expanded="true" />
             <element signature="e#26609#26610#0" expanded="true" />
+            <element signature="e#29672#29673#0" expanded="true" />
             <element signature="e#29700#29701#0" expanded="true" />
+            <element signature="e#29801#29802#0" expanded="true" />
             <element signature="e#29834#29835#0" expanded="true" />
+            <element signature="e#30159#30160#0" expanded="true" />
             <element signature="e#30190#30191#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsClient.java">
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="111" column="44" lean-forward="true" selection-start-line="111" selection-start-column="44" selection-end-line="111" selection-end-column="44" />
-          <folding>
-            <element signature="e#15429#15430#0" expanded="true" />
-            <element signature="e#15479#15480#0" expanded="true" />
-            <element signature="e#15916#15917#0" expanded="true" />
-            <element signature="e#16064#16065#0" expanded="true" />
-            <element signature="e#16210#16211#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="17">
+          <caret line="1" column="29" selection-start-line="1" selection-start-column="29" selection-end-line="1" selection-end-column="29" />
         </state>
       </provider>
+      <provider editor-type-id="android-manifest" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyListener.java">
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveFilePayloadCallback.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="9" selection-start-line="8" selection-start-column="9" selection-end-line="8" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="77" column="37" selection-start-line="77" selection-start-column="28" selection-end-line="77" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="135" column="48" lean-forward="true" selection-start-line="135" selection-start-column="48" selection-end-line="135" selection-end-column="48" />
+        <state relative-caret-position="208">
+          <caret line="45" column="9" selection-start-line="45" selection-start-column="9" selection-end-line="45" selection-end-column="9" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#onMessageForBase64#0;class#MessengerActivity#0" />
-            <element signature="method#openPhotoTaker#0;class#MessengerActivity#0" />
-            <element signature="e#22488#22489#0" expanded="true" />
           </folding>
         </state>
       </provider>
