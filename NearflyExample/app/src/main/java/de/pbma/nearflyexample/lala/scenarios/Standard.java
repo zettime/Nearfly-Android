@@ -79,7 +79,7 @@ public class Standard extends NearflyBindingAktivity {
         }
 
         @Override
-        public void onMessage(String message) {
+        public void onMessage(String channel, String message) {
             runOnUiThread(() -> {
                 mDebugLogView.append(message + "\n");
             });
@@ -94,7 +94,7 @@ public class Standard extends NearflyBindingAktivity {
         }
 
         @Override
-        public void onFile(String path){}
+        public void onFile(String path, String textAttachment){}
     };
 
     public void publish(View view){

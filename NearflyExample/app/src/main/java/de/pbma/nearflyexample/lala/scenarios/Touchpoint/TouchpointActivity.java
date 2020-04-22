@@ -37,6 +37,7 @@ public class TouchpointActivity extends NearflyBindingAktivity {
     public void onNearflyServiceConnected() {
         nearflyService.addSubCallback(nearflyListener);
         nearflyService.subIt("19moa18/test");
+        nearflyService.connect();
     }
 
     @Override
@@ -59,7 +60,7 @@ public class TouchpointActivity extends NearflyBindingAktivity {
         }
 
         @Override
-        public void onMessage(String message) {
+        public void onMessage(String channel, String message) {
             logIt(message);
 
             JSONObject msg = null;
@@ -89,7 +90,7 @@ public class TouchpointActivity extends NearflyBindingAktivity {
         }
 
         @Override
-        public void onFile(String path){}
+        public void onFile(String path, String textAttachment){}
     };
 
     public void publish(float percTpX, float percTpY, int tpColorIndex){

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="8dp">
+
+    <ImageView
+        android:id="@+id/msg_profil_image"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/circle"
+        android:backgroundTint="@color/colorAccent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/msg_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:text="(unknonwn)"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toRightOf="@+id/msg_profil_image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- <TextView
+        android:id="@+id/msg_body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/rounded_rectangle"
+        android:maxWidth="240dp"
+        android:padding="8dp"
+        android:text="hi man, how are you?"
+        app:layout_constraintLeft_toRightOf="@+id/msg_profil_image"
+        app:layout_constraintTop_toBottomOf="@+id/msg_username" /> -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/msg_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_rectangle"
+        app:layout_constraintLeft_toRightOf="@+id/msg_profil_image"
+        app:layout_constraintTop_toBottomOf="@+id/msg_username">
+
+        <ImageView
+            android:id="@+id/msg_body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="4dp"
+            android:maxWidth="240dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_download_icon"
+            app:layout_constraintLeft_toLeftOf="@+id/msg_container"
+            app:layout_constraintTop_toTopOf="@+id/msg_container"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toRightOf="@+id/msg_body"
+            app:layout_constraintTop_toTopOf="@+id/msg_body">
+
+            <TextView
+                android:id="@+id/msg_body_filename"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:maxWidth="240dp"
+                android:paddingTop="8dp"
+                android:paddingHorizontal="8dp"
+                android:src="@drawable/ic_download_icon"
+                android:text="(unknown)"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="4dp"
+                android:paddingBottom="8dp"
+                android:paddingHorizontal="8dp"
+                android:maxWidth="240dp"
+                android:src="@drawable/ic_download_icon"
+                android:textSize="11sp"
+                android:text="the file was saved at\nstorage/Download/Nearby"/>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/msg_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:text="11:40"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/msg_container"
+        app:layout_constraintLeft_toRightOf="@+id/msg_container" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.pbma.nearflyexample"
-    >
+    package="de.pbma.nearflyexample">
 
     <!-- Required for Nearby Connections -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -11,9 +10,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE " />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
-    <!-- MQTT -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- MQTT -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -23,17 +22,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/provider_paths" />
         <!-- <activity android:name="de.pbma.nearflyexample.lala.connections.MainActivityWithService" -->
         <!-- <activity android:name="de.pbma.nearflyexample.lala.scenarios.Touchpoint.TouchpointActivity" -->
-        <activity android:name="de.pbma.nearflyexample.lala.scenarios.Messenger.MessengerActivity"
+        <activity
+            android:name=".lala.scenarios.Messenger.MessengerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".lala.scenarios.Messenger.MessengerLoginActivity"
+            android:noHistory="true" />
 
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
@@ -42,14 +48,19 @@
         <service
             android:name="de.pbma.nearfly.NearflyService"
             android:enabled="true" />
-
         <service
             android:name="de.pbma.notused.nearbymessanger.MQTTService"
             android:enabled="true" />
 
-        <!-- Mqtt Service
-        <service android:name="org.eclipse.paho.android.service.MqttService">
-        </service> -->
-
+        <provider
+            android:name=".lala.scenarios.Messenger.GenericFileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
     </application>
+
 </manifest>

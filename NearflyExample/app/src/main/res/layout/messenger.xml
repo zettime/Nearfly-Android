@@ -2,11 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/gray"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:orientation="vertical">
 
@@ -22,47 +23,58 @@
             android:textSize="28sp" />
 
         <ScrollView
+            android:id="@+id/message_scrollview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/message_history"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_gravity="left"
-                android:background="@color/gray"
-                android:minHeight="900dp"
-                android:orientation="vertical"
-                android:padding="10dp">
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/message_history"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="left"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/rounded_rectangle"
+                        android:padding="10dp"
+                        android:text="Welcome to the Chat" />
+
+                    <!-- <ImageView
+                        android:id="@+id/imageview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:background="@color/white"
+                        android:padding="10dp"
+                        android:src="@mipmap/ic_launcher" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:background="@color/white"
+                        android:padding="10dp"
+                        android:src="@mipmap/ic_launcher" /> -->
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@color/white"
-                    android:padding="10dp"
-                    android:scrollbars="vertical"
-                    android:text="hafdasdfsdaf" />
-
-                <ImageView
-                    android:id="@+id/imageview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@color/white"
-                    android:padding="10dp"
-                    android:src="@mipmap/ic_launcher" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@color/white"
-                    android:padding="10dp"
-                    android:src="@mipmap/ic_launcher" />
+                    android:layout_gravity="bottom"
+                    android:layout_margin="40dp"
+                    android:gravity="bottom"
+                    android:text=" " />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
@@ -74,6 +86,7 @@
         android:layout_alignParentBottom="true">
 
         <EditText
+            android:id="@+id/edittext"
             android:layout_width="1dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="100 "
@@ -97,18 +110,17 @@
             android:layout_columnWeight="1"
             android:backgroundTint="@color/colorAccent"
             android:minWidth="0dp"
-            android:text=" + "
+            android:text="img"
             android:textColor="@color/white" />
 
         <Button
-            android:id="@+id/btn_download"
+            android:id="@+id/btn_send_media"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:backgroundTint="@color/colorAccent"
             android:minWidth="0dp"
-            android:onClick="downloadFile"
-            android:text=" v "
+            android:text="  +  "
             android:textColor="@color/white" />
     </GridLayout>
 

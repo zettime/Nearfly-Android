@@ -2,24 +2,26 @@ package de.pbma.nearflyexample.lala.scenarios.Messenger;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.FileUtils;
-import android.os.Handler;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
-import android.renderscript.ScriptGroup;
+import android.provider.OpenableColumns;
+import android.provider.Settings;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -27,40 +29,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.FileProvider;
 
-import com.google.android.gms.common.util.IOUtils;
-import com.google.android.gms.nearby.connection.Connections;
 import com.google.android.gms.nearby.connection.Payload;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import de.pbma.nearfly.ExtMessage;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearflyexample.R;
 import de.pbma.nearflyexample.lala.scenarios.NearflyBindingAktivity;
@@ -74,7 +62,9 @@ public class MessengerActivity extends NearflyBindingAktivity {
 
     private final String TAG = "MessengerActivity";
 
-    private static final int READ_REQUEST_CODE = 42;
+    private static final int IMAGE_REQUEST_CODE = 23647;
+    private static final int MEDIA_REQUEST_CODE = 24395;
+    private static final int NEW_USERNAME_REQUEST_CODE = 17945;
 
     final int HEADER_SIZE = 30;
     final int MAX_CHUNK_SIZE = 500_000 - HEADER_SIZE;
@@ -83,24 +73,47 @@ public class MessengerActivity extends NearflyBindingAktivity {
     /**
      * components used for the gameloop
      **/
-    private TextView mTextView;
+    private ScrollView mScrollView;
+    private EditText mEditText;
     private Button mBtnSendTxt;
     private Button mBtnSendImg;
+    private Button mBtnSendMedia;
     private ImageView mImageView;
+
+    private final String JSON_USERNAME = "username";
+    private final String JSON_USERCOLORINDEX = "userColorIndex";
+    private final String JSON_MESSAGE = "message";
+
+    private String mUsername;
+    private int mUserColorIndex = 10;
 
     private final String PUB_CHANNEL = "19moa18/test";
 
     private String TEXT = "text";
     private String BINARY = "binary";
 
+    private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor mSharedPrefEdit;
+    public final String ACTIVITY_NAME = "MessengerActivity";
+
+    private boolean neaflyServiceConnectCalled = false;
+
+
     @Override
     public void onNearflyServiceConnected() {
-        nearflyService.addSubCallback(nearflyListener);
-        nearflyService.subIt(PUB_CHANNEL);
+        /** TODO: WARNING ONSERVICECONNECT IS CALLED MULTIPLE TIMES,
+         *  TODO: THIS LEADS TO PERMANENT RECONNECTIONS**/
+        if (!neaflyServiceConnectCalled) {
+            nearflyService.addSubCallback(nearflyListener);
+            nearflyService.subIt(PUB_CHANNEL);
+            nearflyService.connect("THISISAAPPLICATION");
+            neaflyServiceConnectCalled = true;
+        }
     }
 
     @Override
     public void onNearflyServiceDisconnected() {
+        // nearflyService.disconnect();
     }
 
     @Override
@@ -127,17 +140,43 @@ public class MessengerActivity extends NearflyBindingAktivity {
         }
 
         @Override
-        public void onMessage(String string) {
+        public void onMessage(String channel, String message) {
             //onMessageForBase64(strJson);
             // OR
             //onMessageForBinary(strJson);
             // OR
-
             // Create new image View from Layout
-            LinearLayout layout = (LinearLayout) findViewById(R.id.message_history);
-            TextView textView= (TextView ) LayoutInflater.from(getApplicationContext()).inflate(R.layout.messenger_text, null);
-            layout.addView(textView);
-            textView.setText(string);
+
+            String username = "";
+            int userColorIndex = 0;
+            String receivedText = "";
+
+            try {
+                JSONObject obj = new JSONObject(message);
+
+                username = obj.getString(JSON_USERNAME);
+                userColorIndex = obj.getInt(JSON_USERCOLORINDEX);
+                receivedText = obj.getString(JSON_MESSAGE);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            { // Create Message Container
+                LinearLayout layout = (LinearLayout) findViewById(R.id.message_history);
+                ConstraintLayout textView = (ConstraintLayout) LayoutInflater.from(getApplicationContext()).inflate(R.layout.messenger_receive_text, null);
+
+                ((TextView) textView.findViewById(R.id.msg_username)).setText(username);
+                ((TextView) textView.findViewById(R.id.msg_body)).setText(receivedText);
+
+                Calendar now = Calendar.getInstance();
+                int hh = now.get(Calendar.HOUR_OF_DAY);
+                int mm = now.get(Calendar.MINUTE);
+                ((TextView) textView.findViewById(R.id.msg_time)).setText(hh + ":" + mm);
+
+                layout.addView(textView);
+                mScrollView.fullScroll(View.FOCUS_DOWN);
+            }
         }
 
         @Override
@@ -169,90 +208,125 @@ public class MessengerActivity extends NearflyBindingAktivity {
         }
 
         @Override
-        public void onFile(String path){
+        public void onFile(String path, String textAttachment) {
             File file = new File(path);
 
-            // Create new image View from Layout
-            LinearLayout layout = (LinearLayout) findViewById(R.id.message_history);
-            ImageView imageView = (ImageView) LayoutInflater.from(getApplicationContext()).inflate(R.layout.messenger_image, null);
-            layout.addView(imageView);
+            String username = textAttachment.split(":")[0];
+            String mediaType = textAttachment.split(":")[1];
 
-            // add Image to LinearLayout
-            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
-            imageView.setImageBitmap(bitmap);
+            if (mediaType.equals("IMG")) {
+                // Create Message+File Container
+                LinearLayout layout = (LinearLayout) findViewById(R.id.message_history);
+                ConstraintLayout textView = (ConstraintLayout) LayoutInflater.from(getApplicationContext()).inflate(R.layout.messenger_receive_image, null);
+
+                // add Image to LinearLayout
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
+
+                ((TextView) textView.findViewById(R.id.msg_username)).setText(username);
+                ((ImageView) textView.findViewById(R.id.msg_body)).setImageBitmap(bitmap);
+
+                Calendar now = Calendar.getInstance();
+                int hh = now.get(Calendar.HOUR_OF_DAY);
+                int mm = now.get(Calendar.MINUTE);
+                ((TextView) textView.findViewById(R.id.msg_time)).setText(hh + ":" + mm);
+
+                layout.addView(textView);
+                mScrollView.fullScroll(View.FOCUS_DOWN);
+            } else {
+                LinearLayout layout = (LinearLayout) findViewById(R.id.message_history);
+                ConstraintLayout textView = (ConstraintLayout) LayoutInflater.from(
+                        getApplicationContext()).inflate(R.layout.messenger_receive_media, null);
+
+
+                String[] str = path.split("/");
+                String filename = str[str.length - 1];
+                ((TextView) textView.findViewById(R.id.msg_username)).setText(username);
+                ((TextView) textView.findViewById(R.id.msg_body_filename)).setText(filename);
+                ((ImageView) textView.findViewById(R.id.msg_body)).setOnClickListener(
+                        (v) -> openFileView(filename)
+                );
+
+                Calendar now = Calendar.getInstance();
+                int hh = now.get(Calendar.HOUR_OF_DAY);
+                int mm = now.get(Calendar.MINUTE);
+                ((TextView) textView.findViewById(R.id.msg_time)).setText(hh + ":" + mm);
+
+                layout.addView(textView);
+                mScrollView.fullScroll(View.FOCUS_DOWN);
+            }
         }
     };
 
-    private void onMessageForBase64(String strJson){
-        logIt(strJson);
-
-        JSONObject jObj = null;
-        String username = "";
-        int userColorIndex = 1;
-        String msgType = "";
-        String msg = "";
-
-        try {
-            jObj = new JSONObject(new String(strJson));
-
-            username = jObj.getString("username");
-            userColorIndex = jObj.getInt("userColorIndex");
-            msgType = jObj.getString("msgType");
-            msg = jObj.getString("message");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        logIt(msgType);
-
-        if (msgType.equals(BINARY)) {
-                /*byte[] bytes = android.util.Base64.decode(msg,
-                        android.util.Base64.DEFAULT);
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);*/
-            Bitmap bitmap = base64ToBitmap(msg);
-            runOnUiThread(() -> {
-                mImageView.setImageBitmap(bitmap);
-            });
-        } else {
-            final String mustBeFinal = msg;
-            runOnUiThread(() -> {
-                mTextView.append('\n' + mustBeFinal);
-            });
-        }
-    }
+//    private void onMessageForBase64(String strJson){
+//        logIt(strJson);
+//
+//        JSONObject jObj = null;
+//        String username = "";
+//        int userColorIndex = 1;
+//        String msgType = "";
+//        String msg = "";
+//
+//        try {
+//            jObj = new JSONObject(new String(strJson));
+//
+//            username = jObj.getString("username");
+//            userColorIndex = jObj.getInt("userColorIndex");
+//            msgType = jObj.getString("msgType");
+//            msg = jObj.getString("message");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        logIt(msgType);
+//
+//        if (msgType.equals(BINARY)) {
+//                /*byte[] bytes = android.util.Base64.decode(msg,
+//                        android.util.Base64.DEFAULT);
+//                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);*/
+//            Bitmap bitmap = base64ToBitmap(msg);
+//            runOnUiThread(() -> {
+//                mImageView.setImageBitmap(bitmap);
+//            });
+//        } else {
+//            final String mustBeFinal = msg;
+//            runOnUiThread(() -> {
+//                mTextView.append('\n' + mustBeFinal);
+//            });
+//        }
+//    }
 
     // ArrayList<Byte> incomingBinary = new ArrayList<>();
     // byte[] incomingBinary = new byte[0];
     LinkedList<Byte> incomingBinary = new LinkedList<>();
     HashMap<String, Integer> headerMap;
 
-    private void onMessageForBinary(byte[] payload){ /** {@link #pubChunkedBinary(Intent )} **/
+    private void onMessageForBinary(byte[] payload) { /** {@link #pubChunkedBinary(Intent)} **/
         String[] header = new String(Arrays.copyOfRange(payload, 0, HEADER_SIZE)).replace(" ", "").split("\n");
         headerMap = new HashMap<>();
 
-        for (String str : header){
+        for (String str : header) {
             String[] attr = str.split(":");
             headerMap.put(attr[0], Integer.valueOf(attr[1]));
         }
 
         int seqNr = headerMap.get("sqn");
-        int maxSqnNr= headerMap.get("max");
-        int nice= headerMap.get("nice");
+        int maxSqnNr = headerMap.get("max");
+        int nice = headerMap.get("nice");
         byte[] body = Arrays.copyOfRange(payload, HEADER_SIZE, payload.length);
 
         logIt(headerMap.toString());
 
-        for (int i=HEADER_SIZE; i<payload.length; i++){
+        for (int i = HEADER_SIZE; i < payload.length; i++) {
             incomingBinary.add(payload[i]);
         }
         // incomingBinary = new byte[maxSqnNr*MAX_CHUNK_SIZE];
         // Copy body to incoming Binary
         // System.arraycopy(body, 0, incomingBinary, seqNr*MAX_CHUNK_SIZE, body.length);
 
-        if (seqNr==maxSqnNr-1){
+        if (seqNr == maxSqnNr - 1) {
 
             byte[] bytes = new byte[incomingBinary.size()];
-            for (int i=0; i<incomingBinary.size(); i++){
+            for (int i = 0; i < incomingBinary.size(); i++) {
                 bytes[i] = incomingBinary.get(i);
             }
             Bitmap image = BitmapFactory.decodeByteArray(bytes, 0, incomingBinary.size());
@@ -277,22 +351,6 @@ public class MessengerActivity extends NearflyBindingAktivity {
             System.out.println(m.group(3)); // third one (Testing)
         }
     }*/
-
-
-    public void sendMessage(String username, int userColorIndex, String message) {
-        JSONObject msg = new JSONObject();
-        try {
-            msg.put("username", username);
-            msg.put("username", username);
-            msg.put("userColorIndex", userColorIndex);
-            msg.put("msgType", "text");
-            msg.put("message", message);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        nearflyService.pubIt(PUB_CHANNEL, msg.toString());
-    }
 
     public void sendImage(String username, int userColorIndex, String message) {
         // String encodedBinary = new String(Base64.encode(binary, Base64.DEFAULT));
@@ -332,79 +390,170 @@ public class MessengerActivity extends NearflyBindingAktivity {
 
         setContentView(R.layout.messenger);
 
-        mTextView = findViewById(R.id.textview);
-        mTextView.setMovementMethod(new ScrollingMovementMethod());
-        mTextView.setText("dsfsdaaf\n}sdfdsfasdffsfda\nsdfadsfdasf");
+        mScrollView = findViewById(R.id.message_scrollview);
+        mEditText = findViewById(R.id.edittext);
 
         mBtnSendTxt = findViewById(R.id.btn_send_text);
-        mBtnSendTxt.setOnClickListener((v) -> {
-            sendMessage("watson", 1, "hello");
-        });
+        mBtnSendTxt.setOnClickListener((v) -> publishChatText());
 
         mBtnSendImg = findViewById(R.id.btn_send_image);
         mBtnSendImg.setOnClickListener((v) -> openDocumentTaker());
 
-        mImageView = findViewById(R.id.imageview);
+        mBtnSendMedia = findViewById(R.id.btn_send_media);
+        mBtnSendMedia.setOnClickListener((v) -> openMediaTaker());
 
-        /** Listener for the {@linkplain CustomView} **/
-        /*gameView = new CustomView(this, new CustomView.CustomViewListener() {
-            @Override
-            public void sendTouchpoint(float percTpX, float percTpY, int tpColorIndex) {
-                publish(percTpX, percTpY, tpColorIndex);
-            }
-        });
-        setContentView(gameView);*/
-
-        /** Creates the Gameloop that is updated every {@link #FRAME_RATE} seconds **/
-        /*Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        gameView.invalidate();
-                    }
-                });
-            }
-        }, 0, FRAME_RATE);*/
+        mUsername = getUsername();
+        if (mUsername == null) {
+            Intent i = new Intent(this, MessengerLoginActivity.class);
+            startActivityForResult(i, NEW_USERNAME_REQUEST_CODE);
+        }
     }
 
+    public String getUsername() {
+        mSharedPreferences = getSharedPreferences(ACTIVITY_NAME, Context.MODE_PRIVATE);
+        return mSharedPreferences.getString("username", null);
+    }
+
+    private void publishChatText() {
+        String writtenText = mEditText.getText().toString();
+        mEditText.setText("");
+        if (writtenText == null || writtenText.replace(" ", "").equals(""))
+            return;
+
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put(JSON_USERNAME, mUsername);
+            obj.put(JSON_USERCOLORINDEX, mUserColorIndex);
+            obj.put(JSON_MESSAGE, writtenText);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        { // Create Message+File Container
+            LinearLayout layout = (LinearLayout) findViewById(R.id.message_history);
+            ConstraintLayout textView = (ConstraintLayout) LayoutInflater.from(getApplicationContext()).inflate(R.layout.messenger_send_text, null);
+
+            // String username = textAttachment;
+            // ((TextView) textView.findViewById(R.id.msg_username)).setText(username);
+            ((TextView) textView.findViewById(R.id.msg_body)).setText(writtenText);
+
+            Calendar now = Calendar.getInstance();
+            int hh = now.get(Calendar.HOUR_OF_DAY);
+            int mm = now.get(Calendar.MINUTE);
+            ((TextView) textView.findViewById(R.id.msg_time)).setText(hh + ":" + mm);
+
+            layout.addView(textView);
+            mScrollView.fullScroll(View.FOCUS_DOWN);
+        }
+
+        nearflyService.pubIt(PUB_CHANNEL, obj.toString());
+    }
 
     public void openPhotoTaker() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, READ_REQUEST_CODE);
+        startActivityForResult(photoPickerIntent, IMAGE_REQUEST_CODE);
     }
 
-    /** Not used yet **/
+    /**
+     * Not used yet
+     **/
     private void openDocumentTaker() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
-        startActivityForResult(intent, READ_REQUEST_CODE);
+        startActivityForResult(intent, IMAGE_REQUEST_CODE);
+    }
+
+    private void openMediaTaker() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        startActivityForResult(intent, MEDIA_REQUEST_CODE);
+    }
+
+    public void openFileView(String filename) {
+        File file = new File(Environment.getExternalStorageDirectory() + File.separator
+                + Environment.DIRECTORY_DOWNLOADS + File.separator + "Nearby" + File.separator, filename);
+        Context context = getApplicationContext();
+        Uri uri = FileProvider.getUriForFile(
+                context, context.getApplicationContext().getPackageName() + ".provider", file);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setData(uri);
+
+        startActivity(Intent.createChooser(intent, "Open folder"));
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        if (requestCode == READ_REQUEST_CODE
-                && resultCode == Activity.RESULT_OK
-                && resultData != null) {
+        if (requestCode == IMAGE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK && resultData != null) {
 
-            // 2 Möglichkeiten
-            // pubStreamOnResult(resultData);
-            // OR
-            pubFileOnResult(resultData);
-            // OR
-            // pubAsBase64(resultData);
-            // OR
+                // 2 Möglichkeiten
+                // pubStreamOnResult(resultData);
+                // OR
+                pubFileOnResult(resultData);
+                // OR
+                // pubAsBase64(resultData);
+                // OR
             /*try {
                 pubChunkedBinary(resultData);
             } catch (IOException e) {
                 e.printStackTrace();
             }*/
-        } else {
-            Toast.makeText(this, "You haven't picked Image", Toast.LENGTH_LONG).show();
+            } else Toast.makeText(this, "You haven't picked Image", Toast.LENGTH_LONG).show();
+        }
+
+
+        if (requestCode == NEW_USERNAME_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK && resultData != null) {
+                mUsername = resultData.getStringExtra(ACTIVITY_NAME + ".newUsername");
+                mSharedPrefEdit = mSharedPreferences.edit();
+                mSharedPrefEdit.putString("username", mUsername);
+                mSharedPrefEdit.commit();
+            } else
+                Toast.makeText(this, "You haven't entered a username jet", Toast.LENGTH_LONG).show();
+        }
+
+        if (requestCode == MEDIA_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK && resultData != null) {
+                Uri uri = resultData.getData();
+
+                ContentResolver cr = getContentResolver();
+                try {
+                    // Open the ParcelFileDescriptor for this URI with read access.
+                    ParcelFileDescriptor pfd = cr.openFileDescriptor(uri, "r");
+
+                    { // Create Message+File Container
+                        LinearLayout layout = (LinearLayout) findViewById(R.id.message_history);
+                        ConstraintLayout textView = (ConstraintLayout) LayoutInflater.from(
+                                getApplicationContext()).inflate(R.layout.messenger_send_media, null);
+
+                        String filename = getFileNameFromUri(uri);
+                        ((TextView) textView.findViewById(R.id.msg_body_filename)).setText(filename);
+
+                        Calendar now = Calendar.getInstance();
+                        int hh = now.get(Calendar.HOUR_OF_DAY);
+                        int mm = now.get(Calendar.MINUTE);
+                        ((TextView) textView.findViewById(R.id.msg_time)).setText(hh + ":" + mm);
+
+                        layout.addView(textView);
+                        mScrollView.fullScroll(View.FOCUS_DOWN);
+                    }
+
+                        /*Intent intent = new Intent(Intent.ACTION_VIEW);
+                        Uri uri2 = Uri.parse(Environment.getExternalStorageDirectory() + File.separator
+                                + Environment.DIRECTORY_DOWNLOADS + File.separator + "Nearby");
+                        intent.setData(uri2);
+                        startActivity(Intent.createChooser(intent, "Open folder"));*/
+                    nearflyService.pubFile(PUB_CHANNEL, uri, mUsername + ":MEDIA");
+                } catch (FileNotFoundException e) {
+                    Log.e("MyApp", "File not found", e);
+                }
+            } else
+                Toast.makeText(this, "You haven't entered a username jet", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -445,7 +594,9 @@ public class MessengerActivity extends NearflyBindingAktivity {
         }
     }
 
-    /** Don't work at this moment **/
+    /**
+     * Don't work at this moment
+     **/
     private void pubFileOnResult(Intent resultData) {
         // The URI of the file selected by the user.
         Uri uri = resultData.getData();
@@ -454,14 +605,40 @@ public class MessengerActivity extends NearflyBindingAktivity {
         try {
             // Open the ParcelFileDescriptor for this URI with read access.
             ParcelFileDescriptor pfd = cr.openFileDescriptor(uri, "r");
-            nearflyService.pubFile(PUB_CHANNEL, pfd);
+
+            { // Create Message+File Container
+                LinearLayout layout = (LinearLayout) findViewById(R.id.message_history);
+                ConstraintLayout textView = (ConstraintLayout) LayoutInflater.from(getApplicationContext()).inflate(R.layout.messenger_send_image, null);
+
+                // TODO: ACCESS Problem API 29
+                // TODO: {@see https://developer.android.com/guide/topics/providers/document-provider
+                //  & https://medium.com/@sriramaripirala/android-10-open-failed-eacces-permission-denied-da8b630a89df}
+                // add Image to LinearLayout
+                // BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                Bitmap bitmap = BitmapFactory.decodeFileDescriptor(pfd.getFileDescriptor());
+
+                //String username = textAttachment;
+                //((TextView) textView.findViewById(R.id.msg_username)).setText(username);
+                ((ImageView) textView.findViewById(R.id.msg_body)).setImageBitmap(bitmap);
+
+                Calendar now = Calendar.getInstance();
+                int hh = now.get(Calendar.HOUR_OF_DAY);
+                int mm = now.get(Calendar.MINUTE);
+                ((TextView) textView.findViewById(R.id.msg_time)).setText(hh + ":" + mm);
+
+                layout.addView(textView);
+                mScrollView.fullScroll(View.FOCUS_DOWN);
+            }
+
+            nearflyService.pubFile(PUB_CHANNEL, uri, mUsername + ":IMG");
         } catch (FileNotFoundException e) {
             Log.e("MyApp", "File not found", e);
-            return;
         }
     }
 
-    /** Tried to pub as Base64 **/
+    /**
+     * Tried to pub as Base64
+     **/
     private void pubAsBase64(Intent resultData) {
         try {
             final Uri imageUri = resultData.getData();
@@ -499,7 +676,10 @@ public class MessengerActivity extends NearflyBindingAktivity {
         }
     }
 
-    /** Publish the Data with HEADER and BODY **/ /** {@link #onMessageForBinary(byte[] )} **/
+    /** Publish the Data with HEADER and BODY **/
+    /**
+     * {@link #onMessageForBinary(byte[])}
+     **/
     private void pubChunkedBinary(Intent resultData) throws IOException {
         final Uri imageUri = resultData.getData();
         final InputStream fileStream = getContentResolver().openInputStream(imageUri);
@@ -508,8 +688,8 @@ public class MessengerActivity extends NearflyBindingAktivity {
         byte[] fileBinary = readBytes(fileStream);
         fileStream.close(); // Don't need anymore
 
-        int numberOfChunks =(int) Math.ceil(
-                Float.valueOf((float)fileBinary.length/ (float) MAX_CHUNK_SIZE)
+        int numberOfChunks = (int) Math.ceil(
+                Float.valueOf((float) fileBinary.length / (float) MAX_CHUNK_SIZE)
         );  // e.g. 50_000/20_000 = 2 + 1
         /*if ((float)((int)fileBinary.length/ MAX_CHUNK_SIZE)==(float) fileBinary.length/ (float)MAX_CHUNK_SIZE)
             numberOfChunks++;*/
@@ -522,18 +702,18 @@ public class MessengerActivity extends NearflyBindingAktivity {
             /** ADD HEADER + BODY**/
             String unformatHeader = new String(
                     "sqn:" + sqn + "\n"
-                    + "max:" + numberOfChunks + "\n"
-                    + "nice:" + 0);
+                            + "max:" + numberOfChunks + "\n"
+                            + "nice:" + 0);
 
             int from = sqn * MAX_CHUNK_SIZE;
-            int to = (fileBinary.length < (sqn+1) * MAX_CHUNK_SIZE? fileBinary.length : (sqn+1) * MAX_CHUNK_SIZE);
+            int to = (fileBinary.length < (sqn + 1) * MAX_CHUNK_SIZE ? fileBinary.length : (sqn + 1) * MAX_CHUNK_SIZE);
             // int to = (sqn==numberOfChunks-1) ? fileBinary.length : MAX_CHUNK_SIZE;
 
             byte[] header = stringPadding(unformatHeader, HEADER_SIZE).getBytes();
-            byte[] body  = Arrays.copyOfRange(fileBinary, from, to );
+            byte[] body = Arrays.copyOfRange(fileBinary, from, to);
 
             /** PREPARE TO SEND**/
-            byte[] payload = new byte[header.length+body.length];
+            byte[] payload = new byte[header.length + body.length];
             System.arraycopy(header, 0, payload, 0, header.length);
             System.arraycopy(body, 0, payload, header.length, body.length);
 
@@ -541,7 +721,7 @@ public class MessengerActivity extends NearflyBindingAktivity {
         }
     }
 
-    private String stringPadding(String toPad, int width){
+    private String stringPadding(String toPad, int width) {
         return new String(new char[width - toPad.length()]).replace('\0', ' ') + toPad;
     }
 
@@ -570,6 +750,27 @@ public class MessengerActivity extends NearflyBindingAktivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getFileNameFromUri(Uri uri) {
+        File myFile = new File(uri.toString());
+        String displayName = null;
+
+        if (uri.toString().startsWith("content://")) {
+            Cursor cursor = null;
+            try {
+                cursor = getContentResolver().query(uri, null, null, null, null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        } else if (uri.toString().startsWith("file://")) {
+            displayName = myFile.getName();
+        }
+
+        return displayName;
     }
 
     public void downloadFile(View view) {

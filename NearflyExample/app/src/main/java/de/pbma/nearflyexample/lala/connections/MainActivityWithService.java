@@ -68,7 +68,7 @@ public class MainActivityWithService extends ConnectionsActivityWithPermissions 
                 }
 
         @Override
-        public void onMessage(String message) {
+        public void onMessage(String channel, String message) {
                 runOnUiThread(() -> {
                     mDebugLogView.append(message + "\n");
                 });
@@ -83,7 +83,7 @@ public class MainActivityWithService extends ConnectionsActivityWithPermissions 
         }
 
         @Override
-        public void onFile(String path){}
+        public void onFile(String path, String textAttachment){}
     };
 
     private ServiceConnection serviceConnection = new ServiceConnection() {

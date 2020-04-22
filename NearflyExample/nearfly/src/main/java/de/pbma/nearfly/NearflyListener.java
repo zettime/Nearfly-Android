@@ -6,8 +6,8 @@ public interface NearflyListener {
     void onLogMessage(CharSequence msg);
     void onStateChanged(String state);
     void onRootNodeChanged(String rootNode);
-    void onMessage(String message);
+    void onMessage(String channel, String message);
     void onStream(Payload payload);
     void onBinary(Payload payload);
-    void onFile(String path);
+    void onFile(String path, String textAttachment);
 }

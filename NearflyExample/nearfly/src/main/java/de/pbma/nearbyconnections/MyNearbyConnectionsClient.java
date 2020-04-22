@@ -2,9 +2,7 @@ package de.pbma.nearbyconnections;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Parcel;
+import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -17,27 +15,18 @@ import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
 import com.google.android.gms.nearby.connection.Strategy;
 
-import org.json.JSONObject;
-
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Random;
-
-import javax.sql.StatementEvent;
 
 import de.pbma.nearfly.ExtMessage;
 
 /**
  * This Activity has 5 {@link State}s.
  *
- * <p>{@link State#UNKNOWN}: We cannot do anything while we're in this state. The app is likely in
+ * <p>{@link State#STANDBY}: We cannot do anything while we're in this state. The app is likely in
  * the background.
  *
  * <p>{@link State#DISCOVERING}: Our default state (after we've connected). We constantly listen for
@@ -60,7 +49,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     private static final String STATE_CONNECTED = "connected";
     private static final String STATE_FINDROOT = "findroot";
 
-    private ArrayList<String> subscribedChannels = subscribedChannels = new ArrayList<>();
+    private ArrayList<String> subscribedChannels = new ArrayList<>();
     /**
      * The connection strategy we'll use for Nearby Connections. In this case, we've decided on
      * P2P_STAR, which is a combination of Bluetooth Classic and WiFi Hotspots.
@@ -71,8 +60,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
      * This service id lets us find other nearby devices that are interested in the same thing. Our
      * sample does exactly one thing, so we hardcode the ID.
      */
-    private static final String SERVICE_ID =
-            "de.pbma.nearbyexample.SERVICE_ID";
+    // private String SERVICE_ID;
 
     /**
      * The state of the app. As the app changes states, the UI will update and advertising/discovery
@@ -108,6 +96,27 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
                 }
             };*/
 
+    /*public MyNearbyConnectionsClient(Context context, MyConnectionsListener myConnectionsListener){
+        initService(context);
+        this.myConnectionsListener = myConnectionsListener;
+        mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(context);
+        rootNode = mName;
+        this.SERVICE_ID = context.getClass().getCanonicalName();
+    }*/
+
+    /*public MyNearbyConnectionsClient(String SERVICE_ID){
+        super(SERVICE_ID);
+    }*/
+
+
+    public void initClient(Context context, MyConnectionsListener myConnectionsListener, String SERVICE_ID) {
+        initService(context);
+        this.myConnectionsListener = myConnectionsListener;
+        mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(context);
+        rootNode = mName;
+        this.SERVICE_ID = SERVICE_ID;
+    }
+
     // TODO: Listener that includes all relevant Informations
     public interface MyConnectionsListener {
         void onLogMessage(CharSequence msg);
@@ -116,23 +125,24 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
 
         void onRootNodeChanged(String rootNode);
 
-        void onMessage(String msg);
+        void onMessage(String channel, String msg);
 
         void onStream(Payload payload);
 
         void onBinary(Payload payload);
 
-        void onFile(String path);
+        void onFile(String path, String textAttachment);
     }
 
     MyConnectionsListener myConnectionsListener;
 
-    public void initClient(Context context, MyConnectionsListener myConnectionsListener) {
+    /*public void initClient(Context context, MyConnectionsListener myConnectionsListener) {
         initService(context);
         this.myConnectionsListener = myConnectionsListener;
-        mName = generateRandomName();
+        mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(context);
         rootNode = mName;
-    }
+    }*/
+
 
     /**
      * Just One possible
@@ -151,15 +161,15 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     }
 
 
-    public void onStart() {
+    public void startConnection() {
         // Call this at Start
-        setState(State.UNKNOWN);
+        setState(State.STANDBY);
         setState(State.FINDROOT);
     }
 
-    public void onStop() {
+    public void stopConnection() {
         // Call this at Stop
-        setState(State.UNKNOWN);
+        setState(State.STANDBY);
     }
 
     public void onBackPressed() {
@@ -229,7 +239,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
             if (getState() == State.FINDROOT)
                 setState(State.ROOT);
         }else{
-            setState(State.UNKNOWN);
+            setState(State.STANDBY);
             setState(State.NODE);
         }*/
 
@@ -377,8 +387,21 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
                 if (isDiscovering()) {
                     stopDiscovering();
                 }*/
-            case UNKNOWN:
+            case STANDBY:
+                /*if (isAdvertising()) {
+                    stopAdvertising();
+                }
+                if (isDiscovering()) {
+                    stopDiscovering();
+                }
+                disconnectFromAllEndpoints()*/
                 stopAllEndpoints();
+                /*if (isDiscovering()) {
+                    stopDiscovering();
+                }
+                if (isAdvertising())
+                    stopAdvertising();
+                stopAllEndpoints();*/
                 break;
             // TODO 2303
             case FINDROOT:
@@ -402,20 +425,33 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         postDelayed(mDiscoverRunnable, ADVERTISING_DURATION);
     }*/
 
-    public void pubIt(String channel, String message) {
+    public void publishIt(String channel, String message) {
         ExtMessage extMessage = new ExtMessage(message, channel, ExtMessage.STRING);
         send(Payload.fromBytes(extMessage.getBytes()));
         logD(message + " published");
     }
 
-    public void pubFile(String channel, ParcelFileDescriptor pfd) {
+    public void pubFile(String channel, Uri uri, String textAttachment) {
         /*ExtMessage extMessage = new ExtMessage(message, channel);*/
 
-        Payload fileAsPayload= Payload.fromFile(pfd);
+        // Get ParcelFileDescriptor
+        // Uri uri = Uri.fromFile(file);
+        ContentResolver cr = context.getContentResolver();
+        ParcelFileDescriptor pfd = null;
+        // logD("####################### MIME:" + cr.getType(uri));
+        String fileExtension = cr.getType(uri).split("\\/")[1]; // MimeType e.g. image/jpeg
 
-        String fileinformations = channel + ":" + fileAsPayload.getId();
+        try {
+            pfd = cr.openFileDescriptor(uri, "r");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Payload fileAsPayload = Payload.fromFile(pfd);
+        // String fileExtension =
+
+        String fileinformations = fileExtension + "/" + fileAsPayload.getId() + "/" + textAttachment;
         // Payload channelPayload = Payload.fromBytes(fileinformations.getBytes(StandardCharsets.UTF_8));
-
 
         ExtMessage extMessage = new ExtMessage(fileinformations, channel, ExtMessage.FILEINFORMATION);
         // send(channelPayload);
@@ -461,10 +497,10 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     @CallSuper
     protected void onReceive(Endpoint endpoint, Payload payload) {
         // logD(new String(payload.asBytes()) + "from" + endpoint);
-       ExtMessage msg = ExtMessage.createExtMessage(payload);
+        ExtMessage msg = ExtMessage.createExtMessage(payload);
 
-        if (subscribedChannels.contains(msg.getChannel()) && myConnectionsListener!=null){
-            myConnectionsListener.onMessage(msg.getPayload());
+        if (subscribedChannels.contains(msg.getChannel()) && myConnectionsListener != null) {
+            myConnectionsListener.onMessage(msg.getChannel(), msg.getPayload());
         }
 
         /*if (payload.getType() == Payload.Type.STREAM)
@@ -475,14 +511,14 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     }
 
     @Override
-    protected void onFile(Endpoint endpoint, String path) {
-        myConnectionsListener.onFile(path);
+    protected void onFile(Endpoint endpoint, String path, String textAttachment) {
+        myConnectionsListener.onFile(path, textAttachment);
     }
 
     @Override
     protected void onDiscoveryFailed() {
         super.onDiscoveryFailed();
-        setState(State.UNKNOWN);
+        setState(State.STANDBY);
         setState(State.FINDROOT);
         // mUiHandler.removeCallbacksAndMessages(null);
     }
@@ -496,38 +532,6 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         return mName;
     }
 
-    /**
-     * {@see ConnectionsActivity#getServiceId()}
-     */
-    @Override
-    public String getServiceId() {
-        return SERVICE_ID;
-    }
-
-    /**
-     * {@see ConnectionsActivity#getStrategy()}
-     */
-    @Override
-    public Strategy getStrategy() {
-        return STRATEGY;
-    }
-
-    /** {@see Handler#post()} */
-    /*protected void post(Runnable r) {
-        mUiHandler.post(r);
-    }*/
-
-    /** {@see Handler#postDelayed(Runnable, long)} */
-    /*protected void postDelayed(Runnable r, long duration) {
-        mUiHandler.postDelayed(r, duration);
-    }*/
-
-    /**
-     * {@see Handler#removeCallbacks(Runnable)}
-     */
-    /*protected void removeCallbacks(Runnable r) {
-        mUiHandler.removeCallbacks(r);
-    }*/
     @Override
     protected void logV(String msg) {
         super.logV(msg);
@@ -569,53 +573,6 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         return spannable;
     }
 
-    /**
-     * Use this to get the Max CPU Frequence in MHz
-     *
-     * @return cpu frequency in MHz
-     */
-    public static int getMaxCPUFreqMHz() {
-
-        int maxFreq = -1;
-        try {
-
-            RandomAccessFile reader = new RandomAccessFile("/sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state", "r");
-
-            boolean done = false;
-            while (!done) {
-                String line = reader.readLine();
-                if (null == line) {
-                    done = true;
-                    break;
-                }
-                String[] splits = line.split("\\s+");
-                assert (splits.length == 2);
-                int timeInState = Integer.parseInt(splits[1]);
-                if (timeInState > 0) {
-                    int freq = Integer.parseInt(splits[0]) / 1000;
-                    if (freq > maxFreq) {
-                        maxFreq = freq;
-                    }
-                }
-            }
-
-        } catch (IOException ex) {
-            // ex.printStackTrace();
-        }
-
-        return maxFreq;
-    }
-
-    /******************************************************************/
-    private static String generateRandomName() {
-        String name = "";
-        Random random = new Random();
-        for (int i = 0; i < 5; i++) {
-            name += random.nextInt(10);
-        }
-        return /*TODO*/getMaxCPUFreqMHz() + " " + name;
-    }
-
     @SuppressWarnings("unchecked")
     private static <T> T pickRandomElem(Collection<T> collection) {
         return (T) collection.toArray()[new Random().nextInt(collection.size())];
@@ -625,7 +582,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
      * possible States of Application
      */
     public enum State {
-        UNKNOWN,
+        STANDBY,
         NODE,
         ROOT,
         FINDROOT,

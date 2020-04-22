@@ -209,7 +209,7 @@ public abstract class MyNearbyConnectionsAbstract {
 
     /* TODO: New Callback for files */
      /*final PayloadCallback mReceiveFilePayloadCallback =
-            new ReceiveFilePayloadCallback(context);*/
+            new ReceivePayloadCallback(context);*/
 
     // TODO
     // @NonNull
@@ -233,10 +233,11 @@ public abstract class MyNearbyConnectionsAbstract {
         this.context = context;
         mConnectionsClient = Nearby.getConnectionsClient(context);
         // mPayloadCallback =  new ReceiveWithProgressCallback (context);
-        mPayloadCallback = new ReceiveFilePayloadCallback(context) {
+        mPayloadCallback = new ReceivePayloadCallback(context) {
             @Override
-            public void onFile(String endpointId, String path) {
-                MyNearbyConnectionsAbstract.this.onFile(mEstablishedConnections.get(endpointId), path);
+            public void onFile(String endpointId, String path, String textAttachment) {
+                MyNearbyConnectionsAbstract.this.onFile(mEstablishedConnections.get(endpointId),
+                        path, textAttachment);
             }
 
             @Override
@@ -477,6 +478,9 @@ public abstract class MyNearbyConnectionsAbstract {
      * Resets and clears all state in Nearby Connections.
      */
     protected void stopAllEndpoints() {
+        if (mConnectionsClient==null)
+            return;
+
         mConnectionsClient.stopAllEndpoints();
         mIsAdvertising = false;
         mIsDiscovering = false;
@@ -643,7 +647,7 @@ public abstract class MyNearbyConnectionsAbstract {
     }
 
     // TODO
-    protected void onFile(Endpoint endpoint, String path) {
+    protected void onFile(Endpoint endpoint, String path, String textAttachment) {
     }
 
     /** Returns the client's name. Visible to others when connecting. */
@@ -753,60 +757,13 @@ public abstract class MyNearbyConnectionsAbstract {
      * This service id lets us find other nearby devices that are interested in the same thing. Our
      * sample does exactly one thing, so we hardcode the ID.
      */
-    private static final String SERVICE_ID =
-            "com.google.location.nearby.apps.walkietalkie.manual.SERVICE_ID";
+    static String SERVICE_ID;/*=
+            "com.google.location.nearby.apps.walkietalkie.manual.SERVICE_ID";*/
 
     /**
      * A random UID used as this device's endpoint name.
      */
     private String mName;
-
-    // TODO: Provisorsich CPU auslesen ****************************************/
-    /* maximum speeds.
-     *
-     * @return cpu frequency in MHz
-     */
-    public static int getMaxCPUFreqMHz() {
-
-        int maxFreq = -1;
-        try {
-
-            RandomAccessFile reader = new RandomAccessFile("/sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state", "r");
-
-            boolean done = false;
-            while (!done) {
-                String line = reader.readLine();
-                if (null == line) {
-                    done = true;
-                    break;
-                }
-                String[] splits = line.split("\\s+");
-                assert (splits.length == 2);
-                int timeInState = Integer.parseInt(splits[1]);
-                if (timeInState > 0) {
-                    int freq = Integer.parseInt(splits[0]) / 1000;
-                    if (freq > maxFreq) {
-                        maxFreq = freq;
-                    }
-                }
-            }
-
-        } catch (IOException ex) {
-            // ex.printStackTrace();
-        }
-
-        return maxFreq;
-    }
-
-    /******************************************************************/
-    private static String generateRandomName() {
-        String name = "";
-        Random random = new Random();
-        for (int i = 0; i < 5; i++) {
-            name += random.nextInt(10);
-        }
-        return /*TODO*/getMaxCPUFreqMHz() + " " + name;
-    }
 
     /**
      * Queries the phone's contacts for their own profile, and returns their name. Used when
