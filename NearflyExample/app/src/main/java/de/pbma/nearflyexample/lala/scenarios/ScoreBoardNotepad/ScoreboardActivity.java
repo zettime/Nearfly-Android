@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,10 +22,9 @@ import java.util.concurrent.CountDownLatch;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
-import de.pbma.nearflyexample.lala.scenarios.NearflyBindingAktivity;
+import de.pbma.nearfly.NearflyBindingActivity;
 
-
-public class ScoreboardActivity extends NearflyBindingAktivity {
+public class ScoreboardActivity extends NearflyBindingActivity {
     private final String TAG = getClass().getCanonicalName();
 
     /** Settings **/
@@ -76,7 +74,7 @@ public class ScoreboardActivity extends NearflyBindingAktivity {
     private CountDownLatch nearflyServiceStartedSignal = new CountDownLatch(1);
 
     @Override
-    public void onNearflyServiceConnected() {
+    public void onNearflyServiceBound() {
         if (!neaflyServiceConnectCalled) {
             nearflyService.addSubCallback(nearflyListener);
             nearflyService.connect("ScoreboardActivity", NearflyService.USE_NEARBY);
@@ -90,7 +88,7 @@ public class ScoreboardActivity extends NearflyBindingAktivity {
     }
 
     @Override
-    public void onNearflyServiceDisconnected() {
+    public void onNearflyServiceUnbound() {
     }
 
     NearflyListener nearflyListener = new NearflyListener() {

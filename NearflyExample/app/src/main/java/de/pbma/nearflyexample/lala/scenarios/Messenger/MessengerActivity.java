@@ -12,10 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.provider.Settings;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,9 +47,9 @@ import java.util.LinkedList;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
-import de.pbma.nearflyexample.lala.scenarios.NearflyBindingAktivity;
+import de.pbma.nearfly.NearflyBindingActivity;
 
-public class MessengerActivity extends NearflyBindingAktivity {
+public class MessengerActivity extends NearflyBindingActivity {
     /**
      * If true, debug logs are shown on the device.
      */
@@ -100,7 +97,7 @@ public class MessengerActivity extends NearflyBindingAktivity {
 
 
     @Override
-    public void onNearflyServiceConnected() {
+    public void onNearflyServiceBound() {
         /** TODO: WARNING ONSERVICECONNECT IS CALLED MULTIPLE TIMES,
          *  TODO: THIS LEADS TO PERMANENT RECONNECTIONS**/
         if (!neaflyServiceConnectCalled) {
@@ -112,7 +109,7 @@ public class MessengerActivity extends NearflyBindingAktivity {
     }
 
     @Override
-    public void onNearflyServiceDisconnected() {
+    public void onNearflyServiceUnbound() {
         // nearflyService.disconnect();
     }
 

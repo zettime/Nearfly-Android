@@ -8,10 +8,11 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import de.pbma.nearfly.NearflyBindingActivity;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearflyexample.R;
 
-public class Standard extends NearflyBindingAktivity {
+public class Standard extends NearflyBindingActivity {
     /** If true, debug logs are shown on the device. */
     private static final boolean DEBUG = true;
 
@@ -28,14 +29,14 @@ public class Standard extends NearflyBindingAktivity {
 
 
     @Override
-    public void onNearflyServiceConnected() {
+    public void onNearflyServiceBound() {
         nearflyService.addSubCallback(nearflyListener);
         nearflyService.subIt("19moa18/test");
         // nearflyServiceBound = true;
     }
 
     @Override
-    public void onNearflyServiceDisconnected() {
+    public void onNearflyServiceUnbound() {
     }
 
     NearflyListener nearflyListener = new NearflyListener() {

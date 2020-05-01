@@ -1,4 +1,4 @@
-package de.pbma.nearflyexample.lala.scenarios;
+package de.pbma.nearfly;
 
 
 import android.content.ComponentName;
@@ -11,16 +11,56 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import de.pbma.nearfly.ConnectionsActivityWithPermissions;
 // import de.pbma.nearfly.NearflyListener;
-import de.pbma.nearfly.NearflyService;
 
-public abstract class NearflyBindingAktivity extends ConnectionsActivityWithPermissions {
+/**
+ * Helps the integration of {@link NearflyService}, manages the binding of the
+ * {@link NearflyService} and queries the necessary permissions at the beginning of the
+ * activity if necessary.
+ * <p></p>
+ * <h2>Attention</h2>
+ * The necessary permissions must also be entered in the AndroidManifest
+ * <pre>
+ *     {@code
+ *        <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+ *
+ *        <!-- Rquired for Nearby Connections -->
+ *        <uses-permission android:name="android.permission.BLUETOOTH" />
+ *        <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+ *        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+ *        <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+ *        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+ *        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+ *
+ *        <!-- Required for MQTT -->
+ *        <uses-permission android:name="android.permission.INTERNET" />
+ *
+ *        <!-- Optional: Only required if File transfer API used -->
+ *        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE " />
+ *        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+ *        <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+ *        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+ *
+ *        <application
+ *            <activity
+ *            <!-- .... -->
+ *            </activity>
+ *
+ *            <service
+ *                android:name="de.pbma.nearfly.NearflyService"
+ *                android:enabled="true" />
+ *        </application>
+ *    </manifest>
+ *
+ *
+ *     }
+ * </pre>
+ */
+public abstract class NearflyBindingActivity extends ConnectionsActivityWithPermissions {
     /** If true, debug logs are shown on the device. */
     private static final boolean DEBUG = true;
 
-    private final String TAG = "NearflyBindingAktivity";
-
+    private final String TAG = "NearflyBindingActivity";
 
     public NearflyService nearflyService;
     private boolean nearflyServiceBound;
@@ -31,15 +71,15 @@ public abstract class NearflyBindingAktivity extends ConnectionsActivityWithPerm
     public abstract NearflyListener getNearflyListener();*/
 
 
-    public abstract void onNearflyServiceConnected();
-    public abstract void onNearflyServiceDisconnected();
+    public abstract void onNearflyServiceBound();
+    public abstract void onNearflyServiceUnbound();
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             logIt("onServiceConnected");
             nearflyService = ((NearflyService.LocalBinder) service).getNearflyService();
-            onNearflyServiceConnected();
+            onNearflyServiceBound();
             nearflyServiceBound = true;
 
             if (!mNearflyServiceStarted)
@@ -49,7 +89,7 @@ public abstract class NearflyBindingAktivity extends ConnectionsActivityWithPerm
         @Override
         public void onServiceDisconnected(ComponentName name) {
             logIt("onServiceDisconnected");
-            onNearflyServiceDisconnected();
+            onNearflyServiceUnbound();
             nearflyServiceBound = false;
             unbindNearflyService();
         }

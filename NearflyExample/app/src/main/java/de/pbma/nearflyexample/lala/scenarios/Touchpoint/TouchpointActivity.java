@@ -1,6 +1,5 @@
 package de.pbma.nearflyexample.lala.scenarios.Touchpoint;
 import android.content.res.ColorStateList;
-import android.graphics.BlendMode;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,10 +16,9 @@ import java.util.TimerTask;
 
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearflyexample.R;
-import de.pbma.nearflyexample.lala.scenarios.AvailableColors;
-import de.pbma.nearflyexample.lala.scenarios.NearflyBindingAktivity;
+import de.pbma.nearfly.NearflyBindingActivity;
 
-public class TouchpointActivity extends NearflyBindingAktivity {
+public class TouchpointActivity extends NearflyBindingActivity {
     /** If true, debug logs are shown on the device. */
     private static final boolean DEBUG = true;
 
@@ -33,14 +31,14 @@ public class TouchpointActivity extends NearflyBindingAktivity {
     private final long FRAME_RATE = 30;
 
     @Override
-    public void onNearflyServiceConnected() {
+    public void onNearflyServiceBound() {
         nearflyService.addSubCallback(nearflyListener);
         nearflyService.subIt("19moa18/test");
         nearflyService.connect();
     }
 
     @Override
-    public void onNearflyServiceDisconnected() {
+    public void onNearflyServiceUnbound() {
     }
 
     NearflyListener nearflyListener = new NearflyListener() {

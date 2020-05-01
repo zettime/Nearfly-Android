@@ -3,6 +3,7 @@ package de.pbma.nearfly;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
@@ -19,9 +20,79 @@ import java.util.ArrayList;
 import de.pbma.mqtt.MyMQTTClient;
 import de.pbma.mqtt.MyMqttListener;
 import de.pbma.nearbyconnections.MyNearbyConnectionsClient;
-
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
+/** A Bound Service that wrap up the feature functions from the Google Nearby API and MQTT Paho.
+ *
+ * <p>The {@code NeaflyService} is started according to the usual procedure for starting
+ * bound service via {@link #startService(Intent)}. After the activity is bound,
+ * {@code NearflyService} can be used. In order to facilitate the integration of
+ * the {@code NeaflyService} it is recommended to inherit from the {@link NearflyBindingActivity},
+ * also ensures that the necessary permissions are queried by the activity
+ * The {@link NearflyBindingActivity} also ensures that the necessary permissions are queried
+ * by the activity at the beginning.
+ *
+ * <h3>Usage Examples</h3>
+ *
+ * Here is an example of an activity that extends from the {@link NearflyBindingActivity}
+ * and publishes message as soon as it is connected to the {@code NeaflyService}.
+ *
+ * <pre> {@code
+ * public class NearflySampleActivity extends NearflyBindingActivity {
+ *
+ *     private final String NEARFLY_CHANNEL = "sensors/humidity";
+ *     private boolean neaflyServiceConnectCalled = false;
+ *     private CountDownLatch nearflyServiceStartedSignal = new CountDownLatch(1);
+ *
+ *     @Override
+ *     public void onNearflyServiceBound() {
+ *         if (!neaflyServiceConnectCalled) {
+ *             nearflyService.addSubCallback(nearflyListener);
+ *             nearflyService.connect("ThisIsMyUniqueRoomString", NearflyService.USE_NEARBY);
+ *             nearflyService.subIt(NEARFLY_CHANNEL);
+ *             neaflyServiceConnectCalled = true;
+ *             nearflyServiceStartedSignal.countDown();
+ *         }
+ *     }
+ *
+ *     @Override
+ *     public void onNearflyServiceUnbound() {
+ *     }
+ *
+ *     NearflyListener nearflyListener = new NearflyListener() {
+ *         @Override
+ *         public void onLogMessage(String output) {
+ *         }
+ *
+ *         @Override
+ *         public void onMessage(String channel, String message) {
+ *             logIt(channel + " " + message);
+ *         }
+ *
+ *         @Override
+ *         public void onFile(String path, String textAttachment) {
+ *         }
+ *     };
+ *
+ *     @Override
+ *     protected void onCreate(@Nullable Bundle savedInstanceState) {
+ *         super.onCreate(savedInstanceState);
+ *         setContentView(R.layout.main);
+ *         new Thread(() -> {
+ *             try {
+ *                 nearflyServiceStartedSignal.await();
+ *             } catch (InterruptedException e) {
+ *                 e.printStackTrace();
+ *             }
+ *             nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!");
+ *         }).start();
+ *     }
+ * }</pre>
+ *
+ *
+ *  @edited 01.05.2020
+ *  @author Alexis Danilo Morgado dos Santos
+ */
 public class NearflyService extends Service {
     /* This are the both Modes that can be used for Nearfly */
     @Retention(SOURCE)
@@ -45,20 +116,27 @@ public class NearflyService extends Service {
     private boolean isConnected = false;
 
     /** Defines the visibility context **/
-    public String room = this.getClass().getCanonicalName();
+    private String room = this.getClass().getCanonicalName();
 
     /** Listeners **/
     private NearflyListener nearflyListener;
     private MyNearbyConnectionsClient nearbyConnectionsClient = new MyNearbyConnectionsClient();
     private MyMQTTClient mqttClient = new MyMQTTClient();
 
-    /** **/
+    /**
+     * Returns {@code true} if either in {@link ConnectionMode} {@link #USE_MQTT}, there is
+     * a connection to the mqtt server or in {@link ConnectionMode} {@link #USE_NEARBY} the
+     * device is
+     * connected to at least one other node.
+     * Note that {@code isTerminated} is never {@code true} unless
+     * either {@code shutdown} or {@code shutdownNow} was called first.
+     *
+     * @return {@code true} the underlying technology has a connection
+     */
     public boolean isConnected(){
         return isConnected;
     }
 
-
-    /** **/
     private MyNearbyConnectionsClient.MyConnectionsListener nearbyConnectionListener =new MyNearbyConnectionsClient.MyConnectionsListener() {
         @Override
         public void onLogMessage(CharSequence msg) {
@@ -111,7 +189,6 @@ public class NearflyService extends Service {
         }
     };
 
-    /** **/
     private MyMqttListener mqttListener = new MyMqttListener() {
         @Override
         public void onMessage(String topic, String message) {
@@ -143,7 +220,12 @@ public class NearflyService extends Service {
         }
     };
 
-    /** **/
+    /**
+     * Subscribes to the given channel so that the {@link NearflyListener} will be dissolved
+     * if a publish is made to the specified channel in the future.
+     *
+     * @param channel to subscribed channel
+     * **/
     public void subIt(String channel) {
         // nearbyConnectionsClient.addSubCallback("test", nearbyConnectionsClient);
         /*nearbyConnectionsClient.subscirbe(channel);
@@ -158,10 +240,14 @@ public class NearflyService extends Service {
             // mqttClient.subscribe(room + "/" +  channel);
             mqttClient.subscribe(channel);
     }
-    // Laadfsdaf
 
 
-    /** **/
+    /**
+     * Subscribes to the given channel so that the {@link NearflyListener} will be dissolved
+     * if a publish is made to the specified channel in the future.
+     *
+     * @param channel to subscribed channel
+     * **/
     public void unsubIt(String channel) {
         // nearbyConnectionsClient.unsubIt("test", nearflyListener);
         subscribedChannels.remove(channel);
@@ -170,6 +256,13 @@ public class NearflyService extends Service {
         //mqttClient.unsubscribe(channel);
     }
 
+    /**
+     * Publishes the specified {@code message} to the respective {@code channel}
+     * in the specified room.
+     *
+     * @param channel to subscribed channel
+     * @param message message to be published
+     * **/
     public boolean pubIt(String channel, String message) {
         switch (techToBeUsed){
             case USE_NEARBY:
@@ -188,7 +281,23 @@ public class NearflyService extends Service {
         return true;
     }
 
-    /** **/
+    /**
+     * Publish the specified file in the specified uri to the  to the respective {@code channel}
+     * in the specified room.
+     * <p></p>
+     * <h2>Attention</h2>
+     * Calling this method requires the following permission to read and write the external storage:
+     *
+     * <ul>
+     * <li>{@code android.permission.READ_EXTERNAL_STORAGE }</li>
+     * <li>{@code android.permission.WRITE_EXTERNAL_STORAGE }</li>
+     * <li>{@code android.permission.ACCESS_MEDIA_LOCATION }</li>
+     * <li>{@code android.permission.ACCESS_COARSE_LOCATION }</li>
+     * </ul>
+     *
+     * @param channel to unsubscribed channel
+     *
+     * **/
     public boolean pubFile(String channel, Uri uri, String textAttachment) {
         switch (techToBeUsed){
             case USE_NEARBY:
@@ -209,13 +318,17 @@ public class NearflyService extends Service {
     }
 
 
-    /** (testing) **/
+    /** only for testing **/
     private void pubStream(Payload stream) {
         nearbyConnectionsClient.pubStream(stream);
     }
 
     /**
-     * Initializes the connection with the Nearly API.
+     * Initializes the connection to the technology currently in use. If {@link ConnectionMode}
+     * {@link #USE_MQTT} is used, an attempt is made to establish a connection to the MQTT broker.
+     * If {@link #USE_NEARBY} is used as {@link ConnectionMode} the automatic construction process
+     * of a peer-to-peer network is initiated or a network that uses the same room string is
+     * joined.
      *
      * @param room All devices with the same number can connect to one another, while different
      *             devices are ignored.
@@ -243,7 +356,11 @@ public class NearflyService extends Service {
             connectToMQTT();
     }
 
-    /** **/
+    /**
+     * Disconnects the connection to the MQTT broker when in {@link ConnectionMode}
+     * {@link #USE_MQTT}. in {@link ConnectionMode} {@link #USE_NEARBY}, the connection to
+     * all connected endpoints is disconnected.
+     * **/
     public void disconnect(){
         if (techToBeUsed==USE_NEARBY)
             disconnectToNearby();
@@ -252,7 +369,14 @@ public class NearflyService extends Service {
     }
 
 
-    /** **/
+    /**
+     * Adds a {@link NearflyListener} to the {@code NearflyService}, which is triggered for all future incoming
+     * messages on all subscribed channels and to status messages like connect and disconnect.
+     * The {@link NearflyListener} does not offer the possibility to react to certain of the
+     * subscribed channels. However, this can easily be implemented by the user.
+     *
+     * param nearflyListener listener to respond to issues from {@code NearflyService}
+     * **/
     public void addSubCallback(NearflyListener nearflyListener) {
         this.nearflyListener = nearflyListener;
     }
@@ -288,7 +412,10 @@ public class NearflyService extends Service {
         }
     }
 
-    /** **/
+    /**
+     * removes the {@link NearflyListener} previously added by
+     * {@link #addSubCallback(NearflyListener)}
+     * **/
     public void removeSubCallback(NearflyListener nearflyListener) {
         // listeners.remove(nearflyListener);
         this.nearflyListener = null;
