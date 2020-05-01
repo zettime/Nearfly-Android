@@ -14,13 +14,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5758ae1c-369b-4404-92cf-8d363070ef24" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflySampleActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/NearflyBindingAktivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyBindingActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Standard.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Standard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/TouchpointActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/TouchpointActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -90,11 +84,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="397">
-              <caret line="286" column="10" selection-start-line="286" selection-start-column="10" selection-end-line="286" selection-end-column="10" />
+            <state relative-caret-position="144">
+              <caret line="162" lean-forward="true" selection-start-line="162" selection-end-line="162" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1782#1783#0" expanded="true" />
@@ -131,11 +125,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="740">
-              <caret line="94" column="17" lean-forward="true" selection-start-line="94" selection-start-column="17" selection-end-line="94" selection-end-column="17" />
+            <state relative-caret-position="230">
+              <caret line="64" column="37" lean-forward="true" selection-start-line="64" selection-start-column="37" selection-end-line="64" selection-end-column="37" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -218,7 +212,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>executor</find>
       <find>cnt</find>
       <find>endpoint</find>
       <find>semd</find>
@@ -248,6 +241,7 @@
       <find>pub</find>
       <find>pubfile</find>
       <find>use_near</find>
+      <find>istermina</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -1414,22 +1408,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="397">
-          <caret line="286" column="10" selection-start-line="286" selection-start-column="10" selection-end-line="286" selection-end-column="10" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1782#1783#0" expanded="true" />
-            <element signature="e#1816#1817#0" expanded="true" />
-            <element signature="e#4228#4229#0" expanded="true" />
-            <element signature="e#4289#4290#0" expanded="true" />
-            <element signature="e#6719#6720#0" expanded="true" />
-            <element signature="e#6776#6777#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="213">
@@ -1444,10 +1422,26 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="740">
-          <caret line="94" column="17" lean-forward="true" selection-start-line="94" selection-start-column="17" selection-end-line="94" selection-end-column="17" />
+        <state relative-caret-position="230">
+          <caret line="64" column="37" lean-forward="true" selection-start-line="64" selection-start-column="37" selection-end-line="64" selection-end-column="37" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="162" lean-forward="true" selection-start-line="162" selection-end-line="162" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1782#1783#0" expanded="true" />
+            <element signature="e#1816#1817#0" expanded="true" />
+            <element signature="e#4228#4229#0" expanded="true" />
+            <element signature="e#4289#4290#0" expanded="true" />
+            <element signature="e#6719#6720#0" expanded="true" />
+            <element signature="e#6776#6777#0" expanded="true" />
           </folding>
         </state>
       </provider>

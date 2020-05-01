@@ -126,10 +126,7 @@ public class NearflyService extends Service {
     /**
      * Returns {@code true} if either in {@link ConnectionMode} {@link #USE_MQTT}, there is
      * a connection to the mqtt server or in {@link ConnectionMode} {@link #USE_NEARBY} the
-     * device is
-     * connected to at least one other node.
-     * Note that {@code isTerminated} is never {@code true} unless
-     * either {@code shutdown} or {@code shutdownNow} was called first.
+     * device is connected to at least one other node.
      *
      * @return {@code true} the underlying technology has a connection
      */
