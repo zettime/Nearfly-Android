@@ -22,7 +22,8 @@ import de.pbma.mqtt.MyMqttListener;
 import de.pbma.nearbyconnections.MyNearbyConnectionsClient;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
-/** A Bound Service that wrap up the feature functions from the Google Nearby API and MQTT Paho.
+/**
+ * A Bound Service that wrap up the feature functions from the Google Nearby API and MQTT Paho.
  *
  * <p>The {@code NeaflyService} is started according to the usual procedure for starting
  * bound service via {@link #startService(Intent)}. After the activity is bound,
@@ -288,8 +289,6 @@ public class NearflyService extends Service {
      * <ul>
      * <li>{@code android.permission.READ_EXTERNAL_STORAGE }</li>
      * <li>{@code android.permission.WRITE_EXTERNAL_STORAGE }</li>
-     * <li>{@code android.permission.ACCESS_MEDIA_LOCATION }</li>
-     * <li>{@code android.permission.ACCESS_COARSE_LOCATION }</li>
      * </ul>
      *
      * @param channel to unsubscribed channel

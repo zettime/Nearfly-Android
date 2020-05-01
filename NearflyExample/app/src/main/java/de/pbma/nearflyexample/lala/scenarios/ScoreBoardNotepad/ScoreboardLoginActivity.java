@@ -74,6 +74,8 @@ public class ScoreboardLoginActivity extends AppCompatActivity {
             mSharedPrefEdit.commit();
 
             finish();
+        }else{
+            Toast.makeText(this, "You forgot to enter the username", Toast.LENGTH_LONG).show();
         }
     }
 

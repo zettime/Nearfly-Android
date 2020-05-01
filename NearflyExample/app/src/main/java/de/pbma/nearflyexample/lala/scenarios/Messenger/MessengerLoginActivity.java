@@ -108,6 +108,8 @@ public class MessengerLoginActivity extends AppCompatActivity {
             mSharedPrefEdit.commit();
 
             finish();
+        }else{
+            Toast.makeText(getApplicationContext(), "You forgot to enter the username or the room", Toast.LENGTH_LONG).show();
         }
     }
 

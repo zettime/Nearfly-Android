@@ -43,7 +43,7 @@ Die Nearfly-Android-Bibliothek, kann wie folgt eingebunden werden:
    ```xml
    <manifest xmlns:android="http://schemas.android.com/apk/res/android">
    
-       <!-- Rquired for Nearby Connections -->
+       <!-- Required for Nearby Connections -->
        <uses-permission android:name="android.permission.BLUETOOTH" />
        <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -57,8 +57,6 @@ Die Nearfly-Android-Bibliothek, kann wie folgt eingebunden werden:
        <!-- Optional: Only required if File transfer API used -->
        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE " />
        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-       <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
-       <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
    
        <application
            <activity

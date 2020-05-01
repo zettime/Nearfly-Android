@@ -12,11 +12,15 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
+import de.pbma.nearfly.NearflyBindingActivity;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 
-
-public class MainActivity extends NearflyBindingAktivity {
+/**
+ * THE REAL ACTIVITY IS IN THE NEARFLYEXAMPLE POROJECT THIS PROJECT
+ * IS JUST TO THEST IMPORTING THE NEARFLY-LIBRARY
+ */
+public class MainActivity extends NearflyBindingActivity {
     private final String TAG = getClass().getCanonicalName();
 
     // Player Distinction
@@ -37,7 +41,7 @@ public class MainActivity extends NearflyBindingAktivity {
     private boolean neaflyServiceConnectCalled = false;
 
     @Override
-    public void onNearflyServiceConnected() {
+    public void onNearflyServiceBound() {
         if (!neaflyServiceConnectCalled) {
             nearflyService.addSubCallback(nearflyListener);
             nearflyService.connect("ScoreBoardNotepad", NearflyService.USE_NEARBY);
@@ -49,7 +53,7 @@ public class MainActivity extends NearflyBindingAktivity {
     }
 
     @Override
-    public void onNearflyServiceDisconnected() {
+    public void onNearflyServiceUnbound() {
     }
 
     NearflyListener nearflyListener = new NearflyListener() {

@@ -10,12 +10,57 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml" line="16" />
+    <bookmark url="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml" line="18" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5758ae1c-369b-4404-92cf-8d363070ef24" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../AndroidLib/nearfly-v1.0.5.aar" beforeDir="false" afterPath="$PROJECT_DIR$/../AndroidLib/nearfly-v1.0.5.aar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardLoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardLoginActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/libs/nearfly-v1.0.2.aar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/proguard-rules.pro" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/androidTest/java/de/pbma/paperthrow/ExampleInstrumentedTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/AndroidManifest.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/java/de/pbma/paperthrow/MainActivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/java/de/pbma/paperthrow/MainActivity2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/java/de/pbma/paperthrow/NearflyBindingAktivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/drawable/ic_launcher_background.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/layout/activity_main.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/layout/main.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-hdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-hdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-mdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-mdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-xhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/values/colors.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/values/strings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/values/styles.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/app/src/test/java/de/pbma/paperthrow/ExampleUnitTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/gradle.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/gradlew.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../PaperThrow/settings.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ScoreBoardNotepad/app/libs/nearfly-release.aar" beforeDir="false" afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/libs/nearfly-release.aar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/java/de/pbma/scoreboardnotepad/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/java/de/pbma/scoreboardnotepad/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/java/de/pbma/scoreboardnotepad/NearflyBindingAktivity.java" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -26,7 +71,7 @@
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="ad07160308c9969b6f" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="229bf1b61c027ece" />
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
@@ -71,24 +116,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsClient.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="485" column="20" selection-start-line="485" selection-start-column="20" selection-end-line="485" selection-end-column="20" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#16164#16165#0" expanded="true" />
-                <element signature="e#16214#16215#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="162" lean-forward="true" selection-start-line="162" selection-end-line="162" />
+            <state relative-caret-position="332">
+              <caret line="298" column="28" selection-start-line="298" selection-start-column="28" selection-end-line="298" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1782#1783#0" expanded="true" />
@@ -128,8 +159,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="230">
-              <caret line="64" column="37" lean-forward="true" selection-start-line="64" selection-start-column="37" selection-end-line="64" selection-end-column="37" />
+            <state relative-caret-position="485">
+              <caret line="94" column="16" selection-start-line="94" selection-start-column="16" selection-end-line="94" selection-end-column="16" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -140,8 +171,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardLoginActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="18" column="48" lean-forward="true" selection-start-line="18" selection-start-column="48" selection-end-line="18" selection-end-column="48" />
+            <state relative-caret-position="578">
+              <caret line="78" column="9" selection-start-line="78" selection-start-column="9" selection-end-line="78" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -152,8 +183,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="281">
-              <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
+            <state relative-caret-position="609">
+              <caret line="73" column="54" selection-start-line="73" selection-start-column="54" selection-end-line="73" selection-end-column="54" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -177,7 +208,7 @@
         <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflySampleActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="8">
-              <caret line="12" column="79" lean-forward="true" selection-start-line="12" selection-start-column="79" selection-end-line="12" selection-end-column="79" />
+              <caret line="12" column="79" selection-start-line="12" selection-start-column="79" selection-end-line="12" selection-end-column="79" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1110#1111#0" expanded="true" />
@@ -187,12 +218,21 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
           <provider editor-type-id="android-manifest" />
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="629">
-              <caret line="37" column="17" lean-forward="true" selection-start-line="37" selection-start-column="17" selection-end-line="37" selection-end-column="17" />
+            <state relative-caret-position="357">
+              <caret line="39" column="17" selection-start-line="39" selection-start-column="17" selection-end-line="39" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/nearfly/build.gradle">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="218">
+              <caret line="37" column="54" selection-start-line="37" selection-start-column="54" selection-end-line="37" selection-end-column="54" />
             </state>
           </provider>
         </entry>
@@ -212,9 +252,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>cnt</find>
-      <find>endpoint</find>
-      <find>semd</find>
       <find>forward(</find>
       <find>onMessage</find>
       <find>send(</find>
@@ -237,11 +274,14 @@
       <find>unsubit</find>
       <find>start</find>
       <find>nearflyService</find>
-      <find>nearflySer</find>
       <find>pub</find>
+      <find>istermina</find>
+      <find>nearflySer</find>
+      <find>onServ</find>
+      <find>ACCESS_MEDIA</find>
       <find>pubfile</find>
       <find>use_near</find>
-      <find>istermina</find>
+      <find>onclick</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -255,7 +295,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/NearbyService.java" />
         <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/NearbyUnpublisher.java" />
         <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/nearbyconnections/ReceivePayloadCallback.java" />
         <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/MyMqttListener.java" />
@@ -292,9 +331,7 @@
         <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/TouchpointActivity.java" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreBoardNotepad.java" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/scoreboard_login.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardLoginActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/Player.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/scoreboard.xml" />
@@ -306,14 +343,17 @@
         <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyBindingActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardActivity.java" />
         <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardLoginActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-113" />
-    <option name="y" value="-18" />
-    <option name="width" value="975" />
-    <option name="height" value="880" />
+    <option name="x" value="34" />
+    <option name="y" value="342" />
+    <option name="width" value="1551" />
+    <option name="height" value="855" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -369,6 +409,22 @@
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
               <item name="lala" type="cbb59c9e:AndroidPsiDirectoryNode" />
               <item name="scenarios" type="462c0819:PsiDirectoryNode" />
+              <item name="Messenger" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="lala" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="scenarios" type="462c0819:PsiDirectoryNode" />
+              <item name="ScoreBoardNotepad" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="lala" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="scenarios" type="462c0819:PsiDirectoryNode" />
               <item name="Touchpoint" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -400,30 +456,7 @@
             </path>
             <path>
               <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
-              <item name="nearfly" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="pbma" type="cbb59c9e:AndroidPsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
-              <item name="nearfly" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="pbma" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="nearbyconnections" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
-              <item name="nearfly" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="pbma" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="nearfly" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
-              <item name="nearfly" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="pbma" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="nearbymessanger" type="462c0819:PsiDirectoryNode" />
+              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
             </path>
           </expand>
           <select />
@@ -469,12 +502,12 @@
     <property name="DEBUGGABLE_PROCESS" value="de.pbma.nearflyexample" />
     <property name="DEBUGGER_ID" value="Auto" />
     <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="229bf1b61c027ece" />
-    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-04-27T19:39:15.928Z" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-05-01T19:49:24.777Z" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SHOW_ALL_PROCESSES" value="false" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/java" />
-    <property name="last_opened_file_path" value="D:/Studium/6.Sem/MOA/19moagd/BouncingBall" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ScoreBoardNotepad" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.17" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -527,7 +560,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Android App.app">
+  <component name="RunManager" selected="Gradle.C:/Users/AcerPredator/Desktop/20thesis04/NearflyExample/nearfly [assemble]">
     <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
       <option name="TEST_OBJECT" value="class" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
@@ -754,7 +787,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" sideWeight="0.3983871" side_tool="true" weight="0.1748401" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.74154264" visible="true" weight="0.16204691" />
+      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.74154264" visible="true" weight="0.16204691" />
       <window_info id="Structure" order="2" sideWeight="0.25845736" side_tool="true" weight="0.16204691" />
       <window_info id="Favorites" order="3" sideWeight="0.40086675" side_tool="true" weight="0.1748401" />
       <window_info id="Build Variants" order="4" sideWeight="0.40086675" side_tool="true" weight="0.1748401" />
@@ -770,13 +803,13 @@
       <window_info anchor="bottom" id="Event Log" order="4" sideWeight="0.46535182" side_tool="true" weight="0.3217768" />
       <window_info anchor="bottom" id="Build" order="5" sideWeight="0.49573562" weight="0.2665222" />
       <window_info anchor="bottom" id="Android Profiler" order="6" weight="0.32936078" />
-      <window_info anchor="bottom" id="Run" order="7" sideWeight="0.52398723" weight="0.42470205" />
+      <window_info active="true" anchor="bottom" id="Run" order="7" sideWeight="0.52398723" visible="true" weight="0.42470205" />
       <window_info anchor="bottom" id="Debug" order="8" sideWeight="0.5463753" weight="0.35102925" />
       <window_info anchor="bottom" id="Find" order="9" weight="0.32827735" />
       <window_info anchor="bottom" id="Statistic" order="10" sideWeight="0.49733475" weight="0.32936078" />
       <window_info anchor="right" id="Hierarchy" order="0" weight="0.32889125" />
       <window_info anchor="right" id="Capture Analysis" order="1" />
-      <window_info anchor="right" id="Gradle" order="2" weight="0.26979867" />
+      <window_info anchor="right" id="Gradle" order="2" visible="true" weight="0.26972282" />
       <window_info anchor="right" id="Theme Preview" order="3" />
       <window_info anchor="right" id="Palette&#9;" order="4" />
       <window_info anchor="right" id="Preview" order="5" sideWeight="0.45466846" weight="0.32889125" />
@@ -1158,13 +1191,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="37" column="54" selection-start-line="37" selection-start-column="54" selection-end-line="37" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
       <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor" />
@@ -1351,14 +1377,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider editor-type-id="android-manifest" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="37" column="17" lean-forward="true" selection-start-line="37" selection-start-column="17" selection-end-line="37" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
@@ -1369,7 +1387,7 @@
     <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflySampleActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="8">
-          <caret line="12" column="79" lean-forward="true" selection-start-line="12" selection-start-column="79" selection-end-line="12" selection-end-column="79" />
+          <caret line="12" column="79" selection-start-line="12" selection-start-column="79" selection-end-line="12" selection-end-column="79" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1110#1111#0" expanded="true" />
@@ -1388,26 +1406,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardLoginActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="18" column="48" lean-forward="true" selection-start-line="18" selection-start-column="48" selection-end-line="18" selection-end-column="48" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="213">
@@ -1420,20 +1418,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="64" column="37" lean-forward="true" selection-start-line="64" selection-start-column="37" selection-end-line="64" selection-end-column="37" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="162" lean-forward="true" selection-start-line="162" selection-end-line="162" />
+        <state relative-caret-position="332">
+          <caret line="298" column="28" selection-start-line="298" selection-start-column="28" selection-end-line="298" selection-end-column="28" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1782#1783#0" expanded="true" />
@@ -1443,6 +1431,51 @@
             <element signature="e#6719#6720#0" expanded="true" />
             <element signature="e#6776#6777#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="485">
+          <caret line="94" column="16" selection-start-line="94" selection-start-column="16" selection-end-line="94" selection-end-column="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardLoginActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="78" column="9" selection-start-line="78" selection-start-column="9" selection-end-line="78" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="609">
+          <caret line="73" column="54" selection-start-line="73" selection-start-column="54" selection-end-line="73" selection-end-column="54" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nearfly/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="37" column="54" selection-start-line="37" selection-start-column="54" selection-end-line="37" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider editor-type-id="android-manifest" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="39" column="17" selection-start-line="39" selection-start-column="17" selection-end-line="39" selection-end-column="17" />
         </state>
       </provider>
     </entry>

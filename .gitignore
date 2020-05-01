@@ -1,36 +1,36 @@
 # Windows thumbnail db
-Thumbs.db
+*/Thumbs.db
 
 # OSX files
 .DS_Store
 
 # Android Studio
 *.iml
-.idea
+*/.idea
 #.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
-.gradle
-build/
-.navigation
-captures/
-output.json 
+*/.gradle
+*/build/
+*/.navigation
+*/captures/
+*/output.json 
 
 #NDK
-obj/
-.externalNativeBuild
+*/obj/
+*/.externalNativeBuild
 
 *.iml
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
-.DS_Store
-/build
-/captures
-.externalNativeBuild
+*/.gradle
+*/local.properties
+*/.idea/workspace.xml
+*/.idea/libraries
+*/.DS_Store
+*/build
+*/captures
+*/.externalNativeBuild
 
 # Exclude everything in folder
 Ignoriert/*
 
 *.tmp
 ~$*
-Bachelorarbeit.pdf
+*.pdf
