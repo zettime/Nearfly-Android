@@ -1,4 +1,4 @@
-package de.pbma.nearflyexample.lala.scenarios;
+package de.pbma.nearflyexample.lala.scenarios.Touchpoint;
 
 import android.graphics.Color;
 import android.graphics.Paint;

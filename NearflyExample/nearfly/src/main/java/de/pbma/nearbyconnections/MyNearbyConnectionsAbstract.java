@@ -90,6 +90,9 @@ abstract class MyNearbyConnectionsAbstract {
     ThreadPoolExecutor msgForwardExecutor;
     // PublishForwarder publishForwarder;
 
+    // TODO
+    protected abstract void changeConnectionState(boolean isConnected);
+
     /**
      * Callbacks for connections to other devices.
      */
@@ -123,7 +126,6 @@ abstract class MyNearbyConnectionsAbstract {
                         return;
                     }
                     connectedToEndpoint(mPendingConnections.remove(endpointId));
-
 
                     // TODO: Starte Executor *****************************************************
                     if (mEstablishedConnections.keySet().size() > 1) {
@@ -526,6 +528,10 @@ abstract class MyNearbyConnectionsAbstract {
 
     private void connectedToEndpoint(Endpoint endpoint) {
         logD(String.format("connectedToEndpoint(endpoint=%s)", endpoint));
+
+        if (getConnectedEndpoints().isEmpty())
+            changeConnectionState(true);
+
         mEstablishedConnections.put(endpoint.getId(), endpoint);
         onEndpointConnected(endpoint);
     }
@@ -533,6 +539,10 @@ abstract class MyNearbyConnectionsAbstract {
     private void disconnectedFromEndpoint(Endpoint endpoint) {
         logD(String.format("disconnectedFromEndpoint(endpoint=%s)", endpoint));
         mEstablishedConnections.remove(endpoint.getId());
+
+        if (getConnectedEndpoints().isEmpty())
+            changeConnectionState(false);
+
         onEndpointDisconnected(endpoint);
     }
 

@@ -1,5 +1,8 @@
 package de.pbma.nearfly;
 
+/**
+ * Interface which is needed to react to concerns of the nearfly service
+ */
 public interface NearflyListener {
     void onLogMessage(String output);
     /*void onStateChanged(String state);

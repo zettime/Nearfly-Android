@@ -1,16 +1,20 @@
-package de.pbma.nearfly;
+package de.pbma.nearflyexample.lala.scenarios;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import java.util.concurrent.CountDownLatch;
 
-class NearflySampleActivity extends NearflyBindingActivity {
+import de.pbma.nearfly.NearflyBindingActivity;
+import de.pbma.nearfly.NearflyListener;
+import de.pbma.nearfly.NearflyService;
+
+public class NearflySampleActivity extends NearflyBindingActivity {
 
     private final String NEARFLY_CHANNEL = "sensors/humidity";
     private boolean neaflyServiceConnectCalled = false;
-    private CountDownLatch nearflyServiceStartedSignal = new CountDownLatch(1);
 
     @Override
     public void onNearflyServiceBound() {
@@ -19,7 +23,6 @@ class NearflySampleActivity extends NearflyBindingActivity {
             nearflyService.connect("ThisIsMyUniqueRoomString", NearflyService.USE_NEARBY);
             nearflyService.subIt(NEARFLY_CHANNEL);
             neaflyServiceConnectCalled = true;
-            nearflyServiceStartedSignal.countDown();
         }
     }
 
@@ -29,12 +32,23 @@ class NearflySampleActivity extends NearflyBindingActivity {
 
     NearflyListener nearflyListener = new NearflyListener() {
         @Override
-        public void onLogMessage(String output) {
+        public void onLogMessage(String state) {
+            // Log.v("test", output);
+            switch (state){
+                case NearflyService.State.CONNECTED:
+                    Log.v("test", "Hello World!");
+                    nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!");
+                    break;
+                case NearflyService.State.DISCONNECTED:
+                    Log.v("test", "disconnected");
+                    break;
+            }
+            // Log.v("test", state);
         }
 
         @Override
         public void onMessage(String channel, String message) {
-            logIt(channel + " " + message);
+            Log.v("test",channel + " " + message);
         }
 
         @Override
@@ -46,13 +60,5 @@ class NearflySampleActivity extends NearflyBindingActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // setContentView(R.layout.main);
-        new Thread(() -> {
-            try {
-                nearflyServiceStartedSignal.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!");
-        }).start();
     }
 }

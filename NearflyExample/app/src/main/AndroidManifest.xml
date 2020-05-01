@@ -27,7 +27,7 @@
         <!-- <activity android:name="de.pbma.nearflyexample.lala.connections.MainActivityWithService" -->
         <!-- <activity android:name="de.pbma.nearflyexample.lala.scenarios.Touchpoint.TouchpointActivity" -->
         <activity
-            android:name=".lala.scenarios.ScoreBoardNotepad.ScoreboardActivity"
+            android:name=".lala.scenarios.NearflySampleActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>

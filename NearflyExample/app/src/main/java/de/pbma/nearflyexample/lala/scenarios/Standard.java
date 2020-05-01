@@ -42,11 +42,12 @@ public class Standard extends NearflyBindingActivity {
     NearflyListener nearflyListener = new NearflyListener() {
         @Override
         public void onLogMessage(String output) {
-            if (DEBUG==true)
+            // TODO
+            /*if (DEBUG==true)
                 runOnUiThread(() -> {
 
                     mDebugLogView.append(output + "\n");
-                });
+                });*/
         }
 
         @Override

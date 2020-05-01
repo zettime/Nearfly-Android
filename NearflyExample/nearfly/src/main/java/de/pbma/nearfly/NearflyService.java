@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -39,20 +40,19 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * and publishes message as soon as it is connected to the {@code NeaflyService}.
  *
  * <pre> {@code
+
  * public class NearflySampleActivity extends NearflyBindingActivity {
  *
  *     private final String NEARFLY_CHANNEL = "sensors/humidity";
  *     private boolean neaflyServiceConnectCalled = false;
- *     private CountDownLatch nearflyServiceStartedSignal = new CountDownLatch(1);
  *
  *     @Override
- *     public void onNearflyServiceBound() {
+ *     public void onNearflyServiceUnbound() {
  *         if (!neaflyServiceConnectCalled) {
  *             nearflyService.addSubCallback(nearflyListener);
  *             nearflyService.connect("ThisIsMyUniqueRoomString", NearflyService.USE_NEARBY);
  *             nearflyService.subIt(NEARFLY_CHANNEL);
  *             neaflyServiceConnectCalled = true;
- *             nearflyServiceStartedSignal.countDown();
  *         }
  *     }
  *
@@ -62,12 +62,22 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  *
  *     NearflyListener nearflyListener = new NearflyListener() {
  *         @Override
- *         public void onLogMessage(String output) {
+ *         public void onLogMessage(String state) {
+ *             // Log.v("test", output);
+ *             switch (state){
+ *                 case NearflyService.State.CONNECTED:
+ *                     Log.v("test", "Hello World!");
+ *                     nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!");
+ *                     break;
+ *                 case NearflyService.State.DISCONNECTED:
+ *                     Log.v("test", "disconnected");
+ *                     break;
+ *             }
  *         }
  *
  *         @Override
  *         public void onMessage(String channel, String message) {
- *             logIt(channel + " " + message);
+ *             Log.v("test",channel + " " + message);
  *         }
  *
  *         @Override
@@ -79,16 +89,9 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  *     protected void onCreate(@Nullable Bundle savedInstanceState) {
  *         super.onCreate(savedInstanceState);
  *         setContentView(R.layout.main);
- *         new Thread(() -> {
- *             try {
- *                 nearflyServiceStartedSignal.await();
- *             } catch (InterruptedException e) {
- *                 e.printStackTrace();
- *             }
- *             nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!");
- *         }).start();
  *     }
- * }</pre>
+ * }
+ * </pre>
  *
  *
  *  @edited 01.05.2020
@@ -125,6 +128,23 @@ public class NearflyService extends Service {
     private MyMQTTClient mqttClient = new MyMQTTClient();
 
     /**
+     * Helps to interpret the {@link NearflyListener#onLogMessage(String)} correctly
+     * <p></p>
+     * <p>
+     *     {@link State#CONNECTED}: {@Code NearflyService} Was successfully connected.
+     *     {@see NearflyService#isConnected}
+     * </p>
+     * <p>
+     *     {@link State#DISCONNECTED}: {@Code NearflyService} Was disconnected.
+     *     {@see NearflyService#isConnected}
+     * </p>
+     * **/
+    public static class State{
+        public final static String CONNECTED = "connected";
+        public final static String DISCONNECTED = "disconnected";
+    }
+
+    /**
      * Returns {@code true} if either in {@link ConnectionMode} {@link #USE_MQTT}, there is
      * a connection to the mqtt server or in {@link ConnectionMode} {@link #USE_NEARBY} the
      * device is connected to at least one other node.
@@ -146,10 +166,14 @@ public class NearflyService extends Service {
             nearflyListener.onLogMessage("STATE CHANGED: " + state);
 
             if (techToBeUsed == USE_NEARBY){
-                if ((state.equals(MyNearbyConnectionsClient.State.ROOT.toString()) ||state.equals(MyNearbyConnectionsClient.State.CONNODE.toString())))
+                if (state.equals("connected")){
                     isConnected=true;
-                else
+                    nearflyListener.onLogMessage(State.CONNECTED);
+                }
+                if (state.equals("disconnected")){
                     isConnected=false;
+                    nearflyListener.onLogMessage(State.DISCONNECTED);
+                }
             }
 
 
@@ -195,10 +219,13 @@ public class NearflyService extends Service {
 
         @Override
         public void onStatus(boolean connected) {
-            nearflyListener.onLogMessage((connected==true)?"connected":"disconnected");
-
-            if (techToBeUsed==USE_MQTT)
-                isConnected=connected;
+            if (connected){
+                isConnected=true;
+                nearflyListener.onLogMessage(State.CONNECTED);
+            }else{
+                isConnected=false;
+                nearflyListener.onLogMessage(State.DISCONNECTED);
+            }
 
             if (changeTechWhenReady==USE_MQTT){
                 techToBeUsed=USE_MQTT;

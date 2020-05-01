@@ -222,6 +222,11 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     }
 
     @Override
+    protected void changeConnectionState(boolean isConnected) {
+        myConnectionsListener.onLogMessage(isConnected?"connected":"disconnected");
+    }
+
+    @Override
     protected void onConnectionInitiated(Endpoint endpoint, ConnectionInfo connectionInfo) {
         // TODO 2503: Discovering Device found -> Switch to Advertising Mode
         /*if (getName().compareTo(endpoint.getName()) > 0) {
@@ -291,7 +296,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
 
         // If we lost all our endpoints, then we should reset the state of our app and go back
         // to our initial state (discovering).
-        // if (getConnectedEndpoints().isEmpty()) {
+
         if (rootNode != getName()) {
             // TODO: New init State
             setState(State.FINDROOT);

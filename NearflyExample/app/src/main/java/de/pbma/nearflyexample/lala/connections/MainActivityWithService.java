@@ -40,11 +40,11 @@ public class MainActivityWithService extends ConnectionsActivityWithPermissions 
     NearflyListener nearflyListener = new NearflyListener() {
         @Override
         public void onLogMessage(String output) {
-            if (DEBUG==true)
+            /*if (DEBUG==true)
                 runOnUiThread(() -> {
 
                     mDebugLogView.append(output + "\n");
-                });
+                });*/
         }
 
         @Override

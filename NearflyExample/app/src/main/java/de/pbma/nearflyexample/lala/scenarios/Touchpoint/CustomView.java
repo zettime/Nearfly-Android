@@ -1,20 +1,14 @@
 package de.pbma.nearflyexample.lala.scenarios.Touchpoint;
 
 import android.content.Context;
-import android.graphics.BlendMode;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-
-import java.util.Random;
-
-import de.pbma.nearflyexample.lala.scenarios.AvailableColors;
 
 public class CustomView extends View{
     final String TAG = "CustomView";

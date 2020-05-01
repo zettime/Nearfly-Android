@@ -57,6 +57,8 @@ public class MyMQTTClient {
         @Override
         public void onConnectionError(Throwable throwable) {
             listener.onLogMessage("ConnectionError: " + throwable.getMessage());
+
+            listener.onLogMessage("disconnected");
         }
 
         @Override
