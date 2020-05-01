@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicLong;
 // in a separate thread. The user API is asynchronous handling
 // all callbacks in yet another separate thread.
 // ToDo: reconnect and resubscribe
-public class MqttMessaging {
+class MqttMessaging {
     final static String TAG = MqttMessage.class.getCanonicalName();
 
     private volatile String clientId;
@@ -273,6 +273,31 @@ public class MqttMessaging {
             } catch (MqttException e) {
                 Log.e(TAG, String.format("  sent failed: topic=%s, msg=%s, cause=%s", topic, msg, e.getMessage()));
                 doMessageFailure(e, topic, msg);
+            }
+        });
+    }
+
+    public void sendBytes(final String topic, final byte[] msg) {
+        if (!ready.get() && !connectPending.get()) {
+            throw new RuntimeException("connect not yet called");
+        }
+        final long id = pendingMessageId.incrementAndGet();
+        pendingMessages.put(id, Pair.createPair(topic,  msg.toString()));
+        mqttExecutor.execute(() -> {
+            try {
+                pendingMessages.remove(id); // we are processing it
+                Log.v(TAG, String.format("send: topic=%s, msg=%s",topic, msg));
+                MqttMessage message = new MqttMessage();
+                message.setPayload(msg);
+                message.setQos(1); // we always do 1
+                MqttClient c = client;
+                if (c != null) {
+                    pendingMessages.remove(id);
+                    c.publish(topic, message);
+                }
+            } catch (MqttException e) {
+                Log.e(TAG, String.format("  sent failed: topic=%s, msg=%s, cause=%s", topic, msg, e.getMessage()));
+                doMessageFailure(e, topic, msg.toString());
             }
         });
     }

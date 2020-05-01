@@ -7,7 +7,7 @@ import android.os.ParcelFileDescriptor;
 
 import java.io.FileNotFoundException;
 
-public class NearflyFile {
+class NearflyFile {
     private String filename;
     private String extentsion;
     private Uri uri;

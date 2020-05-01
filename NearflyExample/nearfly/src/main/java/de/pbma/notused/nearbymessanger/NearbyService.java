@@ -19,7 +19,7 @@ import com.google.android.gms.nearby.messages.Strategy;
 import com.google.android.gms.nearby.messages.SubscribeCallback;
 import com.google.android.gms.nearby.messages.SubscribeOptions;
 
-public class NearbyService extends Service {
+class NearbyService extends Service {
     public final static String USE_MQTT = "mqtt";
     public final static String USE_NEARBY = "nearby";
 

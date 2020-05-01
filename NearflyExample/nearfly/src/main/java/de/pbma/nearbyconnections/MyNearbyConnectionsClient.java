@@ -20,9 +20,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
-
-import de.pbma.nearfly.ExtMessage;
-
 /**
  * This Activity has 5 {@link State}s.
  *
@@ -427,8 +424,8 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
 
     public void publishIt(String channel, String message) {
         ExtMessage extMessage = new ExtMessage(message, channel, ExtMessage.STRING);
-        send(Payload.fromBytes(extMessage.getBytes()));
         logD(message + " published");
+        send(Payload.fromBytes(extMessage.getBytes()));
     }
 
     public void pubFile(String channel, Uri uri, String textAttachment) {

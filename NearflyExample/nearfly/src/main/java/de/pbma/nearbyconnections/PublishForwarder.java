@@ -8,7 +8,7 @@ import com.google.android.gms.nearby.connection.Payload;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class PublishForwarder {
+class PublishForwarder {
     public static Object Task;
     private Thread threadForwarder;
     private Object lock = new Object();

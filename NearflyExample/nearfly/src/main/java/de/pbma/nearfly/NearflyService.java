@@ -2,22 +2,17 @@ package de.pbma.nearfly;
 
 
 import android.app.Service;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.Parcel;
-import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringDef;
 
 import com.google.android.gms.nearby.connection.Payload;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
 
@@ -30,15 +25,15 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 public class NearflyService extends Service {
     /* This are the both Modes that can be used for Nearfly */
     @Retention(SOURCE)
-    @StringDef({USE_MQTT, USE_NEARBY})
+    @IntDef({USE_MQTT, USE_NEARBY})
     public @interface ConnectionMode {}
-    public final static String USE_MQTT = "MQTT";
-    public final static String USE_NEARBY = "Nearby";
-    public final static String DONT_SWITCH = "None";
+    public final static int USE_NEARBY = 1;
+    public final static int USE_MQTT = 2;
+    public final static int DONT_SWITCH = 0;
 
     /** Technology to use(MQTT or Nearby) **/
-    public String USED_TECH = NearflyService.USE_NEARBY;
-    private String changeTechWhenReady = DONT_SWITCH;
+    public int techToBeUsed;
+    private int changeTechWhenReady = DONT_SWITCH;
 
     private String TAG = "NearflyServices";
     private ArrayList<String> subscribedChannels = new ArrayList<>();
@@ -46,6 +41,8 @@ public class NearflyService extends Service {
     public final static String ACTION_START = "start";
     public final static String ACTION_STOP = "stop";
     public final static String ACTION_BIND = "bind";
+
+    private boolean isConnected = false;
 
     /** Defines the visibility context **/
     public String room = this.getClass().getCanonicalName();
@@ -55,23 +52,34 @@ public class NearflyService extends Service {
     private MyNearbyConnectionsClient nearbyConnectionsClient = new MyNearbyConnectionsClient();
     private MyMQTTClient mqttClient = new MyMQTTClient();
 
-    // private boolean isConnected = false;
+    /** **/
+    public boolean isConnected(){
+        return isConnected;
+    }
 
-    // Nearby
+
+    /** **/
     private MyNearbyConnectionsClient.MyConnectionsListener nearbyConnectionListener =new MyNearbyConnectionsClient.MyConnectionsListener() {
         @Override
-        public void onLogMessage(CharSequence msg) {/*Wahrscheinlich nicht relevant für Nutzer*/
-            nearflyListener.onLogMessage(msg);
+        public void onLogMessage(CharSequence msg) {
+            nearflyListener.onLogMessage(String.valueOf(msg));
         }
 
         @Override
         public void onStateChanged(String state) {
-            nearflyListener.onStateChanged(state);
+            nearflyListener.onLogMessage("STATE CHANGED: " + state);
 
-            if ((state.equals(MyNearbyConnectionsClient.State.ROOT) ||state.equals(MyNearbyConnectionsClient.State.CONNODE))
-                    && changeTechWhenReady==USE_NEARBY){
+            if (techToBeUsed == USE_NEARBY){
+                if ((state.equals(MyNearbyConnectionsClient.State.ROOT.toString()) ||state.equals(MyNearbyConnectionsClient.State.CONNODE.toString())))
+                    isConnected=true;
+                else
+                    isConnected=false;
+            }
+
+
+            if (isConnected && changeTechWhenReady==USE_NEARBY){
                 /** Actually change of Technology **/
-                USED_TECH = USE_NEARBY;
+                techToBeUsed = USE_NEARBY;
 
                 changeTechWhenReady=DONT_SWITCH;
                 disconnectToMQTT();
@@ -80,7 +88,8 @@ public class NearflyService extends Service {
 
         @Override
         public void onRootNodeChanged(String rootNode) {
-            nearflyListener.onRootNodeChanged(rootNode);
+            nearflyListener.onLogMessage("ROOT NODE CHANGED: " + rootNode);
+
         }
 
         @Override
@@ -89,11 +98,11 @@ public class NearflyService extends Service {
         }
 
         @Override
-        public void onStream(Payload payload) { nearflyListener.onStream(payload); }
+        public void onStream(Payload payload) { /*nearflyListener.onStream(payload);*/ }
 
         @Override
         public void onBinary(Payload payload) {
-            nearflyListener.onBinary(payload);
+            /*nearflyListener.onBinary(payload);*/
         }
 
         @Override
@@ -102,19 +111,22 @@ public class NearflyService extends Service {
         }
     };
 
-    // MQTT
+    /** **/
     private MyMqttListener mqttListener = new MyMqttListener() {
         @Override
-        public void onMqttMessage(String topic, String message) {
+        public void onMessage(String topic, String message) {
             nearflyListener.onMessage(topic, message);
         }
 
         @Override
-        public void onMQTTStatus(boolean connected) {
-            nearflyListener.onStateChanged((connected==true)?"connected":"disconnected");
+        public void onStatus(boolean connected) {
+            nearflyListener.onLogMessage((connected==true)?"connected":"disconnected");
+
+            if (techToBeUsed==USE_MQTT)
+                isConnected=connected;
 
             if (changeTechWhenReady==USE_MQTT){
-                USED_TECH=USE_MQTT;
+                techToBeUsed=USE_MQTT;
                 changeTechWhenReady=DONT_SWITCH;
                 disconnectToNearby();
             }
@@ -124,9 +136,14 @@ public class NearflyService extends Service {
         public void onLogMessage(String message) {
             nearflyListener.onLogMessage(message);
         }
+
+        @Override
+        public void onFile(String path, String textAttachment) {
+            nearflyListener.onFile(path, textAttachment);
+        }
     };
 
-    //public void subIt(String channel, NearflyListener nearflyListener) {
+    /** **/
     public void subIt(String channel) {
         // nearbyConnectionsClient.addSubCallback("test", nearbyConnectionsClient);
         /*nearbyConnectionsClient.subscirbe(channel);
@@ -135,13 +152,16 @@ public class NearflyService extends Service {
         if (!subscribedChannels.contains(channel))
             subscribedChannels.add(channel);
 
+        if (techToBeUsed==USE_NEARBY)
             nearbyConnectionsClient.subscribe(room + "/" +  channel);
-
-
+        else
+            // mqttClient.subscribe(room + "/" +  channel);
+            mqttClient.subscribe(channel);
     }
     // Laadfsdaf
 
 
+    /** **/
     public void unsubIt(String channel) {
         // nearbyConnectionsClient.unsubIt("test", nearflyListener);
         subscribedChannels.remove(channel);
@@ -151,43 +171,46 @@ public class NearflyService extends Service {
     }
 
     public boolean pubIt(String channel, String message) {
-        if (USED_TECH=="Nearby"){
-            // NEARBY
-            if (!nearbyConnectionsClient.isConnected()){
-                nearflyListener.onLogMessage("not Connected");
+        switch (techToBeUsed){
+            case USE_NEARBY:
+                if (!nearbyConnectionsClient.isConnected()){
+                    nearflyListener.onLogMessage("not Connected");
+                    return false;
+                }
+                nearbyConnectionsClient.publishIt(room + "/" +  channel, message);
                 return false;
-            }
-            nearbyConnectionsClient.publishIt(room + "/" +  channel, message);
-            return false;
-        }
-        else{
-            mqttClient.publishIt(room + "/" +  channel, message);
+                // break;
+            case USE_MQTT:
+                // mqttClient.publishIt(room + "/" +  channel, message);
+                mqttClient.publishIt(channel, message);
+                break;
         }
         return true;
     }
 
+    /** **/
     public boolean pubFile(String channel, Uri uri, String textAttachment) {
-        if (USED_TECH=="Nearby"){
-            // NEARBY
-            if (!nearbyConnectionsClient.isConnected()){
-                nearflyListener.onLogMessage("not Connected");
-                return false;
-            }
+        switch (techToBeUsed){
+            case USE_NEARBY:
+                if (!nearbyConnectionsClient.isConnected()){
+                    nearflyListener.onLogMessage("not Connected");
+                    return false;
+                }
 
-            nearbyConnectionsClient.pubFile(room + "/" +  channel, uri, textAttachment);
-            return false;
+                nearbyConnectionsClient.pubFile(room + "/" +  channel, uri, textAttachment);
+                return false;
+            // break;
+            case USE_MQTT:
+                // mqttClient.pubFile(channel, uri, textAttachment);
+                mqttClient.pubFile(channel, uri, textAttachment);
+                break;
         }
-        /*else{
-            mqttClient.publishBytes(channel, bytes);
-        }*/
         return true;
     }
 
-    public void pubBinaryTST(byte[] bytes) {
-        nearbyConnectionsClient.pubBinaryTST(bytes);
-    }
 
-    public void pubStream(Payload stream) {
+    /** (testing) **/
+    private void pubStream(Payload stream) {
         nearbyConnectionsClient.pubStream(stream);
     }
 
@@ -199,35 +222,37 @@ public class NearflyService extends Service {
      *             If the room is not specified, this corresponds to the canonical
      *             name of the user activity (not recommended)
      * **/
-    public void connect(String room){
+    public void connect(String room, @ConnectionMode int techToBeUsed){
         this.room = room;
+        this.techToBeUsed = techToBeUsed;
         connect();
     }
 
-    /**  @see #connect(String) **/
+    /**  @see #connect(String, int) **/
     public void connect(){
-        if (nearflyListener==null)
-            throw new RuntimeException("you haven't given a NearlyListener yet");
+        /*if (nearflyListener==null)
+            throw new RuntimeException("you haven't given a NearlyListener yet");*/
 
         if (subscribedChannels.isEmpty())
             Log.e(TAG, "you haven't subscribed to any channels yet");
 
 
-        if (USED_TECH=="Nearby")
+        if (techToBeUsed==USE_NEARBY)
             connectToNearby();
         else
             connectToMQTT();
     }
 
+    /** **/
     public void disconnect(){
-        if (USED_TECH=="Nearby")
+        if (techToBeUsed==USE_NEARBY)
             disconnectToNearby();
-        else{
+        else
             disconnectToMQTT();
-        }
     }
 
 
+    /** **/
     public void addSubCallback(NearflyListener nearflyListener) {
         this.nearflyListener = nearflyListener;
     }
@@ -263,12 +288,11 @@ public class NearflyService extends Service {
         }
     }
 
+    /** **/
     public void removeSubCallback(NearflyListener nearflyListener) {
         // listeners.remove(nearflyListener);
         this.nearflyListener = null;
     }
-
-    // TODO
 
     /********************************************************************/
     public class LocalBinder extends Binder {
@@ -298,11 +322,14 @@ public class NearflyService extends Service {
         }
     }
 
+
     @Override
     public void onDestroy() {
         Log.d(TAG, "onStop");
+
+
         // TODO
-        if (USED_TECH=="Nearby")
+        if (techToBeUsed==USE_NEARBY)
             disconnectToNearby();
         else
             disconnectToMQTT();
@@ -312,7 +339,7 @@ public class NearflyService extends Service {
 
     /** Change will by Applied, when connection in MQTT or Nearby was successful
     {@link #nearbyConnectionListener} & {@Link #mqttListener} **/
-    public void changeTech(@ConnectionMode String mode){
+    public void changeTech(@ConnectionMode int mode){
         if (mode==USE_MQTT){
             // disconnectToNearby();
             connectToMQTT();
@@ -327,7 +354,7 @@ public class NearflyService extends Service {
 
     /* TODO: ****************************************************** */
     private void connectToMQTT(){
-        mqttClient.registerMqttListener(mqttListener);
+        mqttClient.registerMqttListener(getApplicationContext(), mqttListener);
         mqttClient.connect();
         for (String channel : subscribedChannels){
             mqttClient.subscribe(room + "/" +  channel);
@@ -340,7 +367,7 @@ public class NearflyService extends Service {
             mqttClient.unsubscribe(room + "/" +  channel);
         }
         mqttClient.disconnect();
-        mqttClient.deregisterMqttListener(mqttListener);
+        mqttClient.deregisterMqttListener();
     }
 
     private void connectToNearby(){
@@ -364,6 +391,4 @@ public class NearflyService extends Service {
         // nearbyConnectionsClient = null;
         // nearbyConnectionsClient.deregisterNearbyListener(nearbyConnectionListener);
     }
-
-
 }

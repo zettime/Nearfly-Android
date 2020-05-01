@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Random;
 
-public class EndpointNameGenerator {
+class EndpointNameGenerator {
 
     public String generateRandomName_if_not_in_sharedPref(Context context) {
         String endpointName;

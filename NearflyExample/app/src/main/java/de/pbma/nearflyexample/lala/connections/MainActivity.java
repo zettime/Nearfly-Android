@@ -1,18 +1,6 @@
 package de.pbma.nearflyexample.lala.connections;
 
-import android.os.Bundle;
-import android.text.format.DateFormat;
-import android.text.method.ScrollingMovementMethod;
-import android.view.View;
-import android.widget.TextView;
-
-import androidx.annotation.Nullable;
-
-import com.google.android.gms.nearby.connection.Payload;
-
-import de.pbma.nearbyconnections.ConnectionsActivityWithPermissions;
-import de.pbma.nearbyconnections.MyNearbyConnectionsClient;
-import de.pbma.nearflyexample.R;
+import de.pbma.nearfly.ConnectionsActivityWithPermissions;
 
 public class MainActivity extends ConnectionsActivityWithPermissions {
 //    MyNearbyConnectionsClient myNearbyConnectionsClient;

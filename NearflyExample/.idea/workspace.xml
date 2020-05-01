@@ -6,7 +6,7 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_LOG_LEVEL" value="verbose" />
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="debug" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="BookmarkManager">
@@ -14,48 +14,138 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5758ae1c-369b-4404-92cf-8d363070ef24" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/GenericFileProvider.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/circle.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_download_icon.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/ic_nearfly.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/messenger_login.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/messenger_receive_image.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/messenger_receive_media.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/messenger_receive_text.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/messenger_send_image.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/messenger_send_media.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/messenger_send_text.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/res/xml/provider_paths.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/EndpointNameGenerator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyFile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/Player.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardLoginActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/scoreboard.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/scoreboard_login.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/MqttMessaging.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/MyMqttListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/proguard-rules.pro" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/androidTest/java/de/pbma/paperthrow/ExampleInstrumentedTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/java/de/pbma/paperthrow/MainActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/java/de/pbma/paperthrow/MainActivity2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/java/de/pbma/paperthrow/NearflyBindingAktivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/drawable/ic_launcher_background.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/layout/main.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-hdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-hdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-mdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-mdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-xhdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/values/colors.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/main/res/values/styles.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/app/src/test/java/de/pbma/paperthrow/ExampleUnitTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/gradle.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/gradlew" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/gradlew.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../PaperThrow/settings.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/proguard-rules.pro" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/androidTest/java/de/pbma/scoreboardnotepad/ExampleInstrumentedTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/java/de/pbma/scoreboardnotepad/MainActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/java/de/pbma/scoreboardnotepad/NearflyBindingAktivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/java/de/pbma/scoreboardnotepad/Player.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/drawable/ic_launcher_background.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/layout/main.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/mipmap-hdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/mipmap-hdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/mipmap-mdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/mipmap-mdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/mipmap-xhdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/values/colors.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/main/res/values/styles.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/app/src/test/java/de/pbma/scoreboardnotepad/ExampleUnitTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/gradle.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/gradlew" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/gradlew.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ScoreBoardNotepad/settings.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Bachelorarbeit.docx" beforeDir="false" afterPath="$PROJECT_DIR$/../Bachelorarbeit.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Bachelorarbeit.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Diagramme/AnforderungsmatrixNew.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Diagramme/AnforderungsmatrixNew.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_base_16_0_1_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_basement_16_0_1_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_nearby_16_0_0_aar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__com_google_android_gms_play_services_tasks_16_0_1_aar.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NearflyExample.iml" beforeDir="false" afterPath="$PROJECT_DIR$/NearflyExample.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityDebug.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWithService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWithService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWorking.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityMQTT.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityMQTT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityMQTT2.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityMQTT2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityNearby.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityNearby.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/NearflyBindingAktivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/NearflyBindingAktivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Standard.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Standard.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/TouchpointActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/TouchpointActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/testenviroment/ConnectionsActivityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/testenviroment/ConnectionsActivityTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/testenviroment/MainActivityWorkingTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/testenviroment/MainActivityWorkingTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/messenger.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/messenger.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/messenger_image.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/messenger_text.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/messenger_login.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/messenger_login.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nearfly/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/nearfly.iml" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/nearfly.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MqttListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MqttListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MqttMessaging.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MqttMessaging.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MyMQTTClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MyMQTTClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MyMqttListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MyMqttListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ConnectionsActivity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ConnectionsActivityWithPermissions.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/ConnectionsActivityWithPermissions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/EndpointNameGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/EndpointNameGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MsgForwarder.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MsgForwarder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsAbstract.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsAbstract.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveFilePayloadCallback.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/PublishForwarder.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/PublishForwarder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveWithProgressCallback.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveWithProgressCallback.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/Constants.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/Constants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/ExtMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ExtMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyFile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/ExtMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/ExtMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/MQTTService.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/MQTTService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/NearbyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/NearbyService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/NearbyUnpublisher.java" beforeDir="false" afterPath="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/NearbyUnpublisher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -66,11 +156,42 @@
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="229bf1b61c027ece" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Nexus_S_API_28" />
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
-        <projects_view />
+        <task path="$PROJECT_DIR$/nearfly">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="NearflyExample" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="NearflyExample" type="f1a62948:ProjectNode" />
+                <item name="nearfly" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="NearflyExample" type="f1a62948:ProjectNode" />
+                <item name="nearfly" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="NearflyExample" type="f1a62948:ProjectNode" />
+                <item name="nearfly" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
       </state>
     </system>
   </component>
@@ -78,184 +199,118 @@
     <favorites_list name="NearflyExample" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.3842239">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1046">
-                  <caret line="102" column="22" selection-start-line="102" selection-start-column="22" selection-end-line="102" selection-end-column="22" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                    <element signature="e#3545#3546#0" expanded="true" />
-                    <element signature="e#3583#3584#0" expanded="true" />
-                    <element signature="e#31887#31888#0" expanded="true" />
-                    <element signature="e#31919#31920#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state>
-                  <caret line="3" column="25" lean-forward="true" selection-start-line="3" selection-start-column="25" selection-end-line="3" selection-end-column="25" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/TouchpointActivity.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-10">
-                  <caret line="23" column="37" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/NearflyBindingAktivity.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="620">
-                  <caret line="124" column="26" selection-start-line="124" selection-start-column="26" selection-end-line="124" selection-end-column="26" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsAbstract.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="901">
-                  <caret line="764" column="4" selection-start-line="764" selection-start-column="4" selection-end-line="764" selection-end-column="4" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                    <element signature="e#16551#16552#0" expanded="true" />
-                    <element signature="e#16635#16636#0" expanded="true" />
-                    <element signature="e#24639#24640#0" expanded="true" />
-                    <element signature="e#24672#24673#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/PublishForwarder.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="459">
-                  <caret line="30" column="32" selection-start-line="30" selection-start-column="32" selection-end-line="30" selection-end-column="32" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/GenericFileProvider.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="68">
-                  <caret line="4" column="56" selection-start-line="4" selection-start-column="56" selection-end-line="4" selection-end-column="56" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MsgForwarder.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="289">
-                  <caret line="17" column="1" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsClient.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1530">
-                  <caret line="390" selection-start-line="390" selection-end-line="396" selection-end-column="46" />
-                  <folding>
-                    <element signature="e#11740#11741#0" expanded="true" />
-                    <element signature="e#16251#16252#0" expanded="true" />
-                    <element signature="e#17613#17614#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="343">
-                  <caret line="85" column="45" selection-start-line="85" selection-start-column="45" selection-end-line="85" selection-end-column="45" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                    <element signature="e#15228#15229#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="544">
-                  <caret line="53" selection-start-line="53" selection-end-line="53" />
-                </state>
-              </provider>
-              <provider editor-type-id="android-manifest" />
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="326">
-                  <caret line="253" column="29" lean-forward="true" selection-start-line="253" selection-start-column="29" selection-end-line="253" selection-end-column="29" />
-                  <folding>
-                    <element signature="imports" expanded="true" />
-                    <element signature="e#3271#3272#0" expanded="true" />
-                    <element signature="e#6066#6067#0" expanded="true" />
-                    <element signature="e#6168#6169#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyListener.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="102">
-                  <caret line="6" column="23" selection-start-line="6" selection-start-column="9" selection-end-line="6" selection-end-column="23" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivity.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="399">
-                  <caret line="99" column="21" selection-start-line="99" selection-start-column="21" selection-end-line="99" selection-end-column="21" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWithService.java">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="467">
-                  <caret line="179" column="26" selection-start-line="179" selection-start-column="26" selection-end-line="179" selection-end-column="26" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="511">
+              <caret line="301" column="61" selection-start-line="301" selection-start-column="61" selection-end-line="301" selection-end-column="61" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="328" lean-forward="true" selection-start-line="328" selection-end-line="328" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1782#1783#0" expanded="true" />
+                <element signature="e#1816#1817#0" expanded="true" />
+                <element signature="e#4228#4229#0" expanded="true" />
+                <element signature="e#4289#4290#0" expanded="true" />
+                <element signature="e#6719#6720#0" expanded="true" />
+                <element signature="e#6776#6777#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyListener.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="3" column="21" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="21" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="221">
+              <caret line="13" column="34" lean-forward="true" selection-start-line="13" selection-start-column="34" selection-end-line="13" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="230">
+              <caret line="518" column="57" selection-start-line="518" selection-start-column="57" selection-end-line="518" selection-end-column="57" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#32838#32839#0" expanded="true" />
+                <element signature="e#32870#32871#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="23" selection-start-column="23" selection-end-column="23" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardLoginActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger_send_text.xml">
+          <provider editor-type-id="android-designer2" />
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger_send_media.xml">
+          <provider editor-type-id="android-designer2" />
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/NearflyBindingAktivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="561">
+              <caret line="45" column="38" selection-start-line="45" selection-start-column="38" selection-end-line="45" selection-end-column="38" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -263,43 +318,43 @@
         <option value="Interface" />
         <option value="valueResourceFile" />
         <option value="resourceFile" />
-        <option value="layoutResourceFile_vertical" />
         <option value="Class" />
+        <option value="layoutResourceFile_vertical" />
       </list>
     </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>getServiceid</find>
-      <find>getService</find>
-      <find>getSTrategy</find>
-      <find>getStrategy</find>
-      <find>isConnec</find>
-      <find>connec</find>
-      <find>isConnected</find>
-      <find>onStateChanged</find>
-      <find>isConnect</find>
-      <find>isconnected</find>
-      <find>nearflylistener</find>
-      <find>nearbyconnectionslclie</find>
-      <find>MyNearbyConnectionsClient</find>
-      <find>nearbyConnectionsClient</find>
-      <find>super(</find>
-      <find>MyNearbyConnectionsAbstract</find>
-      <find>getSer</find>
-      <find>SERVICE_ID</find>
-      <find>setState</find>
-      <find>STANDBY</find>
-      <find>received(</find>
-      <find>startDiscovering</find>
-      <find>subscribedChannels</find>
-      <find>makefile</find>
-      <find>on</find>
-      <find>initS</find>
-      <find>service_id</find>
-      <find>standby</find>
-      <find>connect\(</find>
-      <find>unknown</find>
+      <find>onconnecion</find>
+      <find>onconnections</find>
+      <find>Connection</find>
+      <find>Exe</find>
+      <find>mEstablishedConnec</find>
+      <find>Hashset</find>
+      <find>nconnectioninstan</find>
+      <find>mPendingC</find>
+      <find>that'</find>
+      <find>playerBe</find>
+      <find>playerBefore</find>
+      <find>before</find>
+      <find>that's</find>
+      <find>CONNODE</find>
+      <find>onLogMessage</find>
+      <find>forwarder</find>
+      <find>forward</find>
+      <find>executor</find>
+      <find>cnt</find>
+      <find>endpoint</find>
+      <find>semd</find>
+      <find>forward(</find>
+      <find>onMessage</find>
+      <find>send(</find>
+      <find>send</find>
+      <find>publishit</find>
+      <find>startAdver</find>
+      <find>publish</find>
+      <find>nearflySer</find>
+      <find>connect(</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -313,64 +368,64 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/testenviroment/MainActivityWorkingTest.java" />
-        <option value="$PROJECT_DIR$/nearfly/build.gradle" />
-        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ConnectionsActivityWithPermissions.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/testenviroment/ConnectionsActivityTest.java" />
-        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveWithProgressCallback.java" />
-        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveFilePayloadCallbackTEST.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWorking.java" />
-        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveFilePayloadCallback.java" />
-        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MyMqttListener.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/rouned_rectangle_shape.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/circle.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/rounded_rectangle.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessageListAdapter.java" />
-        <option value="$PROJECT_DIR$/app/build.gradle" />
-        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/ExtMessage.java" />
-        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyListener.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/messenger_image.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/messenger_text.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWithService.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Standard.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/messenger_send_text.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/messenger_send_image.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/messenger_receive_image.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/messenger_receive_text.xml" />
-        <option value="$PROJECT_DIR$/nearfly/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/ic_nearfly.xml" />
-        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/EndpointName.java" />
-        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/EndpointNameGenerator.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/Login.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLogin.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/messenger_login.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/ic_download_icon.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/messenger.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/messenger_send_media.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/messenger_receive_media.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/GenericFileProvider.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/MyContentProvider.java" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/xml/provider_paths.xml" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/MqttMessaging.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/MQTTService.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/MyMQTTClient.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/NearbyService.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/NearbyUnpublisher.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/nearbyconnections/ReceivePayloadCallback.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/notused/nearbymessanger/MyMqttListener.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/mqtt/MqttMessaging.java" />
         <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyFile.java" />
-        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/ExtMessage.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/mqtt/MqttListener.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/mqtt/MyMQTTClient.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/Constants.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/nearbyconnections/ConnectionsActivity.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/nearbyconnections/EndpointNameGenerator.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/nearbyconnections/MsgForwarder.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/nearbyconnections/MyNearbyConnectionsAbstract.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/nearbyconnections/PublishForwarder.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/nearbyconnections/ReceivePayloadCallback.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/nearbyconnections/MyNearbyConnectionsClient.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ConnectionsActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWorking.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/ConnectionsActivityWithPermissions.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityMQTT.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MqttListener.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/NearflyBindingAktivity.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MyMQTTClient.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyListener.java" />
+        <option value="$PROJECT_DIR$/nearfly/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWithService.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityMQTT2.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityNearby.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/testenviroment/ConnectionsActivityTest.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Standard.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/testenviroment/MainActivityWorkingTest.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/TouchpointActivity.java" />
-        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreBoardNotepad.java" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/scoreboard_login.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardLoginActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/Player.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/scoreboard.xml" />
         <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsAbstract.java" />
         <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsClient.java" />
+        <option value="$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="363" />
-    <option name="y" value="-9" />
-    <option name="width" value="1936" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-113" />
+    <option name="y" value="-18" />
+    <option name="width" value="975" />
     <option name="height" value="880" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -379,7 +434,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -390,18 +444,7 @@
             <path>
               <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
               <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="manifests" type="f94875db:AndroidManifestsGroupNode" />
-            </path>
-            <path>
-              <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-            </path>
-            <path>
-              <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="nearflyexample" type="cbb59c9e:AndroidPsiDirectoryNode" />
             </path>
             <path>
               <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
@@ -414,6 +457,13 @@
               <item name="app" type="feadf853:AndroidModuleNode" />
               <item name="java" type="edd41e36:AndroidSourceTypeNode" />
               <item name="lala" type="cbb59c9e:AndroidPsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="lala" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="connections" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
@@ -433,9 +483,13 @@
             <path>
               <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
               <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
-              <item name="lala" type="cbb59c9e:AndroidPsiDirectoryNode" />
-              <item name="testenviroment" type="462c0819:PsiDirectoryNode" />
+              <item name="java (generated)" type="edd41e36:AndroidSourceTypeNode" />
+            </path>
+            <path>
+              <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
+              <item name="app" type="feadf853:AndroidModuleNode" />
+              <item name="java (generated)" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="nearflyexample" type="cbb59c9e:AndroidPsiDirectoryNode" />
             </path>
             <path>
               <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
@@ -466,11 +520,17 @@
               <item name="pbma" type="cbb59c9e:AndroidPsiDirectoryNode" />
               <item name="nearfly" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="NearflyExample" type="1abcf292:AndroidViewProjectNode" />
+              <item name="nearfly" type="feadf853:AndroidModuleNode" />
+              <item name="java" type="edd41e36:AndroidSourceTypeNode" />
+              <item name="pbma" type="cbb59c9e:AndroidPsiDirectoryNode" />
+              <item name="nearbymessanger" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope">
         <subPane subId="Scope 'Default Changelist'; set:Default Changelist; class com.intellij.packageDependencies.ChangeListScope">
           <expand>
@@ -487,23 +547,40 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="NearflyExample" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NearflyExample" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="NearflyExample" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NearflyExample" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="nearfly" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="DEBUGGABLE_DEVICE" value="samsung-sm_g935f-ad07160308c9969b6f" />
+    <property name="DEBUGGABLE_DEVICE" value="samsung-sm_g960f-229bf1b61c027ece" />
     <property name="DEBUGGABLE_PROCESS" value="de.pbma.nearflyexample" />
     <property name="DEBUGGER_ID" value="Auto" />
     <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="229bf1b61c027ece" />
-    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-04-22T19:28:22.696Z" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-04-27T19:39:15.928Z" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SHOW_ALL_PROCESSES" value="false" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/main/java" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/src/main/res/layout" />
+    <property name="last_opened_file_path" value="D:/Studium/6.Sem/MOA/19moagd/BouncingBall" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.17" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.build" />
   </component>
   <component name="PsdUISettings">
     <option name="MODULE_TAB" value="Properties" />
@@ -517,17 +594,19 @@
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="de.pbma.nearfly" />
+      <recent name="de.pbma" />
       <recent name="de.pbma.nearflyexample" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="de.pbma.nearflyexample.lala.scenarios.ScoreBoardNotepad" />
+      <recent name="de.pbma.notused.nearbymessanger" />
+      <recent name="de.pbma" />
       <recent name="de.pbma.nearflyexample.lala.testenviroment" />
       <recent name="de.pbma.nearflyexample.lala.scenarios" />
-      <recent name="de.pbma.nearfly" />
-      <recent name="de.pmba.nearflyexample.nearbyconnections" />
-      <recent name="de.pbma.nearflyexample" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\AcerPredator\Desktop\20thesis04\NearflyExample\app\src\main\res\layout" />
+      <recent name="C:\Users\AcerPredator\Desktop\20thesis04\NearflyExample\nearfly\src\main\java\de\pbma\notused\nearbymessanger" />
       <recent name="C:\Users\AcerPredator\Desktop\20thesis04\NearflyExample\nearfly\src\main\java\de\pbma\nearbyconnections" />
       <recent name="C:\Users\AcerPredator\Desktop\20thesis04\NearflyExample\app\src\main\java\de\pmba\nearflyexample\nearbyconnections" />
       <recent name="C:\Users\AcerPredator\Desktop\connectivity-samples\NearflyExample\app\src\main\res" />
@@ -554,165 +633,6 @@
     <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
       <option name="TEST_OBJECT" value="class" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <method v="2">
-        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MainActivityMQTT (1)" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false" temporary="true">
-      <module name="app" />
-      <option name="DEPLOY" value="true" />
-      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
-      <option name="DEPLOY_AS_INSTANT" value="false" />
-      <option name="ARTIFACT_NAME" value="" />
-      <option name="PM_INSTALL_OPTIONS" value="" />
-      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
-      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
-      <option name="MODE" value="specific_activity" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
-      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
-      <option name="FORCE_STOP_RUNNING_APP" value="true" />
-      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
-      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
-      <option name="DEBUGGER_TYPE" value="Auto" />
-      <Auto>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-      </Auto>
-      <Hybrid>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-      </Hybrid>
-      <Java />
-      <Native>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-      </Native>
-      <Profilers>
-        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
-      </Profilers>
-      <option name="DEEP_LINK" value="" />
-      <option name="ACTIVITY_CLASS" value="de.pbma.nearflyexample.lala.old.MainActivityMQTT" />
-      <method v="2">
-        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MainActivityMQTT" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false" temporary="true">
-      <module name="app" />
-      <option name="DEPLOY" value="true" />
-      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
-      <option name="DEPLOY_AS_INSTANT" value="false" />
-      <option name="ARTIFACT_NAME" value="" />
-      <option name="PM_INSTALL_OPTIONS" value="" />
-      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
-      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
-      <option name="MODE" value="specific_activity" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
-      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
-      <option name="FORCE_STOP_RUNNING_APP" value="true" />
-      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
-      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
-      <option name="DEBUGGER_TYPE" value="Auto" />
-      <Auto>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-      </Auto>
-      <Hybrid>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-      </Hybrid>
-      <Java />
-      <Native>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-      </Native>
-      <Profilers>
-        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
-      </Profilers>
-      <option name="DEEP_LINK" value="" />
-      <option name="ACTIVITY_CLASS" value="de.pbma.nearflyexample.lala.old.MainActivityMQTT2" />
-      <method v="2">
-        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="MainActivityNearby" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false" temporary="true">
-      <module name="app" />
-      <option name="DEPLOY" value="true" />
-      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
-      <option name="DEPLOY_AS_INSTANT" value="false" />
-      <option name="ARTIFACT_NAME" value="" />
-      <option name="PM_INSTALL_OPTIONS" value="" />
-      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
-      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
-      <option name="MODE" value="specific_activity" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
-      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
-      <option name="FORCE_STOP_RUNNING_APP" value="true" />
-      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
-      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
-      <option name="DEBUGGER_TYPE" value="Auto" />
-      <Auto>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-      </Auto>
-      <Hybrid>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-      </Hybrid>
-      <Java />
-      <Native>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-      </Native>
-      <Profilers>
-        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
-      </Profilers>
-      <option name="DEEP_LINK" value="" />
-      <option name="ACTIVITY_CLASS" value="de.pbma.nearflyexample.lala.old.MainActivityNearby" />
       <method v="2">
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
@@ -770,59 +690,6 @@
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TouchpointActivity" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false" temporary="true">
-      <module name="app" />
-      <option name="DEPLOY" value="true" />
-      <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
-      <option name="DEPLOY_AS_INSTANT" value="false" />
-      <option name="ARTIFACT_NAME" value="" />
-      <option name="PM_INSTALL_OPTIONS" value="" />
-      <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
-      <option name="ACTIVITY_EXTRA_FLAGS" value="" />
-      <option name="MODE" value="specific_activity" />
-      <option name="CLEAR_LOGCAT" value="false" />
-      <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
-      <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
-      <option name="FORCE_STOP_RUNNING_APP" value="true" />
-      <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
-      <option name="USE_LAST_SELECTED_DEVICE" value="false" />
-      <option name="PREFERRED_AVD" value="" />
-      <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
-      <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
-      <option name="DEBUGGER_TYPE" value="Auto" />
-      <Auto>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-      </Auto>
-      <Hybrid>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-      </Hybrid>
-      <Java />
-      <Native>
-        <option name="USE_JAVA_AWARE_DEBUGGER" value="false" />
-        <option name="SHOW_STATIC_VARS" value="true" />
-        <option name="WORKING_DIR" value="" />
-        <option name="TARGET_LOGGING_CHANNELS" value="lldb process:gdb-remote packets" />
-        <option name="SHOW_OPTIMIZED_WARNING" value="true" />
-      </Native>
-      <Profilers>
-        <option name="ADVANCED_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
-        <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
-      </Profilers>
-      <option name="DEEP_LINK" value="" />
-      <option name="ACTIVITY_CLASS" value="de.pbma.nearflyexample.lala.scenarios.Standard" />
-      <method v="2">
-        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="app" />
       <option name="DEPLOY" value="true" />
@@ -876,13 +743,89 @@
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="C:/Users/AcerPredator/Desktop/20thesis04/NearflyExample/nearfly [assemble]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/nearfly" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="assemble" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="C:/Users/AcerPredator/Desktop/20thesis04/NearflyExample/nearfly [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/nearfly" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="C:/Users/AcerPredator/Desktop/20thesis04/NearflyExample/nearfly [compileDebugSources]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/nearfly" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="compileDebugSources" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="C:/Users/AcerPredator/Desktop/20thesis04/NearflyExample/nearfly [compileReleaseSources]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/nearfly" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="compileReleaseSources" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.C:/Users/AcerPredator/Desktop/20thesis04/NearflyExample/nearfly [assemble]" />
+        <item itemvalue="Gradle.C:/Users/AcerPredator/Desktop/20thesis04/NearflyExample/nearfly [compileDebugSources]" />
+        <item itemvalue="Gradle.C:/Users/AcerPredator/Desktop/20thesis04/NearflyExample/nearfly [compileReleaseSources]" />
+        <item itemvalue="Gradle.C:/Users/AcerPredator/Desktop/20thesis04/NearflyExample/nearfly [build]" />
         <item itemvalue="Android App.TouchpointActivity (1)" />
-        <item itemvalue="Android App.TouchpointActivity" />
-        <item itemvalue="Android App.MainActivityNearby" />
-        <item itemvalue="Android App.MainActivityMQTT (1)" />
-        <item itemvalue="Android App.MainActivityMQTT" />
       </list>
     </recent_temporary>
   </component>
@@ -913,7 +856,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" sideWeight="0.3983871" side_tool="true" weight="0.1748401" />
-      <window_info content_ui="combo" id="Project" order="1" sideWeight="0.74154264" visible="true" weight="0.16204691" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.74154264" visible="true" weight="0.16204691" />
       <window_info id="Structure" order="2" sideWeight="0.25845736" side_tool="true" weight="0.16204691" />
       <window_info id="Favorites" order="3" sideWeight="0.40086675" side_tool="true" weight="0.1748401" />
       <window_info id="Build Variants" order="4" sideWeight="0.40086675" side_tool="true" weight="0.1748401" />
@@ -923,55 +866,57 @@
       <window_info id="Capture Tool" order="8" />
       <window_info id="simpleUML" order="9" sideWeight="0.48579162" weight="0.39019188" />
       <window_info anchor="bottom" id="Version Control" order="0" weight="0.36403033" />
-      <window_info active="true" anchor="bottom" id="Logcat" order="1" sideWeight="0.5479744" visible="true" weight="0.3217768" />
+      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.5346482" visible="true" weight="0.3217768" />
       <window_info anchor="bottom" id="TODO" order="2" weight="0.32827735" />
       <window_info anchor="bottom" id="Terminal" order="3" weight="0.32502708" />
-      <window_info anchor="bottom" id="Event Log" order="4" sideWeight="0.4760128" side_tool="true" weight="0.3261105" />
-      <window_info anchor="bottom" id="Build" order="5" sideWeight="0.49573562" weight="0.20585048" />
-      <window_info anchor="bottom" id="Android Profiler" order="6" weight="0.32936078" />
-      <window_info anchor="bottom" id="Run" order="7" sideWeight="0.52398723" weight="0.3261105" />
+      <window_info anchor="bottom" id="Event Log" order="4" sideWeight="0.46535182" side_tool="true" weight="0.3217768" />
+      <window_info anchor="bottom" id="Build" order="5" sideWeight="0.49573562" weight="0.2665222" />
+      <window_info anchor="bottom" id="Android Profiler" order="6" show_stripe_button="false" weight="0.32936078" />
+      <window_info anchor="bottom" id="Run" order="7" sideWeight="0.52398723" weight="0.42470205" />
       <window_info anchor="bottom" id="Debug" order="8" sideWeight="0.5463753" weight="0.35102925" />
-      <window_info anchor="bottom" id="Find" order="9" weight="0.32936078" />
+      <window_info anchor="bottom" id="Find" order="9" weight="0.3286119" />
       <window_info anchor="bottom" id="Statistic" order="10" sideWeight="0.49733475" weight="0.32936078" />
       <window_info anchor="right" id="Hierarchy" order="0" weight="0.32889125" />
-      <window_info anchor="right" id="Device File Explorer" order="1" sideWeight="0.54533154" side_tool="true" weight="0.32889125" />
-      <window_info anchor="right" id="Capture Analysis" order="2" />
-      <window_info anchor="right" id="Gradle" order="3" />
-      <window_info anchor="right" id="Theme Preview" order="4" />
-      <window_info anchor="right" id="Palette&#9;" order="5" />
-      <window_info anchor="right" id="Preview" order="6" sideWeight="0.45466846" weight="0.32889125" />
-      <window_info anchor="right" x="0" y="0" width="434" height="856" id="Documentation" order="7" side_tool="true" weight="0.17217484" />
+      <window_info anchor="right" id="Capture Analysis" order="1" />
+      <window_info anchor="right" id="Gradle" order="2" weight="0.26979867" />
+      <window_info anchor="right" id="Theme Preview" order="3" />
+      <window_info anchor="right" id="Palette&#9;" order="4" />
+      <window_info anchor="right" id="Preview" order="5" sideWeight="0.45466846" weight="0.32889125" />
+      <window_info anchor="right" x="0" y="0" width="434" height="856" id="Documentation" order="6" side_tool="true" weight="0.17217484" />
+      <window_info anchor="right" id="Assistant" order="7" weight="0.32995737" />
+      <window_info anchor="right" id="Device File Explorer" order="8" sideWeight="0.54533154" side_tool="true" weight="0.32889125" />
     </layout>
     <layout-to-restore>
       <window_info id="Captures" order="0" sideWeight="0.3983871" side_tool="true" weight="0.1748401" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.74154264" visible="true" weight="0.16204691" />
-      <window_info id="Structure" order="2" sideWeight="0.25845736" side_tool="true" visible="true" weight="0.16204691" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.74154264" visible="true" weight="0.20402685" />
+      <window_info id="Structure" order="2" sideWeight="0.25845736" side_tool="true" weight="0.16204691" />
       <window_info id="Favorites" order="3" sideWeight="0.40086675" side_tool="true" weight="0.1748401" />
       <window_info id="Build Variants" order="4" sideWeight="0.40086675" side_tool="true" weight="0.1748401" />
       <window_info id="Image Layers" order="5" />
       <window_info id="Designer" order="6" />
       <window_info id="Resources Explorer" order="7" sideWeight="0.49574107" weight="0.32995737" />
       <window_info id="Capture Tool" order="8" />
-      <window_info id="simpleUML" order="9" sideWeight="0.48579162" weight="0.32995737" />
+      <window_info id="simpleUML" order="9" sideWeight="0.48579162" weight="0.39019188" />
       <window_info anchor="bottom" id="Version Control" order="0" weight="0.36403033" />
-      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.5479744" weight="0.32827735" />
+      <window_info anchor="bottom" id="Logcat" order="1" sideWeight="0.5346482" weight="0.3217768" />
       <window_info anchor="bottom" id="TODO" order="2" weight="0.32827735" />
       <window_info anchor="bottom" id="Terminal" order="3" weight="0.32502708" />
-      <window_info anchor="bottom" id="Event Log" order="4" sideWeight="0.4520256" side_tool="true" weight="0.32827735" />
-      <window_info anchor="bottom" id="Build" order="5" sideWeight="0.49573562" visible="true" weight="0.19934994" />
-      <window_info anchor="bottom" id="Android Profiler" order="6" weight="0.32936078" />
-      <window_info anchor="bottom" id="Run" order="7" sideWeight="0.4989339" weight="0.3261105" />
+      <window_info anchor="bottom" id="Event Log" order="4" sideWeight="0.46535182" side_tool="true" weight="0.3217768" />
+      <window_info anchor="bottom" id="Build" order="5" sideWeight="0.49573562" visible="true" weight="0.34985834" />
+      <window_info anchor="bottom" id="Android Profiler" order="6" show_stripe_button="false" weight="0.32936078" />
+      <window_info anchor="bottom" id="Run" order="7" sideWeight="0.52398723" weight="0.42470205" />
       <window_info anchor="bottom" id="Debug" order="8" sideWeight="0.5463753" weight="0.35102925" />
-      <window_info anchor="bottom" id="Find" order="9" weight="0.32936078" />
+      <window_info anchor="bottom" id="Find" order="9" weight="0.3286119" />
       <window_info anchor="bottom" id="Statistic" order="10" sideWeight="0.49733475" weight="0.32936078" />
       <window_info anchor="right" id="Hierarchy" order="0" weight="0.32889125" />
-      <window_info anchor="right" id="Device File Explorer" order="1" sideWeight="0.54533154" side_tool="true" weight="0.32889125" />
-      <window_info anchor="right" id="Capture Analysis" order="2" />
-      <window_info anchor="right" id="Gradle" order="3" />
-      <window_info anchor="right" id="Theme Preview" order="4" />
-      <window_info anchor="right" id="Palette&#9;" order="5" />
-      <window_info anchor="right" id="Preview" order="6" sideWeight="0.45466846" weight="0.32889125" />
-      <window_info anchor="right" x="0" y="0" width="434" height="856" id="Documentation" order="7" side_tool="true" weight="0.17217484" />
+      <window_info anchor="right" id="Capture Analysis" order="1" />
+      <window_info anchor="right" id="Gradle" order="2" weight="0.26979867" />
+      <window_info anchor="right" id="Theme Preview" order="3" />
+      <window_info anchor="right" id="Palette&#9;" order="4" />
+      <window_info anchor="right" id="Preview" order="5" sideWeight="0.45466846" weight="0.32889125" />
+      <window_info anchor="right" x="0" y="0" width="434" height="856" id="Documentation" order="6" side_tool="true" weight="0.17217484" />
+      <window_info anchor="right" id="Assistant" order="7" weight="0.32995737" />
+      <window_info anchor="right" id="Device File Explorer" order="8" sideWeight="0.54533154" side_tool="true" weight="0.32889125" />
     </layout-to-restore>
   </component>
   <component name="XDebuggerManager">
@@ -991,7 +936,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityMQTT.java</url>
-          <line>151</line>
+          <line>153</line>
           <properties />
           <option name="timeStamp" value="23" />
         </line-breakpoint>
@@ -1003,159 +948,153 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>359</line>
+          <line>352</line>
           <properties />
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>491</line>
+          <line>500</line>
           <properties />
           <option name="timeStamp" value="47" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>191</line>
-          <properties />
-          <option name="timeStamp" value="59" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>193</line>
-          <properties />
-          <option name="timeStamp" value="60" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>560</line>
+          <line>569</line>
           <properties />
           <option name="timeStamp" value="65" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>687</line>
+          <line>698</line>
           <properties />
           <option name="timeStamp" value="75" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>688</line>
+          <line>699</line>
           <properties />
           <option name="timeStamp" value="76" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>712</line>
+          <line>723</line>
           <properties />
           <option name="timeStamp" value="78" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>711</line>
+          <line>722</line>
           <properties />
           <option name="timeStamp" value="79" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>311</line>
+          <line>304</line>
           <properties />
           <option name="timeStamp" value="80" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>303</line>
+          <line>296</line>
           <properties />
           <option name="timeStamp" value="81" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>306</line>
+          <line>299</line>
           <properties />
           <option name="timeStamp" value="82" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>307</line>
+          <line>300</line>
           <properties />
           <option name="timeStamp" value="83" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>308</line>
+          <line>301</line>
           <properties />
           <option name="timeStamp" value="85" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java</url>
-          <line>61</line>
+          <line>60</line>
           <properties />
           <option name="timeStamp" value="97" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java</url>
-          <line>176</line>
+          <line>175</line>
           <properties />
           <option name="timeStamp" value="100" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java</url>
-          <line>175</line>
+          <line>174</line>
           <properties />
           <option name="timeStamp" value="101" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>511</line>
+          <line>513</line>
           <properties />
           <option name="timeStamp" value="102" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>214</line>
-          <properties />
-          <option name="timeStamp" value="103" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>218</line>
-          <properties />
-          <option name="timeStamp" value="104" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java</url>
-          <line>213</line>
-          <properties />
-          <option name="timeStamp" value="105" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsClient.java</url>
-          <line>438</line>
+          <line>435</line>
           <properties />
           <option name="timeStamp" value="107" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsClient.java</url>
-          <line>437</line>
+          <line>434</line>
           <properties />
           <option name="timeStamp" value="108" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java</url>
-          <line>112</line>
+          <line>111</line>
           <properties />
           <option name="timeStamp" value="109" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java</url>
-          <line>271</line>
+          <line>270</line>
           <properties />
           <option name="timeStamp" value="110" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java</url>
-          <line>75</line>
+          <line>74</line>
           <properties />
           <option name="timeStamp" value="111" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MyMQTTClient.java</url>
+          <line>119</line>
+          <properties />
+          <option name="timeStamp" value="114" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MyMQTTClient.java</url>
+          <line>118</line>
+          <properties />
+          <option name="timeStamp" value="116" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsAbstract.java</url>
+          <line>100</line>
+          <properties />
+          <option name="timeStamp" value="119" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsAbstract.java</url>
+          <line>104</line>
+          <properties />
+          <option name="timeStamp" value="120" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-field">
           <url>file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/pbma/nearflyexample/old/MainActivityMQTT.java</url>
@@ -1189,130 +1128,149 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-29/android/widget/ScrollView.java">
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/PublishForwarder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="79" column="13" selection-start-line="79" selection-start-column="13" selection-end-line="79" selection-end-column="13" />
+        <state relative-caret-position="119">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/CustomView.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
-          <caret line="4" column="57" lean-forward="true" selection-start-line="4" selection-start-column="57" selection-end-line="4" selection-end-column="57" />
+          <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-29/android/os/Environment.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityMQTT.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="41" column="13" selection-start-line="41" selection-start-column="13" selection-end-line="41" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/EndpointNameGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="57" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="57" />
+        <state relative-caret-position="236">
+          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml">
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MqttListener.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="68" selection-start-line="3" selection-start-column="68" selection-end-line="3" selection-end-column="68" />
+        <state relative-caret-position="119">
+          <caret line="7" column="27" lean-forward="true" selection-start-line="7" selection-start-column="27" selection-end-line="7" selection-end-column="27" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/AndroidManifest.xml">
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MyMqttListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/ConnectionsActivityWithPermissions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="58" selection-start-line="58" selection-end-line="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyFile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/Constants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="8" column="28" selection-start-line="8" selection-start-column="28" selection-end-line="8" selection-end-column="28" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/GenericFileProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="24" lean-forward="true" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-29/java/lang/CharSequence.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="236">
+          <caret line="58" column="17" selection-start-line="58" selection-start-column="17" selection-end-line="58" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWithService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
-          <caret line="14" column="17" lean-forward="true" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-manifest" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_download_icon.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="19" lean-forward="true" selection-start-line="10" selection-start-column="19" selection-end-line="10" selection-end-column="19" />
+          <caret line="14" column="36" selection-start-line="14" selection-start-column="36" selection-end-line="14" selection-end-column="36" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger_login.xml">
-      <provider editor-type-id="android-designer2" />
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityMQTT2.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="26" column="31" lean-forward="true" selection-start-line="26" selection-start-column="31" selection-end-line="26" selection-end-column="31" />
+        <state relative-caret-position="119">
+          <caret line="7" column="48" selection-start-line="7" selection-start-column="48" selection-end-line="7" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/old/MainActivityNearby.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="48" selection-start-line="12" selection-start-column="48" selection-end-line="12" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/testenviroment/ConnectionsActivityTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="43" selection-start-line="15" selection-start-column="43" selection-end-line="15" selection-end-column="43" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Standard.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="96" column="64" selection-start-line="96" selection-start-column="64" selection-end-line="96" selection-end-column="64" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="136">
+          <caret line="8" column="36" selection-start-line="8" selection-start-column="36" selection-end-line="8" selection-end-column="36" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_launcher_background.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/TouchpointActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="37" selection-start-line="18" selection-start-column="37" selection-end-line="18" selection-end-column="37" />
+        <state relative-caret-position="153">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable-v24/ic_launcher_foreground.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/testenviroment/MainActivityWorkingTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3">
-          <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="48" />
+        <state relative-caret-position="391">
+          <caret line="23" column="27" selection-start-line="23" selection-start-column="27" selection-end-line="23" selection-end-column="27" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/ic_nearfly.xml">
+    <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="84" selection-start-line="12" selection-start-column="84" selection-end-line="12" selection-end-column="84" />
+        <state relative-caret-position="59">
+          <caret line="21" selection-start-line="21" selection-end-line="24" selection-end-column="9" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/rounded_rectangle.xml">
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="13" column="8" lean-forward="true" selection-start-line="13" selection-start-column="8" selection-end-line="13" selection-end-column="8" />
+        <state relative-caret-position="212">
+          <caret line="39" selection-start-line="39" selection-end-line="39" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger_send_image.xml">
-      <provider editor-type-id="android-designer2" />
+    <entry file="file://$PROJECT_DIR$/nearfly/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="343">
-          <caret line="46" column="26" lean-forward="true" selection-start-line="46" selection-start-column="26" selection-end-line="46" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger_send_media.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="45" column="36" selection-start-line="45" selection-start-column="36" selection-end-line="45" selection-end-column="36" />
+        <state relative-caret-position="629">
+          <caret line="37" column="54" selection-start-line="37" selection-start-column="54" selection-end-line="37" selection-end-column="54" />
         </state>
       </provider>
     </entry>
@@ -1320,273 +1278,265 @@
       <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger_receive_text.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger_receive_image.xml">
       <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="41" column="32" selection-start-line="41" selection-start-column="32" selection-end-line="41" selection-end-column="32" />
+        <state relative-caret-position="272">
+          <caret line="16" column="46" lean-forward="true" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="46" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger_send_text.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider editor-type-id="android-manifest" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="37" column="17" lean-forward="true" selection-start-line="37" selection-start-column="17" selection-end-line="37" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MqttMessaging.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="256" selection-start-line="256" selection-end-line="256" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-29/java/lang/Runnable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="748">
+          <caret line="67" column="25" selection-start-line="67" selection-start-column="25" selection-end-line="67" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MyMQTTClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1411">
+          <caret line="106" selection-start-line="106" selection-end-line="106" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="26" selection-start-line="10" selection-start-column="26" selection-end-line="10" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger_login.xml">
       <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
+        <state relative-caret-position="542">
+          <caret line="35" column="40" selection-start-line="35" selection-start-column="40" selection-end-line="35" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/AvailableColors.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="241">
+          <caret line="19" column="5" lean-forward="true" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/05ad17a727de091cdac7467e828e0e80/play-services-nearby-17.0.0/jars/classes.jar!/com/google/android/gms/internal/nearby/zzbx.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
           <caret line="19" column="22" selection-start-line="19" selection-start-column="22" selection-end-line="19" selection-end-column="22" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main_mqtt.xml">
+    <entry file="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bd8a4935a17dde33dc1d62d4f9914d3b/play-services-base-17.0.0/jars/classes.jar!/com/google/android/gms/common/api/internal/ListenerHolder.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="191">
+          <caret line="63" selection-start-line="63" selection-end-line="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/scoreboard.xml">
       <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="32" selection-start-line="10" selection-start-column="25" selection-end-line="10" selection-end-column="32" />
+        <state relative-caret-position="524">
+          <caret line="183" column="47" lean-forward="true" selection-start-line="183" selection-start-column="47" selection-end-line="183" selection-end-column="47" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/MyContentProvider.java">
+    <entry file="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/05ad17a727de091cdac7467e828e0e80/play-services-nearby-17.0.0/jars/classes.jar!/com/google/android/gms/nearby/connection/ConnectionsClient.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
+        <state relative-caret-position="-51">
+          <caret line="18" column="22" selection-start-line="18" selection-start-column="22" selection-end-line="18" selection-end-column="22" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger_receive_media.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1343">
+          <caret line="102" column="29" selection-start-line="102" selection-start-column="20" selection-end-line="102" selection-end-column="29" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/scoreboard_login.xml">
       <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="392">
-          <caret line="60" column="64" lean-forward="true" selection-start-line="60" selection-start-column="64" selection-end-line="60" selection-end-column="64" />
+        <state relative-caret-position="255">
+          <caret line="15" column="44" selection-start-line="15" selection-start-column="44" selection-end-line="15" selection-end-column="44" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/xml/provider_paths.xml">
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6851">
+          <caret line="424" column="23" selection-start-line="424" selection-start-column="16" selection-end-line="424" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceiveWithProgressCallback.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
-          <caret line="2" column="63" selection-start-line="2" selection-start-column="63" selection-end-line="2" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/touchpoint.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="15" column="38" selection-start-line="15" selection-start-column="36" selection-end-line="15" selection-end-column="38" />
+          <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger.xml">
       <provider editor-type-id="android-designer2" />
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="106" column="43" selection-start-line="106" selection-start-column="29" selection-end-line="106" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger_receive_image.xml">
-      <provider editor-type-id="android-designer2" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="48" column="8" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-29/android/app/ActivityThread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="5091" selection-start-line="5091" selection-end-line="5091" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyFile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#310#311#0" expanded="true" />
-            <element signature="e#340#341#0" expanded="true" />
-            <element signature="e#371#372#0" expanded="true" />
-            <element signature="e#401#402#0" expanded="true" />
-            <element signature="e#442#443#0" expanded="true" />
-            <element signature="e#458#459#0" expanded="true" />
-            <element signature="e#363#364#0" expanded="true" />
-            <element signature="e#389#390#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-29/android/os/Handler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="38">
-          <caret line="92" selection-start-line="92" selection-end-line="92" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bd8a4935a17dde33dc1d62d4f9914d3b/play-services-base-17.0.0/jars/classes.jar!/com/google/android/gms/internal/base/zap.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="28" selection-start-line="28" selection-end-line="28" />
-          <folding>
-            <element signature="e#566#567#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-29/android/os/Looper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="155" selection-start-line="155" selection-end-line="155" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="99" column="21" selection-start-line="99" selection-start-column="21" selection-end-line="99" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivityWithService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="467">
-          <caret line="179" column="26" selection-start-line="179" selection-start-column="26" selection-end-line="179" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/NearflyBindingAktivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="620">
-          <caret line="124" column="26" selection-start-line="124" selection-start-column="26" selection-end-line="124" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bd8a4935a17dde33dc1d62d4f9914d3b/play-services-base-17.0.0/jars/classes.jar!/com/google/android/gms/common/api/internal/ListenerHolder.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="89">
-          <caret line="63" selection-start-line="63" selection-end-line="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/mqtt/MqttMessaging.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="148" column="48" lean-forward="true" selection-start-line="148" selection-start-column="48" selection-end-line="148" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="544">
-          <caret line="53" selection-start-line="53" selection-end-line="53" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-manifest" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="23" selection-start-line="6" selection-start-column="9" selection-end-line="6" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MsgForwarder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="1" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/GenericFileProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="56" selection-start-line="4" selection-start-column="56" selection-end-line="4" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/PublishForwarder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="30" column="32" selection-start-line="30" selection-start-column="32" selection-end-line="30" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="343">
-          <caret line="85" column="45" selection-start-line="85" selection-start-column="45" selection-end-line="85" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#15228#15229#0" expanded="true" />
-          </folding>
+          <caret line="32" column="36" selection-start-line="32" selection-start-column="36" selection-end-line="32" selection-end-column="36" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsAbstract.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="901">
-          <caret line="764" column="4" selection-start-line="764" selection-start-column="4" selection-end-line="764" selection-end-column="4" />
+        <state relative-caret-position="5559">
+          <caret line="364" column="26" selection-start-line="364" selection-start-column="26" selection-end-line="364" selection-end-column="26" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#16551#16552#0" expanded="true" />
-            <element signature="e#16635#16636#0" expanded="true" />
-            <element signature="e#24639#24640#0" expanded="true" />
-            <element signature="e#24672#24673#0" expanded="true" />
+            <element signature="e#17013#17014#0" expanded="true" />
+            <element signature="e#17097#17098#0" expanded="true" />
+            <element signature="e#26120#26121#0" expanded="true" />
+            <element signature="e#26151#26152#0" expanded="true" />
+            <element signature="e#26205#26206#0" expanded="true" />
+            <element signature="e#26236#26237#0" expanded="true" />
+            <element signature="e#26290#26291#0" expanded="true" />
+            <element signature="e#26321#26322#0" expanded="true" />
+            <element signature="e#26388#26389#0" expanded="true" />
+            <element signature="e#26422#26423#0" expanded="true" />
+            <element signature="e#26489#26490#0" expanded="true" />
+            <element signature="e#26523#26524#0" expanded="true" />
+            <element signature="e#28196#28197#0" expanded="true" />
+            <element signature="e#28224#28225#0" expanded="true" />
+            <element signature="e#28325#28326#0" expanded="true" />
+            <element signature="e#28358#28359#0" expanded="true" />
+            <element signature="e#28683#28684#0" expanded="true" />
+            <element signature="e#28714#28715#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/MyNearbyConnectionsClient.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/ScoreBoardNotepad/ScoreboardLoginActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1530">
-          <caret line="390" selection-start-line="390" selection-end-line="396" selection-end-column="46" />
-          <folding>
-            <element signature="e#11740#11741#0" expanded="true" />
-            <element signature="e#16251#16252#0" expanded="true" />
-            <element signature="e#17613#17614#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Touchpoint/TouchpointActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-10">
-          <caret line="23" column="37" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
+        <state relative-caret-position="68">
+          <caret line="18" column="13" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger_send_text.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/messenger_send_media.xml">
+      <provider editor-type-id="android-designer2" />
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/NearflyBindingAktivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="3" column="25" lean-forward="true" selection-start-line="3" selection-start-column="25" selection-end-line="3" selection-end-column="25" />
+        <state relative-caret-position="561">
+          <caret line="45" column="38" selection-start-line="45" selection-start-column="38" selection-end-line="45" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java">
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearbyconnections/ReceivePayloadCallback.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1046">
-          <caret line="102" column="22" selection-start-line="102" selection-start-column="22" selection-end-line="102" selection-end-column="22" />
+        <state relative-caret-position="511">
+          <caret line="301" column="61" selection-start-line="301" selection-start-column="61" selection-end-line="301" selection-end-column="61" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3545#3546#0" expanded="true" />
-            <element signature="e#3583#3584#0" expanded="true" />
-            <element signature="e#31887#31888#0" expanded="true" />
-            <element signature="e#31919#31920#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="253" column="29" lean-forward="true" selection-start-line="253" selection-start-column="29" selection-end-line="253" selection-end-column="29" />
+        <state relative-caret-position="255">
+          <caret line="328" lean-forward="true" selection-start-line="328" selection-end-line="328" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3271#3272#0" expanded="true" />
-            <element signature="e#6066#6067#0" expanded="true" />
-            <element signature="e#6168#6169#0" expanded="true" />
+            <element signature="e#1782#1783#0" expanded="true" />
+            <element signature="e#1816#1817#0" expanded="true" />
+            <element signature="e#4228#4229#0" expanded="true" />
+            <element signature="e#4289#4290#0" expanded="true" />
+            <element signature="e#6719#6720#0" expanded="true" />
+            <element signature="e#6776#6777#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nearfly/src/main/java/de/pbma/nearfly/NearflyListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="21" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/connections/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="13" column="34" lean-forward="true" selection-start-line="13" selection-start-column="34" selection-end-line="13" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerLoginActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="23" selection-start-column="23" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/de/pbma/nearflyexample/lala/scenarios/Messenger/MessengerActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="230">
+          <caret line="518" column="57" selection-start-line="518" selection-start-column="57" selection-end-line="518" selection-end-column="57" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#32838#32839#0" expanded="true" />
+            <element signature="e#32870#32871#0" expanded="true" />
           </folding>
         </state>
       </provider>

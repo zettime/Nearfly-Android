@@ -28,7 +28,8 @@ android {
     }
 
 }
-
+// COMPILE RELEASE .AAR
+// https://dominoc925.blogspot.com/2015/09/how-to-create-and-use-android-archive.html
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -41,6 +42,4 @@ dependencies {
     implementation 'com.google.android.gms:play-services-nearby:17.0.0'
 
     // MQTT
-    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
-    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
-}
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0' }

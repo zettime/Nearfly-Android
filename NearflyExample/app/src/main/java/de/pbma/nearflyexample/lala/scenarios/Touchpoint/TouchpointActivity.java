@@ -8,7 +8,6 @@ import android.widget.RadioButton;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.nearby.connection.Payload;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,19 +43,9 @@ public class TouchpointActivity extends NearflyBindingAktivity {
     public void onNearflyServiceDisconnected() {
     }
 
-    @Override
-    public NearflyListener getNearflyListener() { return nearflyListener; }
     NearflyListener nearflyListener = new NearflyListener() {
         @Override
-        public void onLogMessage(CharSequence msg) {
-        }
-
-        @Override
-        public void onStateChanged(String state) {
-        }
-
-        @Override
-        public void onRootNodeChanged(String rootNode) {
+        public void onLogMessage(String output) {
         }
 
         @Override
@@ -79,14 +68,6 @@ public class TouchpointActivity extends NearflyBindingAktivity {
             }
 
             gameView.createTouchpoint(percTpX, percTpY, tpColorIndex);
-        }
-
-        @Override
-        public void onStream(Payload payload) {}
-
-        @Override
-        public void onBinary(Payload payload) {
-
         }
 
         @Override

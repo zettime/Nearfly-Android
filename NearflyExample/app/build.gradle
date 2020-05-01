@@ -31,19 +31,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
     //  Nearby
-    implementation 'com.google.android.gms:play-services-nearby:17.0.0'
     implementation project(path: ':nearfly')
-    // Wenn es Remote wäre
-    //  implementation 'com.github.zettime:Neafly-Android:0.0.2'
 
-    // MQTT
-    // implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
-
-    // MQTT
-    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
-    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
-
-    // Scenarios
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     // For control over item selection of both touch and mouse driven selection
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0-rc01"

@@ -1,20 +1,5 @@
 package de.pbma.nearbyconnections;
 
-import android.app.NotificationManager;
-import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
-
-import androidx.collection.SimpleArrayMap;
-import androidx.core.app.NotificationCompat;
-
-import com.google.android.gms.nearby.connection.Payload;
-import com.google.android.gms.nearby.connection.PayloadCallback;
-import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
-
-import de.pbma.nearfly.Constants;
-import de.pbma.nearfly.R;
-
 class ReceiveWithProgressCallback /*extends PayloadCallback */{
 //    private final SimpleArrayMap<Long, NotificationCompat.Builder> incomingPayloads =
 //            new SimpleArrayMap<>();

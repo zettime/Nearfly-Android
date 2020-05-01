@@ -22,13 +22,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data
-            android:name="com.google.android.actions"
-            android:resource="@xml/provider_paths" />
         <!-- <activity android:name="de.pbma.nearflyexample.lala.connections.MainActivityWithService" -->
         <!-- <activity android:name="de.pbma.nearflyexample.lala.scenarios.Touchpoint.TouchpointActivity" -->
         <activity
-            android:name=".lala.scenarios.Messenger.MessengerActivity"
+            android:name=".lala.scenarios.ScoreBoardNotepad.ScoreboardActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
@@ -37,21 +34,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".lala.scenarios.Messenger.MessengerLoginActivity"
             android:noHistory="true" />
 
-        <meta-data
-            android:name="com.google.android.nearby.messages.API_KEY"
-            android:value="AIzaSyDLc8O25IU3s5IHW8YDpQyPr9-RhIbsokw" />
+        <activity
+            android:name=".lala.scenarios.ScoreBoardNotepad.ScoreboardLoginActivity"
+            android:noHistory="true" />
 
         <service
             android:name="de.pbma.nearfly.NearflyService"
             android:enabled="true" />
-        <service
-            android:name="de.pbma.notused.nearbymessanger.MQTTService"
-            android:enabled="true" />
 
+        <!-- Needed to open Files in MessengerActivity -->
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/provider_paths" />
         <provider
             android:name=".lala.scenarios.Messenger.GenericFileProvider"
             android:authorities="${applicationId}.provider"

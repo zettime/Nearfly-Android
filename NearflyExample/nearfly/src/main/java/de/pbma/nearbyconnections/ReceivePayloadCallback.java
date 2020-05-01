@@ -1,16 +1,13 @@
 package de.pbma.nearbyconnections;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
 import androidx.collection.SimpleArrayMap;
 
@@ -21,19 +18,12 @@ import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Date;
-
-import de.pbma.nearfly.ExtMessage;
 
 /**
  * TODO -------------------------------------------------------------------------------------
@@ -108,7 +98,7 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
             filePayloadFilenames.put(payloadId, filename);
             return payloadId;
         }*/
-    /** Pentant {@link MyNearbyConnectionsClient#pubFile(String, ParcelFileDescriptor, String)} **/
+    /** Pentant {@link MyNearbyConnectionsClient#pubFile(String, Uri, String)} **/
     private long addPayloadFilename(String payloadFilenameMessage) {
         String[] parts = payloadFilenameMessage.split("\\/", 3);
         String fileExtension = parts[0];

@@ -14,9 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.nearby.connection.Payload;
-
-import de.pbma.nearbyconnections.ConnectionsActivityWithPermissions;
+import de.pbma.nearfly.ConnectionsActivityWithPermissions;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
@@ -41,31 +39,13 @@ public class MainActivityWithService extends ConnectionsActivityWithPermissions 
 
     NearflyListener nearflyListener = new NearflyListener() {
         @Override
-        public void onLogMessage(CharSequence msg) {
+        public void onLogMessage(String output) {
             if (DEBUG==true)
                 runOnUiThread(() -> {
 
-                    mDebugLogView.append(msg + "\n");
+                    mDebugLogView.append(output + "\n");
                 });
         }
-
-        @Override
-        public void onStateChanged(String state) {
-            if (DEBUG==true)
-                runOnUiThread(() -> {
-                    mDebugLogView.append(state + "\n");
-                    tvCurrentState.setText(state);
-                });
-        }
-
-        @Override
-        public void onRootNodeChanged(String rootNode) {
-            if (DEBUG==true)
-                    runOnUiThread(() -> {
-                        mDebugLogView.append(rootNode + "\n");
-                        tvRootNode.setText(rootNode);
-                    });
-                }
 
         @Override
         public void onMessage(String channel, String message) {
@@ -74,13 +54,13 @@ public class MainActivityWithService extends ConnectionsActivityWithPermissions 
                 });
             }
 
-        @Override
+        /*@Override
         public void onStream(Payload payload) {}
 
         @Override
         public void onBinary(Payload payload) {
 
-        }
+        }*/
 
         @Override
         public void onFile(String path, String textAttachment){}
@@ -176,10 +156,10 @@ public class MainActivityWithService extends ConnectionsActivityWithPermissions 
         mDebugLogView.append(str + "\n");
     }
 
-    public void changeTech(View view){
+    /*public void changeTech(View view){
         if (nearflyService.USED_TECH==NearflyService.USE_MQTT)
             nearflyService.changeTech(NearflyService.USE_NEARBY);
         else
             nearflyService.changeTech(NearflyService.USE_MQTT);
-    }
+    }*/
 }

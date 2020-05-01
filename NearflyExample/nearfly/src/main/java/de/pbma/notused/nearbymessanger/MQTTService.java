@@ -11,11 +11,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import de.pbma.mqtt.MqttMessaging;
-import de.pbma.mqtt.MyMqttListener;
 
-
-public class MQTTService extends Service {
+class MQTTService extends Service {
     final static String TAG = MQTTService.class.getCanonicalName();
 
     // for LocalService getInstance
@@ -46,13 +43,13 @@ public class MQTTService extends Service {
 
     private void doMqttStatus(boolean connected) {
         for (MyMqttListener listener : listeners) {
-            listener.onMQTTStatus(connected);
+            listener.onStatus(connected);
         }
     }
 
     private void doOnMqttMessage(String topic, String msg) {
         for (MyMqttListener listener : listeners) {
-            listener.onMqttMessage(topic, msg);
+            listener.onMessage(topic, msg);
         }
     }
 

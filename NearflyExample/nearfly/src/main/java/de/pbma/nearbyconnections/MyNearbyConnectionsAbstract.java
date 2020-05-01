@@ -23,14 +23,14 @@ import com.google.android.gms.nearby.connection.Strategy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.lang.reflect.Array;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -40,7 +40,7 @@ import static de.pbma.nearfly.Constants.TAG;
 /**
  * A class that connects to Nearby Connections and provides convenience methods and callbacks.
  */
-public abstract class MyNearbyConnectionsAbstract {
+abstract class MyNearbyConnectionsAbstract {
 
     /**
      * Our handler to Nearby Connections.
@@ -97,6 +97,7 @@ public abstract class MyNearbyConnectionsAbstract {
             new ConnectionLifecycleCallback() {
                 @Override
                 public void onConnectionInitiated(String endpointId, ConnectionInfo connectionInfo) {
+                    // TODO: The Connection must be accepted...
                     logD(
                             String.format(
                                     "onConnectionInitiated(endpointId=%s, endpointName=%s)",
@@ -122,6 +123,21 @@ public abstract class MyNearbyConnectionsAbstract {
                         return;
                     }
                     connectedToEndpoint(mPendingConnections.remove(endpointId));
+
+
+                    // TODO: Starte Executor *****************************************************
+                    if (mEstablishedConnections.keySet().size() > 1) {
+                        if (msgForwardExecutor == null) {
+                            msgForwardExecutor = (ThreadPoolExecutor)
+                                    Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 5);
+                            logE("Executor started");
+                        }
+                    } else if (msgForwardExecutor != null) {
+                        msgForwardExecutor.shutdownNow();
+                        msgForwardExecutor = null;
+                        logE("Executor ended");
+                    }
+                    /**********************************************************************/
                 }
 
                 @Override
@@ -232,7 +248,6 @@ public abstract class MyNearbyConnectionsAbstract {
     public void initService(Context context) {
         this.context = context;
         mConnectionsClient = Nearby.getConnectionsClient(context);
-        // mPayloadCallback =  new ReceiveWithProgressCallback (context);
         mPayloadCallback = new ReceivePayloadCallback(context) {
             @Override
             public void onFile(String endpointId, String path, String textAttachment) {
@@ -244,7 +259,8 @@ public abstract class MyNearbyConnectionsAbstract {
             public void onByteMessage(String endpointId, Payload payload) {
                 // TODO: Provisorisch
                 if (mEstablishedConnections.keySet().size() > 1) {
-                    forward(payload, endpointId);
+                    if (msgForwardExecutor!=null)
+                        forward(payload, endpointId);
                     // publishForwarder.newMessage(payload, endpointId);
                 }
 
@@ -288,13 +304,6 @@ public abstract class MyNearbyConnectionsAbstract {
                                 onAdvertisingFailed();
                             }
                         });
-
-        // TODO: Start Executor
-        if (msgForwardExecutor != null)
-            msgForwardExecutor.shutdown();
-
-        msgForwardExecutor = (ThreadPoolExecutor)
-                Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 3);
     }
 
     /**
@@ -303,12 +312,6 @@ public abstract class MyNearbyConnectionsAbstract {
     protected void stopAdvertising() {
         mIsAdvertising = false;
         mConnectionsClient.stopAdvertising();
-
-
-        if (!msgForwardExecutor.isShutdown()) {
-            msgForwardExecutor.shutdownNow();
-            msgForwardExecutor = null;
-        }
     }
 
     /**
@@ -525,26 +528,6 @@ public abstract class MyNearbyConnectionsAbstract {
         logD(String.format("connectedToEndpoint(endpoint=%s)", endpoint));
         mEstablishedConnections.put(endpoint.getId(), endpoint);
         onEndpointConnected(endpoint);
-
-        // TODO: provisorisch *****************************************************
-    /*publishForwarder = new PublishForwarder(new PublishForwarder.Task(){
-
-      @Override
-      public void execute() {
-        ArrayList<String> broadcastList =  new ArrayList<String>(mEstablishedConnections.keySet());
-        // broadcastList.remove(publishForwarder.queueExcludedEntpoint.remove());
-
-        mConnectionsClient
-                .sendPayload(broadcastList, publishForwarder.queuePayload.remove())
-                .addOnFailureListener(
-                        new OnFailureListener() {
-                          @Override
-                          public void onFailure(@NonNull Exception e) {
-                            logW("sendPayload() failed.", e);
-                          }
-                        });
-      }
-    });*//**********************************************************************/
     }
 
     private void disconnectedFromEndpoint(Endpoint endpoint) {
@@ -611,29 +594,35 @@ public abstract class MyNearbyConnectionsAbstract {
                         });
     }
 
+    int mCnt = 0;
     // TODO: Provisorisch ******************************************************
     private void forward(final Payload payload, final String excludedEntpointId) {
-        msgForwardExecutor.execute(new MsgForwarder(payload, excludedEntpointId) {
-            @Override
-            public void run() {
-                super.run();
+        // logE(++mCnt + " - forwarding Message: " + new String(payload.asBytes()));
+        // final long starttime = System.currentTimeMillis();
 
-                /* TODO: Removes Sender from list to avoid a endless loop */
-                ArrayList<String> broadcastList = new ArrayList<String>(mEstablishedConnections.keySet());
-                broadcastList.remove(excludedEntpointId);
+        /* TODO: Removes Sender from list to avoid a endless loop */
+        // final ArrayList<String> broadcastList = new BroadcastList
+        // final String[] broadcastList
+        ArrayList<String> broadcastList = new ArrayList<>();
 
-                mConnectionsClient
-                        .sendPayload(broadcastList, payload)
-                        .addOnFailureListener(
-                                new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        logW("sendPayload() failed.", e);
-                                    }
-                                });
+        for (String entpointId : mEstablishedConnections.keySet()){
+            if (!entpointId.equals(excludedEntpointId)){
+                broadcastList.add(entpointId);
             }
-        });
+        }
 
+        msgForwardExecutor.execute(() -> {
+            // send(payload, lala);
+            mConnectionsClient
+                    .sendPayload(broadcastList, payload)
+                    .addOnFailureListener(
+                            new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    logW("sendPayload() failed.", e);
+                                }
+                            });
+        });
     }
     /*************************************************************************/
 
@@ -706,6 +695,10 @@ public abstract class MyNearbyConnectionsAbstract {
     @CallSuper
     protected void logE(String msg, Throwable e) {
         Log.e(TAG, msg, e);
+    }
+
+    private void logE(String msg){
+        Log.e(TAG, msg);
     }
 
     /**

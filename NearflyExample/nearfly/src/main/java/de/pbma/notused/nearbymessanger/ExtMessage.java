@@ -2,7 +2,7 @@ package de.pbma.notused.nearbymessanger;
 import com.google.android.gms.nearby.messages.Message;
 import java.io.UnsupportedEncodingException;
 
-public class ExtMessage {
+class ExtMessage {
     public static String SEPERATOR;
     static {
         try {

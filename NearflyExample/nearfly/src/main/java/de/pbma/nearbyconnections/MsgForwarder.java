@@ -2,7 +2,7 @@ package de.pbma.nearbyconnections;
 
 import com.google.android.gms.nearby.connection.Payload;
 
-public class MsgForwarder implements Runnable {
+class MsgForwarder implements Runnable {
     Payload payload;
     String excludedEntpointId;
 

@@ -10,7 +10,7 @@ import com.google.android.gms.nearby.Nearby;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class NearbyUnpublisher{
+class NearbyUnpublisher{
     private Queue<ExtMessage> extMessageToUnpub;
     private Thread threadUnpub;
     private Object lock = new Object();

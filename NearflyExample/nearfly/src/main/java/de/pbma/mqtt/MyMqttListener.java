@@ -4,7 +4,8 @@ package de.pbma.mqtt;
  * Application interface
  */
 public interface MyMqttListener {
-    void onMqttMessage(String topic, String message);
-    void onMQTTStatus(boolean connected);
+    void onMessage(String topic, String message);
+    void onStatus(boolean connected);
     void onLogMessage(String message);
+    void onFile(String path, String textAttachment);
 }

@@ -7,18 +7,13 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import de.pbma.nearbyconnections.ConnectionsActivityWithPermissions;
-import de.pbma.nearfly.NearflyListener;
+import de.pbma.nearfly.ConnectionsActivityWithPermissions;
+// import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
-import de.pbma.nearflyexample.R;
 
 public abstract class NearflyBindingAktivity extends ConnectionsActivityWithPermissions {
     /** If true, debug logs are shown on the device. */
@@ -28,12 +23,12 @@ public abstract class NearflyBindingAktivity extends ConnectionsActivityWithPerm
 
 
     public NearflyService nearflyService;
-    public boolean nearflyServiceBound;
+    private boolean nearflyServiceBound;
     private boolean mNearflyServiceStarted = false;
 
     /** Try to force the dev to override the nearflyListener **/
-    private NearflyListener nearflyListener;
-    public abstract NearflyListener getNearflyListener();
+    /*private NearflyListener nearflyListener;
+    public abstract NearflyListener getNearflyListener();*/
 
 
     public abstract void onNearflyServiceConnected();
@@ -45,8 +40,6 @@ public abstract class NearflyBindingAktivity extends ConnectionsActivityWithPerm
             logIt("onServiceConnected");
             nearflyService = ((NearflyService.LocalBinder) service).getNearflyService();
             onNearflyServiceConnected();
-            /*nearflyService.addSubCallback(nearflyListener);
-            nearflyService.subIt("19moa18/test");*/
             nearflyServiceBound = true;
 
             if (!mNearflyServiceStarted)
@@ -121,10 +114,10 @@ public abstract class NearflyBindingAktivity extends ConnectionsActivityWithPerm
         // mDebugLogView.append(str + "\n");
     }
 
-    public void changeTech(View view){
+    /*public void changeTech(View view){
         if (nearflyService.USED_TECH==NearflyService.USE_MQTT)
             nearflyService.changeTech(NearflyService.USE_NEARBY);
         else
             nearflyService.changeTech(NearflyService.USE_MQTT);
-    }
+    }*/
 }

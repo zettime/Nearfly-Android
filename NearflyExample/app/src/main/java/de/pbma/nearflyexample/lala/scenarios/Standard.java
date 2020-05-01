@@ -1,24 +1,14 @@
 package de.pbma.nearflyexample.lala.scenarios;
 
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.nearby.connection.Payload;
-
-import de.pbma.nearbyconnections.ConnectionsActivityWithPermissions;
 import de.pbma.nearfly.NearflyListener;
-import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
 
 public class Standard extends NearflyBindingAktivity {
@@ -41,40 +31,20 @@ public class Standard extends NearflyBindingAktivity {
     public void onNearflyServiceConnected() {
         nearflyService.addSubCallback(nearflyListener);
         nearflyService.subIt("19moa18/test");
-        nearflyServiceBound = true;
+        // nearflyServiceBound = true;
     }
 
     @Override
     public void onNearflyServiceDisconnected() {
     }
 
-    @Override
-    public NearflyListener getNearflyListener() { return nearflyListener; }
     NearflyListener nearflyListener = new NearflyListener() {
         @Override
-        public void onLogMessage(CharSequence msg) {
+        public void onLogMessage(String output) {
             if (DEBUG==true)
                 runOnUiThread(() -> {
 
-                    mDebugLogView.append(msg + "\n");
-                });
-        }
-
-        @Override
-        public void onStateChanged(String state) {
-            if (DEBUG==true)
-                runOnUiThread(() -> {
-                    mDebugLogView.append(state + "\n");
-                    tvCurrentState.setText(state);
-                });
-        }
-
-        @Override
-        public void onRootNodeChanged(String rootNode) {
-            if (DEBUG==true)
-                runOnUiThread(() -> {
-                    mDebugLogView.append(rootNode + "\n");
-                    tvRootNode.setText(rootNode);
+                    mDebugLogView.append(output + "\n");
                 });
         }
 
@@ -83,14 +53,6 @@ public class Standard extends NearflyBindingAktivity {
             runOnUiThread(() -> {
                 mDebugLogView.append(message + "\n");
             });
-        }
-
-        @Override
-        public void onStream(Payload payload) {}
-
-        @Override
-        public void onBinary(Payload payload) {
-
         }
 
         @Override

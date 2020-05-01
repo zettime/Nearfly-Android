@@ -32,8 +32,6 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.FileProvider;
 
-import com.google.android.gms.nearby.connection.Payload;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,9 +48,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import de.pbma.nearfly.NearflyListener;
+import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
 import de.pbma.nearflyexample.lala.scenarios.NearflyBindingAktivity;
-import de.pbma.nearflyexample.lala.scenarios.Touchpoint.CustomView;
 
 public class MessengerActivity extends NearflyBindingAktivity {
     /**
@@ -78,6 +76,7 @@ public class MessengerActivity extends NearflyBindingAktivity {
     private Button mBtnSendTxt;
     private Button mBtnSendImg;
     private Button mBtnSendMedia;
+    private Button mBtnSettings;
     private ImageView mImageView;
 
     private final String JSON_USERNAME = "username";
@@ -85,18 +84,19 @@ public class MessengerActivity extends NearflyBindingAktivity {
     private final String JSON_MESSAGE = "message";
 
     private String mUsername;
+    private String mRoom;
     private int mUserColorIndex = 10;
 
     private final String PUB_CHANNEL = "19moa18/test";
+    private String mRoomChannel;
 
     private String TEXT = "text";
     private String BINARY = "binary";
 
-    private SharedPreferences mSharedPreferences;
-    private SharedPreferences.Editor mSharedPrefEdit;
     public final String ACTIVITY_NAME = "MessengerActivity";
 
     private boolean neaflyServiceConnectCalled = false;
+    private SharedPreferences mSharedPreferences;
 
 
     @Override
@@ -105,8 +105,8 @@ public class MessengerActivity extends NearflyBindingAktivity {
          *  TODO: THIS LEADS TO PERMANENT RECONNECTIONS**/
         if (!neaflyServiceConnectCalled) {
             nearflyService.addSubCallback(nearflyListener);
-            nearflyService.subIt(PUB_CHANNEL);
-            nearflyService.connect("THISISAAPPLICATION");
+            nearflyService.connect("THISISAAPPLICATION", NearflyService.USE_NEARBY);
+            nearflyService.subIt(mRoomChannel);
             neaflyServiceConnectCalled = true;
         }
     }
@@ -120,23 +120,9 @@ public class MessengerActivity extends NearflyBindingAktivity {
     public void onBackPressed() {
     }
 
-
-    @Override
-    public NearflyListener getNearflyListener() {
-        return nearflyListener;
-    }
-
     NearflyListener nearflyListener = new NearflyListener() {
-        @Override
-        public void onLogMessage(CharSequence msg) {
-        }
+        public void onLogMessage(String output) {
 
-        @Override
-        public void onStateChanged(String state) {
-        }
-
-        @Override
-        public void onRootNodeChanged(String rootNode) {
         }
 
         @Override
@@ -174,38 +160,40 @@ public class MessengerActivity extends NearflyBindingAktivity {
                 int mm = now.get(Calendar.MINUTE);
                 ((TextView) textView.findViewById(R.id.msg_time)).setText(hh + ":" + mm);
 
-                layout.addView(textView);
-                mScrollView.fullScroll(View.FOCUS_DOWN);
+                runOnUiThread(() -> {
+                    layout.addView(textView);
+                    mScrollView.fullScroll(View.FOCUS_DOWN);
+                });
             }
         }
 
-        @Override
-        public void onStream(Payload payload) {
-            try {
-                byte[] bytes = readBytes(payload.asStream().asInputStream());
-                onMessageForBinary(bytes);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            /*final InputStream imageStream = payload.asStream().asInputStream();
-
-            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            selectedImage.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-            mImageView.setImageBitmap(selectedImage);
-
-            try {
-                imageStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-        }
-
-        @Override
-        public void onBinary(Payload payload) {
-            onMessageForBinary(payload.asBytes());
-        }
+//        @Override
+//        public void onStream(Payload payload) {
+//            try {
+//                byte[] bytes = readBytes(payload.asStream().asInputStream());
+//                onMessageForBinary(bytes);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            /*final InputStream imageStream = payload.asStream().asInputStream();
+//
+//            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+//
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            selectedImage.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+//            mImageView.setImageBitmap(selectedImage);
+//
+//            try {
+//                imageStream.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }*/
+//        }
+//
+//        @Override
+//        public void onBinary(Payload payload) {
+//            onMessageForBinary(payload.asBytes());
+//        }
 
         @Override
         public void onFile(String path, String textAttachment) {
@@ -231,8 +219,11 @@ public class MessengerActivity extends NearflyBindingAktivity {
                 int mm = now.get(Calendar.MINUTE);
                 ((TextView) textView.findViewById(R.id.msg_time)).setText(hh + ":" + mm);
 
-                layout.addView(textView);
-                mScrollView.fullScroll(View.FOCUS_DOWN);
+                runOnUiThread(() -> {
+                    layout.addView(textView);
+                    mScrollView.fullScroll(View.FOCUS_DOWN);
+                });
+
             } else {
                 LinearLayout layout = (LinearLayout) findViewById(R.id.message_history);
                 ConstraintLayout textView = (ConstraintLayout) LayoutInflater.from(
@@ -252,8 +243,10 @@ public class MessengerActivity extends NearflyBindingAktivity {
                 int mm = now.get(Calendar.MINUTE);
                 ((TextView) textView.findViewById(R.id.msg_time)).setText(hh + ":" + mm);
 
-                layout.addView(textView);
-                mScrollView.fullScroll(View.FOCUS_DOWN);
+                runOnUiThread(() -> {
+                    layout.addView(textView);
+                    mScrollView.fullScroll(View.FOCUS_DOWN);
+                });
             }
         }
     };
@@ -402,16 +395,30 @@ public class MessengerActivity extends NearflyBindingAktivity {
         mBtnSendMedia = findViewById(R.id.btn_send_media);
         mBtnSendMedia.setOnClickListener((v) -> openMediaTaker());
 
-        mUsername = getUsername();
-        if (mUsername == null) {
-            Intent i = new Intent(this, MessengerLoginActivity.class);
-            startActivityForResult(i, NEW_USERNAME_REQUEST_CODE);
-        }
+        mBtnSettings = findViewById(R.id.btn_settings);
+        mBtnSettings.setOnClickListener((v) -> openSettings());
+
+        mUsername = getSavedUsername();
+        mRoom = getSavedRoom();
+        if (mUsername == null)
+            openSettings();
+
+        mRoomChannel = PUB_CHANNEL + "/" + mRoom;
     }
 
-    public String getUsername() {
+    public void openSettings(){
+        Intent i = new Intent(this, MessengerLoginActivity.class);
+        startActivityForResult(i, NEW_USERNAME_REQUEST_CODE);
+    }
+
+    public String getSavedUsername() {
         mSharedPreferences = getSharedPreferences(ACTIVITY_NAME, Context.MODE_PRIVATE);
         return mSharedPreferences.getString("username", null);
+    }
+
+    public String getSavedRoom() {
+        mSharedPreferences = getSharedPreferences(ACTIVITY_NAME, Context.MODE_PRIVATE);
+        return mSharedPreferences.getString("room", null);
     }
 
     private void publishChatText() {
@@ -442,11 +449,13 @@ public class MessengerActivity extends NearflyBindingAktivity {
             int mm = now.get(Calendar.MINUTE);
             ((TextView) textView.findViewById(R.id.msg_time)).setText(hh + ":" + mm);
 
-            layout.addView(textView);
-            mScrollView.fullScroll(View.FOCUS_DOWN);
+            runOnUiThread(() -> {
+                layout.addView(textView);
+                mScrollView.fullScroll(View.FOCUS_DOWN);
+            });
         }
 
-        nearflyService.pubIt(PUB_CHANNEL, obj.toString());
+        nearflyService.pubIt(mRoomChannel, obj.toString());
     }
 
     public void openPhotoTaker() {
@@ -497,22 +506,20 @@ public class MessengerActivity extends NearflyBindingAktivity {
                 pubFileOnResult(resultData);
                 // OR
                 // pubAsBase64(resultData);
-                // OR
-            /*try {
-                pubChunkedBinary(resultData);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
             } else Toast.makeText(this, "You haven't picked Image", Toast.LENGTH_LONG).show();
         }
-
 
         if (requestCode == NEW_USERNAME_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK && resultData != null) {
                 mUsername = resultData.getStringExtra(ACTIVITY_NAME + ".newUsername");
-                mSharedPrefEdit = mSharedPreferences.edit();
-                mSharedPrefEdit.putString("username", mUsername);
-                mSharedPrefEdit.commit();
+                mRoom = resultData.getStringExtra(ACTIVITY_NAME + ".newRoom");
+
+                // RECONNECT WITH NEW ROOM STRING
+                nearflyService.disconnect();
+                mRoomChannel = PUB_CHANNEL + "/" + mRoom;
+                nearflyService.connect("THISISAAPPLICATION", NearflyService.USE_MQTT);
+                nearflyService.subIt(mRoomChannel);
+                neaflyServiceConnectCalled = true;
             } else
                 Toast.makeText(this, "You haven't entered a username jet", Toast.LENGTH_LONG).show();
         }
@@ -539,8 +546,10 @@ public class MessengerActivity extends NearflyBindingAktivity {
                         int mm = now.get(Calendar.MINUTE);
                         ((TextView) textView.findViewById(R.id.msg_time)).setText(hh + ":" + mm);
 
-                        layout.addView(textView);
-                        mScrollView.fullScroll(View.FOCUS_DOWN);
+                        runOnUiThread(() -> {
+                            layout.addView(textView);
+                            mScrollView.fullScroll(View.FOCUS_DOWN);
+                        });
                     }
 
                         /*Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -548,7 +557,7 @@ public class MessengerActivity extends NearflyBindingAktivity {
                                 + Environment.DIRECTORY_DOWNLOADS + File.separator + "Nearby");
                         intent.setData(uri2);
                         startActivity(Intent.createChooser(intent, "Open folder"));*/
-                    nearflyService.pubFile(PUB_CHANNEL, uri, mUsername + ":MEDIA");
+                    nearflyService.pubFile(mRoomChannel, uri, mUsername + ":MEDIA");
                 } catch (FileNotFoundException e) {
                     Log.e("MyApp", "File not found", e);
                 }
@@ -580,18 +589,18 @@ public class MessengerActivity extends NearflyBindingAktivity {
                 e.printStackTrace();
                 return;
             }*/
-
-        if (/*imageBytes.length*/1 <= 16384) {
-            Payload streamPayload = Payload.fromStream(imageStream);
-            nearflyService.pubStream(streamPayload);
-        } else {
-                /*for(int i=0; i<bytes.length; i++){
-                    byte[] partBytes = Arrays.copyOfRange(bytes, i, (bytes.length<i*16384?bytes.length:i*16384));
-
-                }*/
-            logIt("zu groß");
-
-        }
+//
+//        if (imageBytes.length*/1 <= 16384) {
+//            Payload streamPayload = Payload.fromStream(imageStream);
+//            nearflyService.pubStream(streamPayload);
+//        } else {
+//                /*for(int i=0; i<bytes.length; i++){
+//                    byte[] partBytes = Arrays.copyOfRange(bytes, i, (bytes.length<i*16384?bytes.length:i*16384));
+//
+//                }*/
+//            logIt("zu groß");
+//
+//        }
     }
 
     /**
@@ -626,11 +635,13 @@ public class MessengerActivity extends NearflyBindingAktivity {
                 int mm = now.get(Calendar.MINUTE);
                 ((TextView) textView.findViewById(R.id.msg_time)).setText(hh + ":" + mm);
 
-                layout.addView(textView);
-                mScrollView.fullScroll(View.FOCUS_DOWN);
+                runOnUiThread(() -> {
+                    layout.addView(textView);
+                    mScrollView.fullScroll(View.FOCUS_DOWN);
+                });
             }
 
-            nearflyService.pubFile(PUB_CHANNEL, uri, mUsername + ":IMG");
+            nearflyService.pubFile(mRoomChannel, uri, mUsername + ":IMG");
         } catch (FileNotFoundException e) {
             Log.e("MyApp", "File not found", e);
         }
@@ -717,7 +728,7 @@ public class MessengerActivity extends NearflyBindingAktivity {
             System.arraycopy(header, 0, payload, 0, header.length);
             System.arraycopy(body, 0, payload, header.length, body.length);
 
-            nearflyService.pubBinaryTST(payload);
+            // nearflyService.pubBinaryTST(payload);
         }
     }
 
