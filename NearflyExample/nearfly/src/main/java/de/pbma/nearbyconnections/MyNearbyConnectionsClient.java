@@ -2,35 +2,25 @@ package de.pbma.nearbyconnections;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Entity;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
 
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
-import com.google.android.gms.nearby.connection.Strategy;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
@@ -83,6 +73,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     // TODO: PublishForwarder
     ThreadPoolExecutor msgForwardExecutor;
     // PublishForwarder publishForwarder;
+    public NeCon neCon = new NeCon();
 
     /**
      * A random UID used as this device's endpoint name.
@@ -92,8 +83,8 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     public void initClient(Context context, MyConnectionsListener myConnectionsListener, String SERVICE_ID) {
         initService(context);
         this.myConnectionsListener = myConnectionsListener;
-        // mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(context);
-        mName = new EndpointNameGenerator().getNamePendentFromTime();
+        mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(context);
+        // mName = new EndpointNameGenerator().getNamePendentFromTime();
         logV("MyEndpointName: "+mName);
 
         this.SERVICE_ID = SERVICE_ID;
@@ -396,13 +387,15 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     }
 
     public void publishIt(String channel, String message) {
-        ExtMessage extMessage = new ExtMessage(message, channel, ExtMessage.STRING);
+        // NeConExtMessage neConExtMessage = new NeConExtMessage(message, channel, NeConExtMessage.STRING);
+        NeCon.TextMessage textMessage = neCon.new TextMessage(message, channel);
         logD(message + " published");
-        send(Payload.fromBytes(extMessage.getBytes()));
+        // send(Payload.fromBytes(neConExtMessage.getBytes()));
+        send(Payload.fromBytes(textMessage.getBytes()));
     }
 
     public void pubFile(String channel, Uri uri, String textAttachment) {
-        /*ExtMessage extMessage = new ExtMessage(message, channel);*/
+        /*NeConExtMessage neConExtMessage = new NeConExtMessage(message, channel);*/
 
         // Get ParcelFileDescriptor
         // Uri uri = Uri.fromFile(file);
@@ -420,8 +413,11 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         Payload fileAsPayload = Payload.fromFile(pfd);
         String fileinformations = fileExtension + "/" + fileAsPayload.getId() + "/" + textAttachment;
 
-        ExtMessage extMessage = new ExtMessage(fileinformations, channel, ExtMessage.FILEINFORMATION);
-        send(Payload.fromBytes(extMessage.getBytes()));
+        // NeConExtMessage neConExtMessage = new NeConExtMessage(fileinformations, channel, NeConExtMessage.FILEINFORMATION);
+        NeCon.FileInfMessage fileMessage = neCon.new FileInfMessage(channel, fileExtension,
+                fileAsPayload.getId(), textAttachment);
+        // send(Payload.fromBytes(neConExtMessage.getBytes()));
+        send(Payload.fromBytes(fileMessage.getBytes()));
         send(fileAsPayload);
 
         logD(fileAsPayload.toString() + " published");
@@ -463,7 +459,8 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     @CallSuper
     protected void onReceive(Endpoint endpoint, Payload payload) {
         // logD(new String(payload.asBytes()) + "from" + endpoint);
-        ExtMessage msg = ExtMessage.createExtMessage(payload);
+        // NeConExtMessage msg = NeConExtMessage.createExtMessage(payload);
+        NeCon.TextMessage msg = neCon.createTextMessage(payload);
 
         if (mSubscribedChannels.contains(msg.getChannel()) && myConnectionsListener != null) {
             myConnectionsListener.onMessage(msg.getChannel(), msg.getPayload());
@@ -484,11 +481,6 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
 
     }
 
-    @Override
-    protected void onFile(Endpoint endpoint, String channel, String path, String textAttachment) {
-        myConnectionsListener.onFile(channel, path, textAttachment);
-    }
-    // TODO: Provisorisch ******************************************************
     private void forward(final Payload payload, final String excludedEntpointId) {
         // logE(++mCnt + " - forwarding Message: " + new String(payload.asBytes()));
         // final long starttime = System.currentTimeMillis();
@@ -501,36 +493,42 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
                 broadcastList.add(endpoint.getId());
             }
         }
-
         //msgForwardExecutor.execute(() -> {
-            send(payload, broadcastList);
+        send(payload, broadcastList);
         //});
     }
-    /*************************************************************************/
+
+    @Override
+    protected void onFile(Endpoint endpoint, String channel, String path, String textAttachment) {
+        if (mSubscribedChannels.contains(channel) && myConnectionsListener != null) {
+            myConnectionsListener.onFile(channel, path, textAttachment);
+        }
+    }
+
     protected void forwardFile(String excludedEntpointId, Payload fileAsPayload, String channel, String path, String textAttachment){
         String[] temp = path.split("\\/");
         String[] dotdot = temp[temp.length-1].split("\\.");
         String fileExtension = dotdot[dotdot.length-1];
 
-        /* TODO: Removes Sender from list to avoid a endless loop */
         ArrayList<String> broadcastList = new ArrayList<>();
-
         for (Endpoint endpoint: getConnectedEndpoints()){
             if (!endpoint.getId().equals(excludedEntpointId)){
                 broadcastList.add(endpoint.getId());
             }
         }
 
-
         String fileinformations = fileExtension + "/" + fileAsPayload.getId() + "/" + textAttachment;
-        ExtMessage extMessage = new ExtMessage(fileinformations, channel, ExtMessage.FILEINFORMATION);
+        // NeConExtMessage neConExtMessage = new NeConExtMessage(fileinformations, channel, NeConExtMessage.FILEINFORMATION);
+        NeCon.FileInfMessage fileMessage = neCon.new FileInfMessage(channel, fileExtension, fileAsPayload.getId(), textAttachment);
 
-        send(Payload.fromBytes(extMessage.getBytes()), broadcastList);
+        logV("forwarding file");
+        // send(Payload.fromBytes(neConExtMessage.getBytes()), broadcastList);
+        send(Payload.fromBytes(fileMessage.getBytes()));
         send(fileAsPayload, broadcastList);
 
 
         /*msgForwardExecutor.execute(() -> {
-            send(Payload.fromBytes(extMessage.getBytes()), broadcastList);
+            send(Payload.fromBytes(neConExtMessage.getBytes()), broadcastList);
             send(fileAsPayload, broadcastList);
         });*/
     }

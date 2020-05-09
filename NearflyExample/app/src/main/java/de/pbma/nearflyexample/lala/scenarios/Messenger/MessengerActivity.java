@@ -102,7 +102,7 @@ public class MessengerActivity extends NearflyBindingActivity {
          *  TODO: THIS LEADS TO PERMANENT RECONNECTIONS**/
         if (!neaflyServiceConnectCalled) {
             nearflyService.addSubCallback(nearflyListener);
-            nearflyService.connect("THISISAAPPLICATION", NearflyService.USE_NEARBY);
+            nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
             nearflyService.subIt(mRoomChannel);
             neaflyServiceConnectCalled = true;
         }
@@ -514,7 +514,7 @@ public class MessengerActivity extends NearflyBindingActivity {
                 // RECONNECT WITH NEW ROOM STRING
                 nearflyService.disconnect();
                 mRoomChannel = PUB_CHANNEL + "/" + mRoom;
-                nearflyService.connect("THISISAAPPLICATION", NearflyService.USE_NEARBY);
+                nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
                 nearflyService.subIt(mRoomChannel);
                 neaflyServiceConnectCalled = true;
             } else

@@ -159,7 +159,8 @@ abstract class MyNearbyConnectionsAbstract {
 
             @Override
             public void forwardFile(String endpointId, Payload payload, String channel, String path, String textAttachment) {
-                MyNearbyConnectionsAbstract.this.forwardFile(endpointId, payload, channel, path, textAttachment);
+                if (getConnectedEndpoints().size()>1)
+                    MyNearbyConnectionsAbstract.this.forwardFile(endpointId, payload, channel, path, textAttachment);
             }
 
             @Override

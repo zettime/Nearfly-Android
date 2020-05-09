@@ -18,6 +18,7 @@ import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,14 +33,18 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
     private final Context context;
     private final SimpleArrayMap<Long, Payload> incomingFilePayloads = new SimpleArrayMap<>();
     private final SimpleArrayMap<Long, Payload> completedFilePayloads = new SimpleArrayMap<>();
-    private final SimpleArrayMap<Long, String> filePayloadTextAttachment = new SimpleArrayMap<>();
-    private final SimpleArrayMap<Long, String> filePayloadFileExtension = new SimpleArrayMap<>();
-    private final SimpleArrayMap<Long, String> filePayloadChannel = new SimpleArrayMap<>();
+    /* private final SimpleArrayMap<Long, String> filePayloadTextAttachment = new SimpleArrayMap<>();
+     private final SimpleArrayMap<Long, String> filePayloadFileExtension = new SimpleArrayMap<>();
+     private final SimpleArrayMap<Long, String> filePayloadChannel = new SimpleArrayMap<>();*/
+    private final SimpleArrayMap<Long, NeCon.FileInfMessage> mFileInformation = new SimpleArrayMap<>();
     private long timeMeasureBegin = 0;
     private final String TAG = "PayloadCallback";
-    /** Name that precedes the date e.g. Nearfly 2020-05-02 **/
-    private final String FILEFORENAME = "Nearfly";
+    /**
+     * Name that precedes the date e.g. Nearfly 2020-05-02
+     **/
+    private final String FILEFORENAME = "Nearfly ";
 
+    public NeCon neCon = new NeCon();
 
 
     public ReceivePayloadCallback(Context context) {
@@ -66,6 +71,7 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
         public String textAttachment;
 
         public fileRelatedData(String channel, String path, String textAttachment) {
+            this.channel = channel;
             this.path = path;
             this.textAttachment = textAttachment;
         }
@@ -75,19 +81,21 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
     public void onPayloadReceived(String endpointId, Payload payload) {
         if (payload.getType() == Payload.Type.BYTES) {
 
-            ExtMessage extMessage = ExtMessage.createExtMessage(payload);
-            if (extMessage.getType().equals(ExtMessage.FILEINFORMATION)) {
+            //NeConExtMessage neConExtMessage = NeConExtMessage.createExtMessage(payload);
+            int messageType = NeCon.getMessageType(payload);
+            if (messageType == NeCon.FILEINFORMATION) {
                 // String fileInformations = new String(payload.asBytes(), StandardCharsets.UTF_8);
-                String fileInformations = extMessage.getPayload();
-                String channel = extMessage.getChannel();
+                NeCon.FileInfMessage fileMessage = neCon.createFileInfMessage(payload);
                 // String payloadFilenameMessage = new String(payload.asBytes(), StandardCharsets.UTF_8);
 
-                long payloadId = addPayloadFilename(channel, fileInformations);
-                processFilePayload(payloadId);
-            } else if (extMessage.getType().equals(ExtMessage.STRING)) {
+                // long payloadId = addPayloadFilename(channel, fileInformations);
+                mFileInformation.put(fileMessage.getFileId(), fileMessage);
+
+                processFilePayload(fileMessage.getFileId());
+            } else if (messageType == NeCon.STRING) {
                 onByteMessage(endpointId, payload);
             } else {
-                throw new RuntimeException("Unknown ExtMessage File type Received");
+                throw new RuntimeException("Unknown NeConExtMessage File type Received");
             }
         } else if (payload.getType() == Payload.Type.FILE) {
             // Add this to our tracking map, so that we can retrieve the payload later.
@@ -109,8 +117,11 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
             filePayloadFilenames.put(payloadId, filename);
             return payloadId;
         }*/
-    /** Pentant {@link MyNearbyConnectionsClient#pubFile(String, Uri, String)} **/
-    private long addPayloadFilename(String channel, String payloadFilenameMessage) {
+
+    /**
+     * Pentant {@link MyNearbyConnectionsClient#pubFile(String, Uri, String)}
+     **/
+    /*private long addPayloadFilename(String channel, String payloadFilenameMessage) {
         String[] parts = payloadFilenameMessage.split("\\/", 3);
         String fileExtension = parts[0];
         long payloadId = Long.parseLong(parts[1]);
@@ -119,7 +130,7 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
         filePayloadTextAttachment.put(payloadId, textAttachment);
         filePayloadChannel.put(payloadId, channel);
         return payloadId;
-    }
+    }*/
 
         /*private long addFileinformations(String fileInformations) {
             JSONObject jsonObject;
@@ -133,18 +144,21 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
             String fileId = jsonObject.getString("id");
             filePayloadFilenames.put(payloadId, channel);
         }*/
-
     private fileRelatedData processFilePayload(long payloadId) {
         // BYTES and FILE could be received in any order, so we call when either the BYTES or the FILE
         // payload is completely received. The file payload is considered complete only when both have
         // been received.
         Payload filePayload = completedFilePayloads.get(payloadId);
-        String textAttachment = filePayloadTextAttachment.get(payloadId);
-        String channel = filePayloadChannel.get(payloadId);
+        NeCon.FileInfMessage fileMessage = mFileInformation.get(payloadId);
+
+        String textAttachment = fileMessage.getTextAttachment();
+        String channel = fileMessage.getChannel();
+
         if (filePayload != null && textAttachment != null) {
             completedFilePayloads.remove(payloadId);
-            filePayloadTextAttachment.remove(payloadId);
-            filePayloadChannel.remove(payloadId);
+            mFileInformation.remove(payloadId);
+            /*filePayloadTextAttachment.remove(payloadId);
+            filePayloadChannel.remove(payloadId);*/
 
             // Rename the file.
             // payloadFile.renameTo(new File(payloadFile.getParentFile(), filename));
@@ -190,15 +204,22 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
                     destinationDirectory = Environment.getExternalStorageDirectory() + File.separator
                             + Environment.DIRECTORY_DOWNLOADS + File.separator + "Nearby";
 
-                    filename = makeFileName(payloadId);
+                    // File destFile = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS + File.separator + "Nearby/"+filename);
+
+                    filename = makeFileName(fileMessage.getFileExtension());
                     Log.v("NearbyTest", context.getCacheDir().getAbsolutePath().toString());
 
                     copyStream(bufin, new FileOutputStream(new File(destinationDirectory, filename)));
+                    /*File from = new File(destinationDirectory, ""+payloadId);
+                    File to = new File(destinationDirectory, filename);
+                    from.renameTo(to);*/
 
                     in.close();
                     bufin.close();
                 } catch (IOException e) {
                     // Log the error.
+                    // Log.e("FileReceiveTest", ""+e.getStackTrace());
+                    e.printStackTrace();
                 } finally {
                     // Delete the original file.
                     File oldFile = new File(destinationDirectory, String.valueOf(payloadId));
@@ -230,7 +251,7 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
                 logD(payloadFile.getAbsolutePath());
 
                 // Rename the file.
-                String filename = makeFileName(payloadId);
+                String filename = makeFileName(fileMessage.getFileExtension());
                 File movedFile = new File(payloadFile.getParentFile(), filename);
                 payloadFile.renameTo(movedFile);
                 logD("named to " + filename);
@@ -263,7 +284,7 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
             logD("named to " + filename);
         }*/
 
-    public String makeFileName(long payloadId) {
+    public String makeFileName(String fileExtension) {
         // Get Mime Type of File
         /*URLConnection connection = null;
         try {
@@ -275,7 +296,7 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
         String mimeType = connection.getContentType();
         String fileExtension = mimeType.replace(" ", "").split("/")[1];*/
 
-        String fileExtension = filePayloadFileExtension.remove(payloadId);
+        // String fileExtension = filePayloadFileExtension.remove(payloadId);
 
         // Make File  Name
         Date today = Calendar.getInstance().getTime();
@@ -308,10 +329,16 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
                     // TODO *****
                     if (fileRelatedData != null) {
                         onFile(endpointId, fileRelatedData.channel, fileRelatedData.path, fileRelatedData.textAttachment);
-                        forwardFile(endpointId, payload, fileRelatedData.channel, fileRelatedData.path, fileRelatedData.textAttachment);
-                }
-                    //onFile(mEstablishedConnections.get(endpointId), path);
-                    // myRenameFile(payloadId);
+
+
+                        File from = new File(fileRelatedData.path);
+                        Log.v("test", "path: " + fileRelatedData.path);
+                        try {
+                            forwardFile(endpointId, Payload.fromFile(from), fileRelatedData.channel, fileRelatedData.path, fileRelatedData.textAttachment);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
 
                 logD("SUCCESS " + update.toString());

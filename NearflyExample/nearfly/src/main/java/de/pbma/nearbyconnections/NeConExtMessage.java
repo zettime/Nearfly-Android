@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
-class ExtMessage{
+class NeConExtMessage {
     /*public static String SEPERATOR;
     static {
         try {
@@ -44,7 +44,7 @@ class ExtMessage{
     // public void setChannel(String channel) {this.channel=channel; buildMessage(); }
     // public Message getMessage() { return message; }
 
-    public ExtMessage(String payload, String channel, String type){
+    public NeConExtMessage(String payload, String channel, String type){
         this.payload = payload;
         this.channel = channel;
         this.type = type;
@@ -53,22 +53,22 @@ class ExtMessage{
         buildMessage();
     }
 
-    /*public static ExtMessage createExtMessage(Message message){
+    /*public static NeConExtMessage createExtMessage(Message message){
         // Extrahiert aus dem Nearby-String Kanal und Payload
-        String[] channelAndPayload = new String(message.getContent()).split(ExtMessage.SEPERATOR);
+        String[] channelAndPayload = new String(message.getContent()).split(NeConExtMessage.SEPERATOR);
         String a = new String(message.getContent());
 
-        return new ExtMessage(channelAndPayload[0], channelAndPayload[1]);
+        return new NeConExtMessage(channelAndPayload[0], channelAndPayload[1]);
     }*/
 
-    public static ExtMessage createExtMessage(byte[] message){
+    public static NeConExtMessage createExtMessage(byte[] message){
         try {
             JSONObject jsonObject= new JSONObject(new String(message));
 
-            return new ExtMessage(
-                    jsonObject.getString(ExtMessage.PAYLOAD),
-                    jsonObject.getString(ExtMessage.CHANNEL),
-                    jsonObject.getString(ExtMessage.TYPE)
+            return new NeConExtMessage(
+                    jsonObject.getString(NeConExtMessage.PAYLOAD),
+                    jsonObject.getString(NeConExtMessage.CHANNEL),
+                    jsonObject.getString(NeConExtMessage.TYPE)
             );
         } catch (JSONException e) {
             e.printStackTrace();
@@ -76,14 +76,14 @@ class ExtMessage{
         }
     }
 
-    public static ExtMessage createExtMessage(Payload payload){
+    public static NeConExtMessage createExtMessage(Payload payload){
         try {
             JSONObject jsonObject= new JSONObject(new String(payload.asBytes()));
 
-            return new ExtMessage(
-                    jsonObject.getString(ExtMessage.PAYLOAD),
-                    jsonObject.getString(ExtMessage.CHANNEL),
-                    jsonObject.getString(ExtMessage.TYPE)
+            return new NeConExtMessage(
+                    jsonObject.getString(NeConExtMessage.PAYLOAD),
+                    jsonObject.getString(NeConExtMessage.CHANNEL),
+                    jsonObject.getString(NeConExtMessage.TYPE)
             );
         } catch (JSONException e) {
             e.printStackTrace();
@@ -92,7 +92,7 @@ class ExtMessage{
     }
 
     public byte[] getBytes(){
-        // return (channel + ExtMessage.SEPERATOR + payload).getBytes();
+        // return (channel + NeConExtMessage.SEPERATOR + payload).getBytes();
         return message.toString().getBytes(StandardCharsets.UTF_8);
     }
 
@@ -102,13 +102,13 @@ class ExtMessage{
 
     private void buildMessage(){
         // Nachrichten werden durch Separatorcode getrennt
-        // message = ((channel + ExtMessage.SEPERATOR + payload).getBytes());
+        // message = ((channel + NeConExtMessage.SEPERATOR + payload).getBytes());
 
         message = new JSONObject();
         try {
-            message.put(ExtMessage.PAYLOAD, payload);
-            message.put(ExtMessage.CHANNEL, channel);
-            message.put(ExtMessage.TYPE, type);
+            message.put(NeConExtMessage.PAYLOAD, payload);
+            message.put(NeConExtMessage.CHANNEL, channel);
+            message.put(NeConExtMessage.TYPE, type);
         } catch (JSONException e) {
             e.printStackTrace();
         }

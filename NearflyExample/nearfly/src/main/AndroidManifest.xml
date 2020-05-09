@@ -3,18 +3,18 @@
     package="de.pbma.nearfly">
 
     <!-- Required for Nearby Connections -->
-    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <!-- <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
 
-    <!-- MQTT -->
-    <uses-permission android:name="android.permission.INTERNET" />
 
-    <meta-data
-        android:name="com.google.android.nearby.messages.API_KEY"
-        android:value="AIzaSyDLc8O25IU3s5IHW8YDpQyPr9-RhIbsokw" />
+    <!-- Required for MQTT -->
+    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
 
+    <!-- Optional: Only required if File transfer API used -->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> -->
 </manifest>

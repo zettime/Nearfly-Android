@@ -43,7 +43,7 @@ Die Nearfly-Android-Bibliothek, kann wie folgt eingebunden werden:
    ```xml
    <manifest xmlns:android="http://schemas.android.com/apk/res/android">
    
-       <!-- Required for Nearby Connections -->
+       <!-- Rquired for Nearby Connections -->
        <uses-permission android:name="android.permission.BLUETOOTH" />
        <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -57,8 +57,11 @@ Die Nearfly-Android-Bibliothek, kann wie folgt eingebunden werden:
        <!-- Optional: Only required if File transfer API used -->
        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE " />
        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+       <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+       <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
    
-       <application
+       <application 
+          android:requestLegacyExternalStorage="true">
            <activity
            <!-- .... -->
            </activity>
@@ -69,4 +72,5 @@ Die Nearfly-Android-Bibliothek, kann wie folgt eingebunden werden:
        </application>
    </manifest>
    ```
-
+   
+4. **ACHTUNG**: Bei Android 10 (API 29) ist es derzeitig zwingend Notwendig `android:requestLegacyExternalStorage="true">` in das Manifest einzutragen. Da Android 10 die letzte Version Android Version ist, die das *scoped storage* unterstützt.

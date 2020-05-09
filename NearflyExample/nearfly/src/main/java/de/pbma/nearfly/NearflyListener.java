@@ -22,7 +22,7 @@ public interface NearflyListener {
         void onMessage(String channel, String message);
     }
 
-    public interface FileMessage{
+    public interface FileInfMessage{
         void onFile(String path, String textAttachment);
     }*/
 }
