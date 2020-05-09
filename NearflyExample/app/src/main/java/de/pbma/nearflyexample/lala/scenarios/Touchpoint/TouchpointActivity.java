@@ -15,6 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.pbma.nearfly.NearflyListener;
+import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
 import de.pbma.nearfly.NearflyBindingActivity;
 
@@ -34,7 +35,7 @@ public class TouchpointActivity extends NearflyBindingActivity {
     public void onNearflyServiceBound() {
         nearflyService.addSubCallback(nearflyListener);
         nearflyService.subIt("19moa18/test");
-        nearflyService.connect();
+        nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
     }
 
     @Override
@@ -69,7 +70,7 @@ public class TouchpointActivity extends NearflyBindingActivity {
         }
 
         @Override
-        public void onFile(String path, String textAttachment){}
+        public void onFile(String channel, String path, String textAttachment){}
     };
 
     public void publish(float percTpX, float percTpY, int tpColorIndex){

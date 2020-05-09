@@ -127,7 +127,7 @@ public class MyMQTTClient {
                     e.printStackTrace();
                 }
 
-                listener.onFile(filePath, textAttachment);
+                listener.onFile(topic, filePath, textAttachment);
                 logD(topic + " " + rawPayload);
             }
 

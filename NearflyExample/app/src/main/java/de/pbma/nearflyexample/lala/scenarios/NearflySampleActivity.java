@@ -38,6 +38,8 @@ public class NearflySampleActivity extends NearflyBindingActivity {
                 case NearflyService.State.CONNECTED:
                     Log.v("test", "Hello World!");
                     nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!");
+                    // OR
+                    // nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!", -10, true);
                     break;
                 case NearflyService.State.DISCONNECTED:
                     Log.v("test", "disconnected");
@@ -52,7 +54,7 @@ public class NearflySampleActivity extends NearflyBindingActivity {
         }
 
         @Override
-        public void onFile(String path, String textAttachment) {
+        public void onFile(String channel, String path, String textAttachment) {
         }
     };
 

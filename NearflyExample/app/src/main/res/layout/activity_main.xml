@@ -24,8 +24,8 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="changeTech"
-            android:text="change tech" />
+            android:onClick="toggleConnectionMode"
+            android:text="toggle Connection Mode" />
 
         <TextView
             android:id="@+id/name"

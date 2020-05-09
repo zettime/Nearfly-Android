@@ -193,7 +193,7 @@ public class MessengerActivity extends NearflyBindingActivity {
 //        }
 
         @Override
-        public void onFile(String path, String textAttachment) {
+        public void onFile(String channel, String path, String textAttachment) {
             File file = new File(path);
 
             String username = textAttachment.split(":")[0];
@@ -514,7 +514,7 @@ public class MessengerActivity extends NearflyBindingActivity {
                 // RECONNECT WITH NEW ROOM STRING
                 nearflyService.disconnect();
                 mRoomChannel = PUB_CHANNEL + "/" + mRoom;
-                nearflyService.connect("THISISAAPPLICATION", NearflyService.USE_MQTT);
+                nearflyService.connect("THISISAAPPLICATION", NearflyService.USE_NEARBY);
                 nearflyService.subIt(mRoomChannel);
                 neaflyServiceConnectCalled = true;
             } else

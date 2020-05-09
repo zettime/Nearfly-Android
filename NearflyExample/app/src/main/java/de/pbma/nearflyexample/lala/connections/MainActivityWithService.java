@@ -63,7 +63,7 @@ public class MainActivityWithService extends ConnectionsActivityWithPermissions 
         }*/
 
         @Override
-        public void onFile(String path, String textAttachment){}
+        public void onFile(String channel, String path, String textAttachment){}
     };
 
     private ServiceConnection serviceConnection = new ServiceConnection() {

@@ -2,6 +2,7 @@ package de.pbma.nearbyconnections;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Entity;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.text.SpannableString;
@@ -10,107 +11,91 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
 import com.google.android.gms.nearby.connection.Strategy;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 /**
- * This Activity has 5 {@link State}s.
+ * This Activity has 6 {@link NodeState}s.
  *
- * <p>{@link State#STANDBY}: We cannot do anything while we're in this state. The app is likely in
+ * <p>{@link #STATE_STANDBY}: We cannot do anything while we're in this STATE_ The app is likely in
  * the background.
  *
- * <p>{@link State#DISCOVERING}: Our default state (after we've connected). We constantly listen for
+ * <p>{@link #STATE_FINDROOT}: Our default state (after we've connected). We constantly listen for
  * a device to advertise near us.
  *
- * <p>{@link State#ADVERTISING}: If a user shakes their device, they enter this state. We advertise
- * our device so that others nearby can discover us.
+ * <p>{@link #STATE_ROOT}: This Node is the central component of the star-shaped network.
  *
- * <p>{@link State#CONNECTED}: We've connected to another device. We can now talk to them by holding
- * down the volume keys and speaking into the phone. We'll continue to advertise (if we were already
- * advertising) so that more people can connect to us.
+ * <p>{@link #STATE_NODE}: This Node actively searches for root nodes.  For this he is
+ * Discovering all the time.
  *
- * <p>{@link State#FINDROOT}: Find the Root that shapes the RootNode of the Start-Network
+ * <p>{@link #STATE_CONNODE}: This Node found and is connected to a root-node. He continues
+ *  discovering for a while, to see if a better noed joins that can be the new root.
+ *
+ * <p>{@link #STATE_BACKOFF}: This Node is trying to connect to a root, but failed already one
+ * time. Maybe another node is connecting therefor he waits withing the {@link #BACKOFFF_TIME}
+ *
  */
 
 public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
-    private static final String STATE_UNKNOWN = "unknown";
-    private static final String STATE_DISCOVERING = "discovering";
-    private static final String STATE_ADVERTISING = "advertising";
-    private static final String STATE_CONNECTED = "connected";
-    private static final String STATE_FINDROOT = "findroot";
 
-    private ArrayList<String> subscribedChannels = new ArrayList<>();
-    /**
-     * The connection strategy we'll use for Nearby Connections. In this case, we've decided on
-     * P2P_STAR, which is a combination of Bluetooth Classic and WiFi Hotspots.
-     */
-    private static final Strategy STRATEGY = Strategy.P2P_STAR;
+    private static final long INITIAL_DISCOVERY_TIME = 1000;
+    private static final long SECONDS_TO_CONNODE_ECO = 60;
+    private static final int RANDRANGE_COLAVOID = 1000;// AntiCollision Random max Range
+    private final int BACKOFFF_TIME = 1000;
 
-    /**
-     * This service id lets us find other nearby devices that are interested in the same thing. Our
-     * sample does exactly one thing, so we hardcode the ID.
-     */
-    // private String SERVICE_ID;
+    @Retention(SOURCE)
+    @IntDef({STATE_FINDROOT, STATE_ROOT, STATE_NODE, STATE_CONNODE, STATE_STANDBY, STATE_BACKOFF})
+    public @interface NodeState{}
 
-    /**
-     * The state of the app. As the app changes states, the UI will update and advertising/discovery
-     * will start/stop.
-     */
-    private State mState = State.FINDROOT;
+    private static final int STATE_FINDROOT = 1;
+    private static final int STATE_ROOT = 2;
+    private static final int STATE_NODE = 3;
+    private static final int STATE_CONNODE = 4;
+    private static final int STATE_BACKOFF = 5;
+    private static final int STATE_STANDBY = 6;
+
+    private ArrayList<String> mSubscribedChannels = new ArrayList<>();
+
+    /** AtomicInteger so that the async sleep-threads gain visibility **/
+    private AtomicInteger mState = new AtomicInteger(STATE_STANDBY);
+
+    // TODO: PublishForwarder
+    ThreadPoolExecutor msgForwardExecutor;
+    // PublishForwarder publishForwarder;
 
     /**
      * A random UID used as this device's endpoint name.
      */
     private String mName;
 
-
-    /**
-     * Current state.
-     */
-    private String rootNode;
-
-    /**
-     * A Handler that allows us to post back on to the UI thread. We use this to resume discovery
-     * after an uneventful bout of advertising.
-     */
-    // private final Handler mUiHandler = new Handler(Looper.getMainLooper());
-
-    /**
-     * Starts discovery. Used in a postDelayed manor with {@link #mUiHandler}.
-     */
-    /*private final Runnable mDiscoverRunnable =
-            new Runnable() {
-                @Override
-                public void run() {
-                    setState(State.DISCOVERING);
-                }
-            };*/
-
-    /*public MyNearbyConnectionsClient(Context context, MyConnectionsListener myConnectionsListener){
-        initService(context);
-        this.myConnectionsListener = myConnectionsListener;
-        mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(context);
-        rootNode = mName;
-        this.SERVICE_ID = context.getClass().getCanonicalName();
-    }*/
-
-    /*public MyNearbyConnectionsClient(String SERVICE_ID){
-        super(SERVICE_ID);
-    }*/
-
-
     public void initClient(Context context, MyConnectionsListener myConnectionsListener, String SERVICE_ID) {
         initService(context);
         this.myConnectionsListener = myConnectionsListener;
-        mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(context);
-        rootNode = mName;
+        // mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(context);
+        mName = new EndpointNameGenerator().getNamePendentFromTime();
+        logV("MyEndpointName: "+mName);
+
         this.SERVICE_ID = SERVICE_ID;
     }
 
@@ -128,97 +113,76 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
 
         void onBinary(Payload payload);
 
-        void onFile(String path, String textAttachment);
+        void onFile(String channel, String path, String textAttachment);
     }
 
     MyConnectionsListener myConnectionsListener;
 
-    /*public void initClient(Context context, MyConnectionsListener myConnectionsListener) {
-        initService(context);
-        this.myConnectionsListener = myConnectionsListener;
-        mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(context);
-        rootNode = mName;
-    }*/
-
-
-    /**
-     * Just One possible
-     **/
-    // public void registerNearbyListener(MyConnectionsListener myConnectionsListener){
-    // }
-
-    /*public void deregisterNearbyListener(MyConnectionsListener myConnectionsListener){
-        if (myConnectionsListener.equals(this.myConnectionsListener))
-            this.myConnectionsListener = null;
-    }*/
-    public void setRootNode(String endpointId) {
-        rootNode = endpointId;
-        if (myConnectionsListener != null)
-            myConnectionsListener.onRootNodeChanged(endpointId);
-    }
-
-
+    /** Call this to Start the auto network creation process. **/
     public void startConnection() {
-        // Call this at Start
-        setState(State.STANDBY);
-        setState(State.FINDROOT);
+        setState(STATE_FINDROOT);
     }
 
+    /** Call this to disconnect from other nodes, stop advertisment
+     * and stop discovering.
+     */
     public void stopConnection() {
         // Call this at Stop
-        setState(State.STANDBY);
+        setState(STATE_STANDBY);
     }
 
-    public void onBackPressed() {
-        /*if (getState() == State.CONNECTED || getState() == State.ADVERTISING) {
-            setState(State.FINDROOT);
-            return;
-        }*/
+    Endpoint root = new Endpoint("null", mName);
+
+    private Endpoint findRoot() {
+        logV("Searching Root...");
+
+        Endpoint maxNode = new Endpoint("null", mName);
+
+        for (Endpoint endpoint : getDiscoveredEndpoints()) {
+            if (endpoint.getName().compareTo(maxNode.getName())>0)
+                maxNode = endpoint;
+        }
+
+        logV("...found "+ maxNode);
+        return maxNode;
     }
 
+    /**
+     * Connect to The Root of discovered Entpoints after delay time ends.
+     * tries not to overlap with other nodes by waiting additionally a random time
+     * **/
+    private void connectToRoot(final Endpoint other, long delay){
+        new Thread(() -> {
+            if (!sleep(delay+new Random().nextInt(RANDRANGE_COLAVOID), STATE_NODE))
+                return;
+
+            root = findRoot();
+            // if (other==root)
+            // if (!getConnectedEndpoints().contains(root))
+            connectToEndpoint(root);
+
+        }).start();
+    }
+
+    /***** TESTST *****/
     @Override
-    protected void onEndpointDiscovered(Endpoint endpoint) {
-        // TODO 2903
-        /*if (getName().compareTo(rootNode)>0){
-            rootNode = getName(); // self
+    protected void onEndpointDiscovered(Endpoint other) {
+        /** TODO ------------------------------ **/
+        // FIND OUT IF OTHER ROOT?
+        if (getState()==STATE_FINDROOT) {
+            if (other.getName().compareTo(mName) > 0){
+                setState(STATE_NODE);
+                // Wait before conenction if you can find annother node
+                connectToRoot(other, INITIAL_DISCOVERY_TIME );
+            }
         }
 
-        if (endpoint.getName().compareTo(rootNode) > 0){
-            rootNode = endpoint.getName();
-            disconnectFromAllEndpoints();
-            connectToEndpoint(endpoint);
-            setState(State.CONNECTED);
-        }*/
-
-        // We found an advertiser!
-        /*if (!isConnecting()) {
-            /** TODO 2503: Advertiser gefunden -> Wechsle zum Discovering
-             Gehe in den Discovery-Zustand wenn gemerkt das jemand geeigneter ist**/
-            /*if (endpoint.getName().compareTo(getName()) > 0){
-                if (getState() != State.NODE)
-                    setState(State.NODE);
-                    setRootNode(endpoint.getName());
-
-                // Nur senden, wenn anderer Root
-                connectToEndpoint(endpoint);
-            }*/
-        // Nur senden, wenn anderer Root
-        if (getState() == State.FINDROOT) {
-            findOutRightState(endpoint.getName());
-            connectToEndpoint(endpoint);
+        if (getState()==STATE_CONNODE ){
+            if (other.getName().compareTo(mName) > 0){
+                setState(STATE_NODE);
+                connectToRoot(other, 0);
+            }
         }
-
-        if (endpoint.getName().compareTo(rootNode) > 0) {
-            disconnectFromAllEndpoints();
-            stopAllEndpoints();
-            connectToEndpoint(endpoint);
-        }
-        Log.v("qua", getDiscoveredEndpoints().toString());
-
-
-        // if (getState()==State.NODE){
-
-        //}
     }
 
     @Override
@@ -227,65 +191,38 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     }
 
     @Override
-    protected void onConnectionInitiated(Endpoint endpoint, ConnectionInfo connectionInfo) {
+    protected void onConnectionInitiated(Endpoint other, ConnectionInfo connectionInfo) {
         // TODO 2503: Discovering Device found -> Switch to Advertising Mode
-        /*if (getName().compareTo(endpoint.getName()) > 0) {
-            if (getState() == State.FINDROOT && getState() != State.ADVERTISING)
-                setState(State.ADVERTISING);
-        }*/
-        /*if (getName().compareTo(rootNode)>0){
-            rootNode = getName(); // self
-        }*/
-        // Gehe in Discovery, wenn jemand geeigneter ist
-        /*if (getName().compareTo(endpoint.getName()) > 0) {
-            if (getState() == State.FINDROOT)
-                setState(State.ROOT);
-        }else{
-            setState(State.STANDBY);
-            setState(State.NODE);
-        }*/
-
-        // if (endpoint.getName().compareTo(getName()) < 0 ) {
         // A connection to another device has been initiated! We'll accept the connection immediately.
-        acceptConnection(endpoint);
-        if (getState() == State.FINDROOT)
-            findOutRightState(endpoint.getName());
-
-        if (getState() == State.NODE)
-            setState(State.CONNODE);
-        // }
-
-    }
-
-    public void findOutRightState(String endpointId) {
-        if (endpointId.compareTo(getName()) > 0) {
-            setRootNode(endpointId);
-
-            setState(State.NODE); // Wechselt in Zustand Node
-        } else {
-            setState(State.ROOT);
-        }
+        acceptConnection(other);
     }
 
     @Override
-    protected void onEndpointConnected(Endpoint endpoint) {
+    protected void onEndpointConnected(Endpoint other) {
         Toast.makeText(
-                context, "Connected to " + endpoint.getName(), Toast.LENGTH_SHORT)
+                context, "Connected to " + other.getName(), Toast.LENGTH_SHORT)
                 .show();
 
-        /* TODO */
-        /*if (!isAdvertising())
-            rootNode = endpoint.getName();
-        else
-            rootNode = "self";
+        // Set new root
+        if (getState() == STATE_NODE ||getState() == STATE_BACKOFF){
+            setState(STATE_CONNODE);
+            root = other;
+        }
 
-        if (!isAdvertising())
-            myConnectionsListener.onRootNodeChanged(endpoint.getName());
-        else
-            myConnectionsListener.onRootNodeChanged("self");*/
-        /*if (endpoint.getName().compareTo(rootNode) > 0){
-            setRootNode(endpoint.getName());
-        }*/
+        /** Only Roots are here still in FINDROOT-State **/
+        if (getState() == STATE_FINDROOT)
+            setState(STATE_ROOT);
+
+
+        // TODO: Start the Executor *****************************************************
+        if (getConnectedEndpoints().size() > 1) {
+            if (msgForwardExecutor == null) {
+                msgForwardExecutor = (ThreadPoolExecutor)
+                        Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 5);
+                logE("Executor started");
+            }
+        }
+        /**********************************************************************/
     }
 
     @Override
@@ -294,90 +231,123 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
                 context, "Disconnected from " + endpoint.getName(), Toast.LENGTH_SHORT)
                 .show();
 
-        // If we lost all our endpoints, then we should reset the state of our app and go back
-        // to our initial state (discovering).
+        if (getState() == STATE_ROOT && getConnectedEndpoints().isEmpty())
+            setState(STATE_FINDROOT);
 
-        if (rootNode != getName()) {
-            // TODO: New init State
-            setState(State.FINDROOT);
-            setRootNode(getName());
+        if (getState() == STATE_CONNODE)
+            setState(STATE_FINDROOT);
+
+        /** Shutdown Executor ***/
+        if (msgForwardExecutor != null) {
+            msgForwardExecutor.shutdownNow();
+            msgForwardExecutor = null;
+            logE("Executor ended");
         }
     }
 
+    /** Returns false if not anymore in the same State **/
+    private boolean sleep(long millis, @NodeState int state){
+        long checkTime = 500;
+
+        try {
+            for(int i=0; i<millis/checkTime; i++){
+                Thread.sleep(checkTime);
+
+                if (getState() != state)
+                    return false;
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
+    public AtomicInteger attemptsInBackoff = new AtomicInteger(0);
     @Override
     protected void onConnectionFailed(Endpoint endpoint) {
         // Let's try someone else.
-        if (!getDiscoveredEndpoints().isEmpty())
-            connectToEndpoint(pickRandomElem(getDiscoveredEndpoints()));
-        setState(State.FINDROOT);/*
-        if (getState() == State.NODE && !getDiscoveredEndpoints().isEmpty()) {
-            connectToEndpoint(pickRandomElem(getDiscoveredEndpoints()));
 
-            // Occurs only for Nodes, cause Root don't ask
-            //disconnectFromAllEndpoints();
-            //stopAllEndpoints();
-            setState(State.FINDROOT);
+        if (getState()==STATE_NODE)
+            setState(STATE_BACKOFF);
 
-            /*connectionAttemp++; /* TODO *//*
-        }*/
+        if (getState()!=STATE_BACKOFF)
+            return;
 
-        /* TODO: Endpoint seems not to be an advisor */
-    /*if (connectionAttemp>1){
-      setState(State.FINDROOT);
-      connectionAttemp = 0;
-    }*/
+        if (!getDiscoveredEndpoints().isEmpty()){
+            new Thread(() -> {
+                if (!sleep(BACKOFFF_TIME+new Random().nextInt(BACKOFFF_TIME), STATE_BACKOFF))
+                    return;
+
+                root = findRoot();
+                if (getState()==STATE_BACKOFF & !getConnectedEndpoints().contains(root) && !isConnecting()){
+                    connectToEndpoint(root);
+                    logV("attemptsInBackoff: "+ attemptsInBackoff.incrementAndGet());
+                }
+                else if (getState()==STATE_BACKOFF & attemptsInBackoff.get()%2==0){
+                    setState(STATE_STANDBY);
+                    setState(STATE_FINDROOT);
+                }
+            }).start();
+        }
+        else {
+            setState(STATE_FINDROOT);
+        }
     }
 
     /**
      * The state has changed. I wonder what we'll be doing now.
      *
-     * @param state The new state.
+     * @param state The new STATE_
      */
-    private void setState(State state) {
-        if (mState == state) {
-            logW("State set to " + state + " but already in that state");
+    private void setState(@NodeState int state) {
+        if (mState.get() == state) {
+            logW("State set to " + getStateAsString(state) + " but already in that state");
             return;
         }
 
         logD("State set to " + state);
-        // TODO: 2503
-        // tvCurrentState.setText(state.toString()
-        // );
+
         if (myConnectionsListener != null)
-            myConnectionsListener.onStateChanged(state.toString());
+            myConnectionsListener.onStateChanged(getStateAsString(state));
 
-        State oldState = mState;
-        mState = state;
-        onStateChanged(oldState, state);
+        mState.set(state);
+        onStateChanged(state);
+    }
+
+    private String getStateAsString(int state){
+        switch (state){
+            case STATE_FINDROOT: return "FINDROOT";
+            case STATE_ROOT: return "ROOT";
+            case STATE_NODE: return "NODE";
+            case STATE_CONNODE: return "CONNODE";
+            case STATE_BACKOFF: return "BACKOFF";
+            case STATE_STANDBY: return "STANDBY";
+            default: throw new RuntimeException("State not known");
+        }
     }
 
     /**
-     * @return The current state.
+     * @return The current STATE_
      */
-    private State getState() {
-        return mState;
+    private int getState() {
+        return mState.get();
     }
 
-    /**
-     * State has changed.
-     *
-     * @param oldState The previous state we were in. Clean up anything related to this state.
-     * @param newState The new state we're now in. Prepare the UI for this state.
-     */
-    private void onStateChanged(State oldState, State newState) {
+    private void onStateChanged(@NodeState int newState) {
 
-        // Update Nearby Connections to the new state.
+        // Update Nearby Connections to the new STATE_
         switch (newState) {
-            case NODE:
+            case STATE_NODE:
+                disconnectFromAllEndpoints(); // NODES are not connected
                 if (isAdvertising()) {
                     stopAdvertising();
                 }
                 // TODO: startDiscovery failed vermeiden, um overhead zu vermeiden
-                // disconnectFromAllEndpoints();
                 if (!isDiscovering())
                     startDiscovering();
                 break;
-            case ROOT:
+            case STATE_ROOT:
                 if (isDiscovering()) {
                     stopDiscovering();
                 }
@@ -385,28 +355,19 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
                 if (!isAdvertising())
                     startAdvertising();
                 break;
-            /*case CONNODE: // Cost Less Battery
-                if (isDiscovering()) {
-                    stopDiscovering();
-                }*/
-            case STANDBY:
-                /*if (isAdvertising()) {
-                    stopAdvertising();
-                }
-                if (isDiscovering()) {
-                    stopDiscovering();
-                }
-                disconnectFromAllEndpoints()*/
-                stopAllEndpoints();
+            case STATE_CONNODE: // Cost Less Battery
                 /*if (isDiscovering()) {
                     stopDiscovering();
-                }
-                if (isAdvertising())
-                    stopAdvertising();
-                stopAllEndpoints();*/
+                }*/
+                new Thread(() -> { // TODO: provisorisch
+                    if (!sleep(SECONDS_TO_CONNODE_ECO*1000, STATE_CONNODE))
+                        return;
+
+                    if (getState() == STATE_CONNODE && isDiscovering())
+                         stopDiscovering();
+                }).start();
                 break;
-            // TODO 2303
-            case FINDROOT:
+            case STATE_STANDBY:
                 if (isAdvertising()) {
                     stopAdvertising();
                 }
@@ -414,6 +375,18 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
                     stopDiscovering();
                 }
                 disconnectFromAllEndpoints();
+                stopAllEndpoints();
+                break;
+            case STATE_FINDROOT:
+                if (isAdvertising()) {
+                    stopAdvertising();
+                }
+                if (isDiscovering()) {
+                    stopDiscovering();
+                }
+                disconnectFromAllEndpoints();
+                stopAllEndpoints();
+
                 startAdvertising();
                 startDiscovering();
             default:
@@ -421,11 +394,6 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
                 break;
         }
     }
-
-    /*public void startAdvertising(View view){
-        setState(State.ADVERTISING);
-        postDelayed(mDiscoverRunnable, ADVERTISING_DURATION);
-    }*/
 
     public void publishIt(String channel, String message) {
         ExtMessage extMessage = new ExtMessage(message, channel, ExtMessage.STRING);
@@ -450,13 +418,9 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         }
 
         Payload fileAsPayload = Payload.fromFile(pfd);
-        // String fileExtension =
-
         String fileinformations = fileExtension + "/" + fileAsPayload.getId() + "/" + textAttachment;
-        // Payload channelPayload = Payload.fromBytes(fileinformations.getBytes(StandardCharsets.UTF_8));
 
         ExtMessage extMessage = new ExtMessage(fileinformations, channel, ExtMessage.FILEINFORMATION);
-        // send(channelPayload);
         send(Payload.fromBytes(extMessage.getBytes()));
         send(fileAsPayload);
 
@@ -484,12 +448,12 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
     }
 
     public void subscribe(String channel) {
-        if (!subscribedChannels.contains(channel))
-            subscribedChannels.add(channel);
+        if (!mSubscribedChannels.contains(channel))
+            mSubscribedChannels.add(channel);
     }
 
     public void unsubscribe(String channel) {
-        subscribedChannels.remove(channel);
+        mSubscribedChannels.remove(channel);
     }
 
     /**
@@ -501,7 +465,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         // logD(new String(payload.asBytes()) + "from" + endpoint);
         ExtMessage msg = ExtMessage.createExtMessage(payload);
 
-        if (subscribedChannels.contains(msg.getChannel()) && myConnectionsListener != null) {
+        if (mSubscribedChannels.contains(msg.getChannel()) && myConnectionsListener != null) {
             myConnectionsListener.onMessage(msg.getChannel(), msg.getPayload());
         }
 
@@ -510,25 +474,75 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         else
             // myConnectionsListener.onMessage(new String(payload.asBytes()));
             myConnectionsListener.onBinary(payload);*/
+
+
+        /** Executor **/
+        //if (msgForwardExecutor!=null)
+        if (getConnectedEndpoints().size()>1) // Only Root has more than 2 Connected Endpoints
+            forward(payload, endpoint.getId());
+            // publishForwarder.newMessage(payload, endpointId);
+
     }
 
     @Override
-    protected void onFile(Endpoint endpoint, String path, String textAttachment) {
-        myConnectionsListener.onFile(path, textAttachment);
+    protected void onFile(Endpoint endpoint, String channel, String path, String textAttachment) {
+        myConnectionsListener.onFile(channel, path, textAttachment);
     }
+    // TODO: Provisorisch ******************************************************
+    private void forward(final Payload payload, final String excludedEntpointId) {
+        // logE(++mCnt + " - forwarding Message: " + new String(payload.asBytes()));
+        // final long starttime = System.currentTimeMillis();
+
+        /* TODO: Removes Sender from list to avoid a endless loop */
+        ArrayList<String> broadcastList = new ArrayList<>();
+
+        for (Endpoint endpoint: getConnectedEndpoints()){
+            if (!endpoint.getId().equals(excludedEntpointId)){
+                broadcastList.add(endpoint.getId());
+            }
+        }
+
+        //msgForwardExecutor.execute(() -> {
+            send(payload, broadcastList);
+        //});
+    }
+    /*************************************************************************/
+    protected void forwardFile(String excludedEntpointId, Payload fileAsPayload, String channel, String path, String textAttachment){
+        String[] temp = path.split("\\/");
+        String[] dotdot = temp[temp.length-1].split("\\.");
+        String fileExtension = dotdot[dotdot.length-1];
+
+        /* TODO: Removes Sender from list to avoid a endless loop */
+        ArrayList<String> broadcastList = new ArrayList<>();
+
+        for (Endpoint endpoint: getConnectedEndpoints()){
+            if (!endpoint.getId().equals(excludedEntpointId)){
+                broadcastList.add(endpoint.getId());
+            }
+        }
+
+
+        String fileinformations = fileExtension + "/" + fileAsPayload.getId() + "/" + textAttachment;
+        ExtMessage extMessage = new ExtMessage(fileinformations, channel, ExtMessage.FILEINFORMATION);
+
+        send(Payload.fromBytes(extMessage.getBytes()), broadcastList);
+        send(fileAsPayload, broadcastList);
+
+
+        /*msgForwardExecutor.execute(() -> {
+            send(Payload.fromBytes(extMessage.getBytes()), broadcastList);
+            send(fileAsPayload, broadcastList);
+        });*/
+    }
+    /*************************************************************************/
 
     @Override
     protected void onDiscoveryFailed() {
         super.onDiscoveryFailed();
-        setState(State.STANDBY);
-        setState(State.FINDROOT);
-        // mUiHandler.removeCallbacksAndMessages(null);
+        setState(STATE_STANDBY);
+        setState(STATE_FINDROOT);
     }
 
-    /**
-     * Queries the phone's contacts for their own profile, and returns their name. Used when
-     * connecting to another device.
-     */
     @Override
     protected String getName() {
         return mName;
@@ -569,32 +583,28 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
             myConnectionsListener.onLogMessage(toColor(msg, 0xFFF44336));
     }
 
+    protected void logE(String msg) {
+        if (myConnectionsListener != null)
+            myConnectionsListener.onLogMessage(toColor(msg, 0xFFF44336));
+    }
+
     private static CharSequence toColor(String msg, int color) {
         SpannableString spannable = new SpannableString(msg);
         spannable.setSpan(new ForegroundColorSpan(color), 0, msg.length(), 0);
         return spannable;
     }
 
-    @SuppressWarnings("unchecked")
+    /*@SuppressWarnings("unchecked")
     private static <T> T pickRandomElem(Collection<T> collection) {
         return (T) collection.toArray()[new Random().nextInt(collection.size())];
-    }
-
-    /**
-     * possible States of Application
-     */
-    public enum State {
-        STANDBY,
-        NODE,
-        ROOT,
-        FINDROOT,
-        CONNODE
-    }
+    }*/
 
     public boolean isConnected() {
-        if (getState() == State.CONNODE || getState() == State.ROOT) {
+        return (!getConnectedEndpoints().isEmpty());
+        /*
+        if (getState() == STATE_CONNODE || getState() == STATE_ROOT) {
             return true;
         }
-        return false;
+        return false;*/
     }
 }

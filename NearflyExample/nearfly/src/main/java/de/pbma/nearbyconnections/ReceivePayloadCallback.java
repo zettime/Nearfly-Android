@@ -34,8 +34,13 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
     private final SimpleArrayMap<Long, Payload> completedFilePayloads = new SimpleArrayMap<>();
     private final SimpleArrayMap<Long, String> filePayloadTextAttachment = new SimpleArrayMap<>();
     private final SimpleArrayMap<Long, String> filePayloadFileExtension = new SimpleArrayMap<>();
+    private final SimpleArrayMap<Long, String> filePayloadChannel = new SimpleArrayMap<>();
     private long timeMeasureBegin = 0;
     private final String TAG = "PayloadCallback";
+    /** Name that precedes the date e.g. Nearfly 2020-05-02 **/
+    private final String FILEFORENAME = "Nearfly";
+
+
 
     public ReceivePayloadCallback(Context context) {
         this.context = context;
@@ -44,18 +49,23 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
     /**
      * Functions which are needed from {@link MyNearbyConnectionsAbstract}
      **/
-    public abstract void onFile(String endpointId, String path, String textAttachment);
+    public abstract void onFile(String endpointId, String channel, String path, String textAttachment);
+
+    public abstract void forwardFile(String endpointId, Payload payload,
+                                     String channel, String path,
+                                     String textAttachment);
 
     /**
      * TODO: onFile Beii anderen ändern
      **/
     public abstract void onByteMessage(String endpointId, Payload payload);
 
-    class PathAndTextAttachment {
+    class fileRelatedData {
+        public String channel;
         public String path;
         public String textAttachment;
 
-        public PathAndTextAttachment(String path, String textAttachment) {
+        public fileRelatedData(String channel, String path, String textAttachment) {
             this.path = path;
             this.textAttachment = textAttachment;
         }
@@ -69,9 +79,10 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
             if (extMessage.getType().equals(ExtMessage.FILEINFORMATION)) {
                 // String fileInformations = new String(payload.asBytes(), StandardCharsets.UTF_8);
                 String fileInformations = extMessage.getPayload();
+                String channel = extMessage.getChannel();
                 // String payloadFilenameMessage = new String(payload.asBytes(), StandardCharsets.UTF_8);
 
-                long payloadId = addPayloadFilename(fileInformations);
+                long payloadId = addPayloadFilename(channel, fileInformations);
                 processFilePayload(payloadId);
             } else if (extMessage.getType().equals(ExtMessage.STRING)) {
                 onByteMessage(endpointId, payload);
@@ -99,13 +110,14 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
             return payloadId;
         }*/
     /** Pentant {@link MyNearbyConnectionsClient#pubFile(String, Uri, String)} **/
-    private long addPayloadFilename(String payloadFilenameMessage) {
+    private long addPayloadFilename(String channel, String payloadFilenameMessage) {
         String[] parts = payloadFilenameMessage.split("\\/", 3);
         String fileExtension = parts[0];
         long payloadId = Long.parseLong(parts[1]);
         String textAttachment = parts[2];
         filePayloadFileExtension.put(payloadId, fileExtension);
         filePayloadTextAttachment.put(payloadId, textAttachment);
+        filePayloadChannel.put(payloadId, channel);
         return payloadId;
     }
 
@@ -122,15 +134,17 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
             filePayloadFilenames.put(payloadId, channel);
         }*/
 
-    private PathAndTextAttachment processFilePayload(long payloadId) {
+    private fileRelatedData processFilePayload(long payloadId) {
         // BYTES and FILE could be received in any order, so we call when either the BYTES or the FILE
         // payload is completely received. The file payload is considered complete only when both have
         // been received.
         Payload filePayload = completedFilePayloads.get(payloadId);
         String textAttachment = filePayloadTextAttachment.get(payloadId);
+        String channel = filePayloadChannel.get(payloadId);
         if (filePayload != null && textAttachment != null) {
             completedFilePayloads.remove(payloadId);
             filePayloadTextAttachment.remove(payloadId);
+            filePayloadChannel.remove(payloadId);
 
             // Rename the file.
             // payloadFile.renameTo(new File(payloadFile.getParentFile(), filename));
@@ -193,7 +207,8 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
                 // onReceive("?", new Payload("Datei erhalten".getBytes()));
 
                 // return movedFile.getAbsolutePath();
-                return new PathAndTextAttachment(
+                return new fileRelatedData(
+                        channel,
                         new File(destinationDirectory, filename).getAbsolutePath(),
                         textAttachment
                 );
@@ -223,7 +238,8 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
                 // onReceive("?", new Payload("Datei erhalten".getBytes()));
 
                 // return movedFile.getAbsolutePath();
-                return new PathAndTextAttachment(
+                return new fileRelatedData(
+                        channel,
                         movedFile.getAbsolutePath(),
                         textAttachment
                 );
@@ -264,7 +280,7 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
         // Make File  Name
         Date today = Calendar.getInstance().getTime();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-hh.mm.ss");
-        String fileName = "Nearfly " + formatter.format(today);
+        String fileName = FILEFORENAME + formatter.format(today);
 
         return fileName + "." + fileExtension;
     }
@@ -288,9 +304,12 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
 
                 completedFilePayloads.put(payloadId, payload);
                 if (payload.getType() == Payload.Type.FILE) {
-                    PathAndTextAttachment pathAndTextAttachment = processFilePayload(payloadId);
-                    if (pathAndTextAttachment != null) // TODO
-                        onFile(endpointId, pathAndTextAttachment.path, pathAndTextAttachment.textAttachment);
+                    fileRelatedData fileRelatedData = processFilePayload(payloadId);
+                    // TODO *****
+                    if (fileRelatedData != null) {
+                        onFile(endpointId, fileRelatedData.channel, fileRelatedData.path, fileRelatedData.textAttachment);
+                        forwardFile(endpointId, payload, fileRelatedData.channel, fileRelatedData.path, fileRelatedData.textAttachment);
+                }
                     //onFile(mEstablishedConnections.get(endpointId), path);
                     // myRenameFile(payloadId);
                 }

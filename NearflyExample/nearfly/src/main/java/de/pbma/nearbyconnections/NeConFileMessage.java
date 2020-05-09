@@ -1,50 +1,36 @@
 package de.pbma.nearbyconnections;
 
-import androidx.annotation.StringDef;
-
 import com.google.android.gms.nearby.connection.Payload;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.annotation.Retention;
 import java.nio.charset.StandardCharsets;
 
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
-class ExtMessage{
-    /*public static String SEPERATOR;
-    static {
-        try {
-            SEPERATOR = new String("DELIMIT".getBytes(), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }*/
+class NeConFileMessage extends NeConMessage {
     final static private String PAYLOAD = "p";
     final static String CHANNEL = "c";
     final static String TYPE = "t";
 
-    @Retention(SOURCE)
-    @StringDef({STRING , FILEINFORMATION})
-    public @interface ConnectionMode {}
-    public final static String STRING = "string";
-    public final static String FILEINFORMATION = "fileinf";
-
-
     private String payload;
     private String channel;
-    private String type;
+    private String type = "sdsada";
     private JSONObject message;
     public Long time;
+    private String fileExtension;
+    private String fileAttachment;
+    private String payloadId;
+
+
+    public String getType(){
+        return FILEINFORMATION;
+    }
 
     public String getPayload() { return payload; }
-    // public void setPayload(String payload) { this.payload = payload; buildMessage(); }
     public String getChannel() { return channel; }
-    // public void setChannel(String channel) {this.channel=channel; buildMessage(); }
-    // public Message getMessage() { return message; }
 
-    public ExtMessage(String payload, String channel, String type){
+
+    public NeConFileMessage(String payload, String channel, String type){
         this.payload = payload;
         this.channel = channel;
         this.type = type;
@@ -61,14 +47,14 @@ class ExtMessage{
         return new ExtMessage(channelAndPayload[0], channelAndPayload[1]);
     }*/
 
-    public static ExtMessage createExtMessage(byte[] message){
+    public static NeConFileMessage createExtMessage(byte[] message){
         try {
             JSONObject jsonObject= new JSONObject(new String(message));
 
-            return new ExtMessage(
-                    jsonObject.getString(ExtMessage.PAYLOAD),
-                    jsonObject.getString(ExtMessage.CHANNEL),
-                    jsonObject.getString(ExtMessage.TYPE)
+            return new NeConFileMessage(
+                    jsonObject.getString(NeConFileMessage.PAYLOAD),
+                    jsonObject.getString(NeConFileMessage.CHANNEL),
+                    jsonObject.getString(NeConFileMessage.TYPE)
             );
         } catch (JSONException e) {
             e.printStackTrace();
@@ -76,14 +62,14 @@ class ExtMessage{
         }
     }
 
-    public static ExtMessage createExtMessage(Payload payload){
+    public static NeConFileMessage createExtMessage(Payload payload){
         try {
             JSONObject jsonObject= new JSONObject(new String(payload.asBytes()));
 
-            return new ExtMessage(
-                    jsonObject.getString(ExtMessage.PAYLOAD),
-                    jsonObject.getString(ExtMessage.CHANNEL),
-                    jsonObject.getString(ExtMessage.TYPE)
+            return new NeConFileMessage(
+                    jsonObject.getString(NeConFileMessage.PAYLOAD),
+                    jsonObject.getString(NeConFileMessage.CHANNEL),
+                    jsonObject.getString(NeConFileMessage.TYPE)
             );
         } catch (JSONException e) {
             e.printStackTrace();
@@ -96,19 +82,15 @@ class ExtMessage{
         return message.toString().getBytes(StandardCharsets.UTF_8);
     }
 
-    public String getType(){
-        return type;
-    }
-
     private void buildMessage(){
         // Nachrichten werden durch Separatorcode getrennt
         // message = ((channel + ExtMessage.SEPERATOR + payload).getBytes());
 
         message = new JSONObject();
         try {
-            message.put(ExtMessage.PAYLOAD, payload);
-            message.put(ExtMessage.CHANNEL, channel);
-            message.put(ExtMessage.TYPE, type);
+            message.put(NeConFileMessage.PAYLOAD, payload);
+            message.put(NeConFileMessage.CHANNEL, channel);
+            message.put(NeConFileMessage.TYPE, type);
         } catch (JSONException e) {
             e.printStackTrace();
         }

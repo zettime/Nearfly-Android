@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import de.pbma.nearfly.NearflyBindingActivity;
 import de.pbma.nearfly.NearflyListener;
+import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
 
 public class Standard extends NearflyBindingActivity {
@@ -27,12 +28,18 @@ public class Standard extends NearflyBindingActivity {
     private TextView mDebugLogView;
     private Integer cnt = 0;
 
+    private final String NEARFLY_CHANNEL = "test/a";
+    private boolean neaflyServiceConnectCalled = false;
+
 
     @Override
     public void onNearflyServiceBound() {
-        nearflyService.addSubCallback(nearflyListener);
-        nearflyService.subIt("19moa18/test");
-        // nearflyServiceBound = true;
+        if (!neaflyServiceConnectCalled) {
+            nearflyService.addSubCallback(nearflyListener);
+            nearflyService.connect("19moa18", NearflyService.USE_MQTT);
+            nearflyService.subIt(NEARFLY_CHANNEL);
+            neaflyServiceConnectCalled = true;
+        }
     }
 
     @Override
@@ -42,27 +49,37 @@ public class Standard extends NearflyBindingActivity {
     NearflyListener nearflyListener = new NearflyListener() {
         @Override
         public void onLogMessage(String output) {
-            // TODO
-            /*if (DEBUG==true)
                 runOnUiThread(() -> {
-
                     mDebugLogView.append(output + "\n");
-                });*/
+                });
         }
 
         @Override
         public void onMessage(String channel, String message) {
             runOnUiThread(() -> {
-                mDebugLogView.append(message + "\n");
+                mDebugLogView.append("channel:"+channel+" message: "+message + "\n");
             });
         }
 
         @Override
-        public void onFile(String path, String textAttachment){}
+        public void onFile(String channel, String path, String textAttachment){
+            runOnUiThread(() -> {
+                mDebugLogView.append(channel + " " + path + " " + textAttachment + "\n");
+            });
+        }
     };
 
     public void publish(View view){
-        nearflyService.pubIt("19moa18/test", String.valueOf(++cnt) );
+        nearflyService.pubIt(NEARFLY_CHANNEL, String.valueOf(++cnt) );
+        // OR
+        // nearflyService.pubIt(NEARFLY_CHANNEL, String.valueOf(++cnt), 0, false );
+    }
+
+    public void toggleConnectionMode(View view){
+        if (nearflyService.getConnectionMode()==nearflyService.USE_MQTT)
+            nearflyService.switchConnectionMode(NearflyService.USE_NEARBY);
+        else
+            nearflyService.switchConnectionMode(NearflyService.USE_MQTT);
     }
 
     @Override

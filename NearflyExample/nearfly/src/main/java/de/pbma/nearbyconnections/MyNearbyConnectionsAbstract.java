@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -67,8 +68,9 @@ abstract class MyNearbyConnectionsAbstract {
     /**
      * The devices we are currently connected to. For advertisers, this may be large. For discoverers,
      * there will only be one entry in this map.
+     * TODO: Concurrent for visability
      */
-    private final Map<String, Endpoint> mEstablishedConnections = new HashMap<>();
+    private final Map<String, Endpoint> mEstablishedConnections = new ConcurrentHashMap<>();
 
     /**
      * True if we are asking a discovered device to connect to us. While we ask, we cannot ask another
@@ -86,10 +88,6 @@ abstract class MyNearbyConnectionsAbstract {
      */
     private boolean mIsAdvertising = false;
 
-    // TODO: PublishForwarder
-    ThreadPoolExecutor msgForwardExecutor;
-    // PublishForwarder publishForwarder;
-
     // TODO
     protected abstract void changeConnectionState(boolean isConnected);
 
@@ -100,7 +98,7 @@ abstract class MyNearbyConnectionsAbstract {
             new ConnectionLifecycleCallback() {
                 @Override
                 public void onConnectionInitiated(String endpointId, ConnectionInfo connectionInfo) {
-                    // TODO: The Connection must be accepted...
+                    /** Connection is requested **/
                     logD(
                             String.format(
                                     "onConnectionInitiated(endpointId=%s, endpointName=%s)",
@@ -126,20 +124,6 @@ abstract class MyNearbyConnectionsAbstract {
                         return;
                     }
                     connectedToEndpoint(mPendingConnections.remove(endpointId));
-
-                    // TODO: Starte Executor *****************************************************
-                    if (mEstablishedConnections.keySet().size() > 1) {
-                        if (msgForwardExecutor == null) {
-                            msgForwardExecutor = (ThreadPoolExecutor)
-                                    Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 5);
-                            logE("Executor started");
-                        }
-                    } else if (msgForwardExecutor != null) {
-                        msgForwardExecutor.shutdownNow();
-                        msgForwardExecutor = null;
-                        logE("Executor ended");
-                    }
-                    /**********************************************************************/
                 }
 
                 @Override
@@ -156,93 +140,9 @@ abstract class MyNearbyConnectionsAbstract {
      * Callbacks for payloads (bytes of data) sent from another device to us.
      */
     private PayloadCallback mPayloadCallback;
-    /*private PayloadCallback mPayloadCallback  = new PayloadCallback() {
-        private final SimpleArrayMap<Long, Payload> incomingPayloads = new SimpleArrayMap<>();
-        private long timeMeasureBegin = 0;
-
-        @Override
-        public void onPayloadTransferUpdate(@NonNull String endpointId, @NonNull PayloadTransferUpdate update) {
-            if (update.getStatus() == PayloadTransferUpdate.Status.SUCCESS) {
-                Payload payload = incomingPayloads.remove(update.getPayloadId());
-
-                // Sender also gets SUCCESS-notification, so cancel thhe
-                if (payload==null)
-                    return;
-
-                // InputStream is = payload.asStream().asInputStream();
-                onReceive(mEstablishedConnections.get(endpointId), payload);
-
-                logD(String.format("Success - onPayloadTransferUpdate(endpointId=%s, update=%s)", endpointId, update));
-                logD(" -> time needed "+(System.currentTimeMillis()-timeMeasureBegin));
-            }
-
-            if (update.getStatus() == PayloadTransferUpdate.Status.IN_PROGRESS) {
-                logD(String.format("Progress - onPayloadTransferUpdate(endpointId=%s, update=%s)", endpointId, update));
-                logD(String.format("Byte Transfered: " + update.getBytesTransferred()));
-            }
-
-            if (update.getStatus() == PayloadTransferUpdate.Status.FAILURE) {
-                logD(String.format("Failure - onPayloadTransferUpdate(endpointId=%s, update=%s)", endpointId, update));
-            }
-
-            if (update.getStatus() == PayloadTransferUpdate.Status.CANCELED) {
-                logD(String.format("Canceled - onPayloadTransferUpdate(endpointId=%s, update=%s)", endpointId, update));
-            }
-        }
-
-
-        @Override
-        public void onPayloadReceived(@NonNull String endpointId, @NonNull Payload payload) {
-            incomingPayloads.put(payload.getId(), payload);
-            logD("incomingPayloads: "+  incomingPayloads);
-            timeMeasureBegin = System.currentTimeMillis();
-        }
-    };*/
-
-    // =  new ReceiveWithProgressCallback(context);
-    /*
-            new PayloadCallback() {
-                @Override
-                public void onPayloadReceived(String endpointId, Payload payload) {
-                    // logD(String.format("onPayloadReceived(endpointId=%s, payload=%s)", endpointId, new String(payload.asBytes())));
-                    logD(String.format("onPayloadReceived(endpointId=%s, payload=%s)", endpointId, new String(payload.asBytes())));
-
-                    // TODO: Provisorisch
-                    if (mEstablishedConnections.keySet().size() > 1) {
-                        forward(payload, endpointId);
-                        // publishForwarder.newMessage(payload, endpointId);
-                    }
-
-                    onReceive(mEstablishedConnections.get(endpointId), payload);
-                }
-
-                @Override
-                public void onPayloadTransferUpdate(String endpointId, PayloadTransferUpdate update) {
-                    logD(
-                            String.format(
-                                    "onPayloadTransferUpdate(endpointId=%s, update=%s)", endpointId, update));
-                }
-            };*/
-
-
-    /* TODO: New Callback for files */
-     /*final PayloadCallback mReceiveFilePayloadCallback =
-            new ReceivePayloadCallback(context);*/
-
-    // TODO
-    // @NonNull
-    // protected abstract PayloadCallback getPayloadCallback();
-
-
-    /** Called when our Activity is first created. */
-  /*@Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    mConnectionsClient = Nearby.getConnectionsClient(this);
-
-    mName = generateRandomName();
-  }*/
-
+    protected abstract void forwardFile(String endpointId, Payload payload,
+                                     String channel, String path,
+                                     String textAttachment);
     /**
      * ******************************************
      */
@@ -252,20 +152,18 @@ abstract class MyNearbyConnectionsAbstract {
         mConnectionsClient = Nearby.getConnectionsClient(context);
         mPayloadCallback = new ReceivePayloadCallback(context) {
             @Override
-            public void onFile(String endpointId, String path, String textAttachment) {
+            public void onFile(String endpointId, String channel, String path, String textAttachment) {
                 MyNearbyConnectionsAbstract.this.onFile(mEstablishedConnections.get(endpointId),
-                        path, textAttachment);
+                        channel, path, textAttachment);
+            }
+
+            @Override
+            public void forwardFile(String endpointId, Payload payload, String channel, String path, String textAttachment) {
+                MyNearbyConnectionsAbstract.this.forwardFile(endpointId, payload, channel, path, textAttachment);
             }
 
             @Override
             public void onByteMessage(String endpointId, Payload payload) {
-                // TODO: Provisorisch
-                if (mEstablishedConnections.keySet().size() > 1) {
-                    if (msgForwardExecutor!=null)
-                        forward(payload, endpointId);
-                    // publishForwarder.newMessage(payload, endpointId);
-                }
-
                 onReceive(mEstablishedConnections.get(endpointId), payload);
             }
         };
@@ -376,7 +274,7 @@ abstract class MyNearbyConnectionsAbstract {
     }
 
     /**
-     * Sets the device to discovery mode. It will now listen for devices in advertising mode. Either
+     * Sets the device to discovery mode. It will now listen for devices in aRdvertising mode. Either
      * {@link #onDiscoveryStarted()} or {@link #onDiscoveryFailed()} will be called once we've found
      * out if we successfully entered this mode.
      */
@@ -399,6 +297,7 @@ abstract class MyNearbyConnectionsAbstract {
                                 if (getServiceId().equals(info.getServiceId())) {
                                     Endpoint endpoint = new Endpoint(endpointId, info.getEndpointName());
                                     mDiscoveredEndpoints.put(endpointId, endpoint);
+                                    Log.v("dadada", "list: " + mDiscoveredEndpoints.toString());
                                     onEndpointDiscovered(endpoint);
                                 }
                             }
@@ -406,6 +305,9 @@ abstract class MyNearbyConnectionsAbstract {
                             @Override
                             public void onEndpointLost(String endpointId) {
                                 logD(String.format("onEndpointLost(endpointId=%s)", endpointId));
+                                // TODO: Delete endpoints from list
+                                if (mDiscoveredEndpoints.containsKey(endpointId))
+                                    mDiscoveredEndpoints.remove(endpointId);
                             }
                         },
                         discoveryOptions.build())
@@ -495,7 +397,7 @@ abstract class MyNearbyConnectionsAbstract {
         mEstablishedConnections.clear();
     }
 
-    /**
+    /**m
      * Sends a connection request to the endpoint. Either {@link #onConnectionInitiated(Endpoint,
      * ConnectionInfo)} or {@link #onConnectionFailed(Endpoint)} will be called once we've found out
      * if we successfully reached the device.
@@ -547,20 +449,19 @@ abstract class MyNearbyConnectionsAbstract {
     }
 
     /**
-     * Called when a connection with this endpoint has failed. Override this method to act on the
-     * event.
+     * Called when a connection with this endpoint has failed.
      */
     protected void onConnectionFailed(Endpoint endpoint) {
     }
 
     /**
-     * Called when someone has connected to us. Override this method to act on the event.
+     * Called when someone has connected to us.
      */
     protected void onEndpointConnected(Endpoint endpoint) {
     }
 
     /**
-     * Called when someone has disconnected. Override this method to act on the event.
+     * Called when someone has disconnected.
      */
     protected void onEndpointDisconnected(Endpoint endpoint) {
     }
@@ -578,6 +479,15 @@ abstract class MyNearbyConnectionsAbstract {
     protected Set<Endpoint> getConnectedEndpoints() {
         return new HashSet<>(mEstablishedConnections.values());
     }
+
+    /**
+     * Returns a list of currently connected endpoints.
+     */
+    protected Set<Endpoint> getPendingEndpoints() {
+        return new HashSet<>(mPendingConnections.values());
+    }
+
+
 
     /**
      * Sends a {@link Payload} to all currently connected endpoints.
@@ -604,37 +514,17 @@ abstract class MyNearbyConnectionsAbstract {
                         });
     }
 
-    int mCnt = 0;
-    // TODO: Provisorisch ******************************************************
-    private void forward(final Payload payload, final String excludedEntpointId) {
-        // logE(++mCnt + " - forwarding Message: " + new String(payload.asBytes()));
-        // final long starttime = System.currentTimeMillis();
-
-        /* TODO: Removes Sender from list to avoid a endless loop */
-        // final ArrayList<String> broadcastList = new BroadcastList
-        // final String[] broadcastList
-        ArrayList<String> broadcastList = new ArrayList<>();
-
-        for (String entpointId : mEstablishedConnections.keySet()){
-            if (!entpointId.equals(excludedEntpointId)){
-                broadcastList.add(entpointId);
-            }
-        }
-
-        msgForwardExecutor.execute(() -> {
-            // send(payload, lala);
-            mConnectionsClient
-                    .sendPayload(broadcastList, payload)
-                    .addOnFailureListener(
-                            new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    logW("sendPayload() failed.", e);
-                                }
-                            });
-        });
+    protected void send(Payload payload, ArrayList<String> endpointList){
+        mConnectionsClient
+                .sendPayload(endpointList, payload)
+                .addOnFailureListener(
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                logW("sendPayload() failed.", e);
+                            }
+                        });
     }
-    /*************************************************************************/
 
     /**
      * Someone connected to us has sent us data. Override this method to act on the event.
@@ -646,7 +536,7 @@ abstract class MyNearbyConnectionsAbstract {
     }
 
     // TODO
-    protected void onFile(Endpoint endpoint, String path, String textAttachment) {
+    protected void onFile(Endpoint endpoint, String channel, String path, String textAttachment) {
     }
 
     /** Returns the client's name. Visible to others when connecting. */
@@ -720,7 +610,7 @@ abstract class MyNearbyConnectionsAbstract {
         @NonNull
         private final String name;
 
-        private Endpoint(@NonNull String id, @NonNull String name) {
+        public  Endpoint(@NonNull String id, @NonNull String name) {
             this.id = id;
             this.name = name;
         }

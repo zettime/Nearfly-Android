@@ -24,6 +24,20 @@ class EndpointNameGenerator {
         return endpointName;
     }
 
+    public String getNamePendentFromTime(){
+            final long MAX_DAYTIME = (60*60*1000*24);
+
+            int num = getMaxCPUFreqMHz();
+            long time = MAX_DAYTIME-(currMillis()%MAX_DAYTIME);
+            long DURATION = 20;
+            // Bei 1300 zu 1700 Zeit*4 bei 1500 zu 1700 Zeit*2
+            return ""+(time+(num*10*DURATION));
+    }
+
+    private long currMillis() {
+        return System.currentTimeMillis();
+    }
+
     /**
      * Use this to get the Max CPU Frequence in MHz
      *

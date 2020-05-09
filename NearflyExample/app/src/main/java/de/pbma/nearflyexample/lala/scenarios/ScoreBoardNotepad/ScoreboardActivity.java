@@ -77,7 +77,7 @@ public class ScoreboardActivity extends NearflyBindingActivity {
     public void onNearflyServiceBound() {
         if (!neaflyServiceConnectCalled) {
             nearflyService.addSubCallback(nearflyListener);
-            nearflyService.connect("ScoreboardActivity", NearflyService.USE_NEARBY);
+            nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
 
             for (String str : USED_CHANNELS)
                 nearflyService.subIt(DEFAULT_CHANNEL + str);
@@ -123,7 +123,7 @@ public class ScoreboardActivity extends NearflyBindingActivity {
         }
 
         @Override
-        public void onFile(String path, String textAttachment) {
+        public void onFile(String channel, String path, String textAttachment) {
         }
     };
 

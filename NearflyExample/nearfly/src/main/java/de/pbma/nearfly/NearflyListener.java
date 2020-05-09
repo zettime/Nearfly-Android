@@ -10,7 +10,7 @@ public interface NearflyListener {
     void onMessage(String channel, String message);
     // void onStream(Payload payload);
     // void onBinary(Payload payload);
-    void onFile(String path, String textAttachment);
+    void onFile(String channel, String path, String textAttachment);
 
     /*public interface StatusChange{
         void onLogMessage(CharSequence msg);
