@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 // import de.pbma.nearfly.NearflyListener;
 
@@ -56,7 +57,7 @@ import androidx.annotation.Nullable;
  *     }
  * </pre>
  */
-public abstract class NearflyBindingActivity extends ConnectionsActivityWithPermissions {
+public abstract class NearflyBindingActivity extends AppCompatActivity {
     /** If true, debug logs are shown on the device. */
     private static final boolean DEBUG = true;
 

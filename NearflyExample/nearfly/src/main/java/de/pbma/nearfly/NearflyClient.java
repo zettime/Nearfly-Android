@@ -2,7 +2,6 @@ package de.pbma.nearfly;
 
 
 import android.Manifest;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,13 +9,9 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.CallSuper;
 import androidx.annotation.IntDef;
 import androidx.annotation.IntRange;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -24,7 +19,6 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.nearby.connection.Payload;
 
 import java.lang.annotation.Retention;
-import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -36,8 +30,82 @@ import de.pbma.nearbyconnections.MyNearbyConnectionsClient;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
-/** {@inheritDoc} **/
-public class NearflyService extends Service {
+/**
+ * A Bound Service that wrap up the feature functions from the Google Nearby API and MQTT Paho.
+ *
+ * <p>The {@code NeaflyService} is started according to the usual procedure for starting
+ * bound service via {@link #startService(Intent)}. After the activity is bound,
+ * {@code NearflyService} can be used. In order to facilitate the integration of
+ * the {@code NeaflyService} it is recommended to inherit from the {@link NearflyBindingActivity},
+ * also ensures that the necessary permissions are queried by the activity
+ * The {@link NearflyBindingActivity} also ensures that the necessary permissions are queried
+ * by the activity at the beginning.
+ *
+ * <h3>Usage Examples</h3>
+ * <p>
+ * Here is an example of an activity that extends from the {@link NearflyBindingActivity}
+ * and publishes message as soon as it is connected to the {@code NeaflyService}.
+ *
+ * <pre> {@code
+ *
+ * public class NearflySampleActivity extends NearflyBindingActivity {
+ *
+ *     private final String NEARFLY_CHANNEL = "sensors/humidity";
+ *     private boolean neaflyServiceConnectCalled = false;
+ *
+ *     @Override
+ *     public void onNearflyServiceUnbound() {
+ *         if (!neaflyServiceConnectCalled) {
+ *             nearflyService.addSubCallback(nearflyListener);
+ *             nearflyService.connect("ThisIsMyUniqueRoomString", NearflyService.USE_NEARBY);
+ *             nearflyService.subIt(NEARFLY_CHANNEL);
+ *             neaflyServiceConnectCalled = true;
+ *         }
+ *     }
+ *
+ *     @Override
+ *     public void onNearflyServiceUnbound() {
+ *     }
+ *
+ *     NearflyListener nearflyListener = new NearflyListener() {
+ *         @Override
+ *         public void onLogMessage(String state) {
+ *             // Log.v("test", output);
+ *             switch (state){
+ *                 case NearflyService.State.CONNECTED:
+ *                     Log.v("test", "Hello World!");
+ *                     nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!");
+ *                     // OR
+ *                     // nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!", -10, true);
+ *                     break;
+ *                 case NearflyService.State.DISCONNECTED:
+ *                     Log.v("test", "disconnected");
+ *                     break;
+ *             }
+ *         }
+ *
+ *         @Override
+ *         public void onMessage(String channel, String message) {
+ *             Log.v("test",channel + " " + message);
+ *         }
+ *
+ *         @Override
+ *         public void onFile(String path, String textAttachment) {
+ *         }
+ *     };
+ *
+ *     @Override
+ *     protected void onCreate(@Nullable Bundle savedInstanceState) {
+ *         super.onCreate(savedInstanceState);
+ *         setContentView(R.layout.main);
+ *     }
+ * }
+ * </pre>
+ *
+ * @author Alexis Danilo Morgado dos Santos
+ * @edited 01.05.2020
+ */ // JUST TEST
+private class NearflyClient {
     /* This are the both Modes that can be used for Nearfly */
     @Retention(SOURCE)
     @IntDef({USE_MQTT, USE_NEARBY})
@@ -47,6 +115,8 @@ public class NearflyService extends Service {
     public final static int USE_NEARBY = 1;
     public final static int USE_MQTT = 2;
     private final static int PAUSED = 0;
+
+    private AppCompatActivity app;
 
     /**
      * Technology to use(MQTT or Nearby)
@@ -100,63 +170,6 @@ public class NearflyService extends Service {
     public static class State {
         public final static String CONNECTED = "connected";
         public final static String DISCONNECTED = "disconnected";
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        new Thread(() -> {
-
-            for (; ; ) {
-                try {
-                    while(!isConnected()){
-                        synchronized (connectedLock) {
-                            connectedLock.wait();
-                        }
-                    }
-
-                    NearflyNice.NearflyMessage msg;
-                    msg = nearflyQueue.take();
-
-                    if (msg instanceof NearflyNice.NearflyFileMessage) {
-                        NearflyNice.NearflyFileMessage fileMsg = (NearflyNice.NearflyFileMessage)msg;
-                        String channel = fileMsg.getChannel();
-                        Uri uri = fileMsg.getUri();
-                        String textAttachment = fileMsg.getTextAttachment();
-
-                        switch (mConnectionMode) {
-                            case USE_NEARBY:
-                                nearbyConnectionsClient.pubFile(room + "/" + channel, uri, textAttachment);
-                                break;
-                            case USE_MQTT:
-                                mqttClient.pubFile(room + "/" + channel, uri, textAttachment);
-                                break;
-                        }
-                    }
-
-                    if (msg instanceof NearflyNice.NearflyTextMessage) {
-                        NearflyNice.NearflyTextMessage textMsg = (NearflyNice.NearflyTextMessage)msg;
-                        String channel = textMsg.getChannel();
-                        String payload = textMsg.getPayload();
-
-                        switch (mConnectionMode) {
-                            case USE_NEARBY:
-                                nearbyConnectionsClient.publishIt(room + "/" + channel, payload);
-                                break;
-                            case USE_MQTT:
-                                mqttClient.publishIt(room + "/" + channel, payload);
-                                break;
-                        }
-                    }
-
-
-                } catch (InterruptedException e) {
-                    // e.printStackTrace();
-                    break;
-                }
-            }
-
-        }).start();
     }
 
     /**
@@ -310,6 +323,8 @@ public class NearflyService extends Service {
      * @return {@Code true} if the permissions to be granted have already been granted.
      */
     public boolean askForPermissions(AppCompatActivity app, boolean filePermission){
+        this.app = app;
+
         if (hasPermissions(app, REQUIRED_PERMISSIONS))
             return true;
 
@@ -487,7 +502,7 @@ public class NearflyService extends Service {
         /*if (subscribedChannels.isEmpty())
             Log.e(TAG, "you haven't subscribed to any channels yet");*/
 
-        if (!hasPermissions(this, REQUIRED_PERMISSIONS)){
+        if (!hasPermissions(app.getApplicationContext(), REQUIRED_PERMISSIONS)){
             Log.e(TAG, "the application does not have the required permissions.");
             return;
         }
@@ -496,6 +511,59 @@ public class NearflyService extends Service {
             connectToNearby();
         else
             connectToMQTT();
+
+        new Thread(() -> {
+
+            for (; ; ) {
+                try {
+                    while(!isConnected()){
+                        synchronized (connectedLock) {
+                            connectedLock.wait();
+                        }
+                    }
+
+                    NearflyNice.NearflyMessage msg;
+                    msg = nearflyQueue.take();
+
+                    if (msg instanceof NearflyNice.NearflyFileMessage) {
+                        NearflyNice.NearflyFileMessage fileMsg = (NearflyNice.NearflyFileMessage)msg;
+                        String channel = fileMsg.getChannel();
+                        Uri uri = fileMsg.getUri();
+                        String textAttachment = fileMsg.getTextAttachment();
+
+                        switch (mConnectionMode) {
+                            case USE_NEARBY:
+                                nearbyConnectionsClient.pubFile(room + "/" + channel, uri, textAttachment);
+                                break;
+                            case USE_MQTT:
+                                mqttClient.pubFile(room + "/" + channel, uri, textAttachment);
+                                break;
+                        }
+                    }
+
+                    if (msg instanceof NearflyNice.NearflyTextMessage) {
+                        NearflyNice.NearflyTextMessage textMsg = (NearflyNice.NearflyTextMessage)msg;
+                        String channel = textMsg.getChannel();
+                        String payload = textMsg.getPayload();
+
+                        switch (mConnectionMode) {
+                            case USE_NEARBY:
+                                nearbyConnectionsClient.publishIt(room + "/" + channel, payload);
+                                break;
+                            case USE_MQTT:
+                                mqttClient.publishIt(room + "/" + channel, payload);
+                                break;
+                        }
+                    }
+
+
+                } catch (InterruptedException e) {
+                    // e.printStackTrace();
+                    break;
+                }
+            }
+
+        }).start();
     }
 
     /**
@@ -529,41 +597,6 @@ public class NearflyService extends Service {
         this.nearflyListener = nearflyListener;
     }*/
 
-
-
-
-    /**
-     * OTHERS
-     **/
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.v(TAG, "onStartCommand");
-        String action;
-        if (intent != null) {
-            action = intent.getAction();
-        } else {
-            Log.w(TAG, "upps, restart");
-            action = ACTION_START;
-        }
-        if (action == null) {
-            Log.w(TAG, "  action=null, nothing further to do");
-            return START_STICKY;
-        }
-        switch (action) {
-            case ACTION_START:
-                Log.v(TAG, "onStartCommand: starting Nearfly");
-                // connect();
-                return START_STICKY;
-            case ACTION_STOP:
-                Log.v(TAG, "onStartCommand: stopping Nearfly");
-                // disconnect();
-                return START_NOT_STICKY;
-            default:
-                Log.w(TAG, "onStartCommand: unkown action=" + action);
-                return START_NOT_STICKY;
-        }
-    }
-
     /**
      * Removes the {@link NearflyListener} previously added by
      * {@link #addSubCallback(NearflyListener)}.
@@ -581,45 +614,13 @@ public class NearflyService extends Service {
 
     /********************************************************************/
     public class LocalBinder extends Binder {
-        public NearflyService getNearflyService() {
+        public NearflyClient getNearflyService() {
             Log.v(TAG, "onBinding");
-            return NearflyService.this;
+            return NearflyClient.this;
         }
     }
 
     final private IBinder localBinder = new LocalBinder();
-
-    /*********************************************************************/
-
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        Log.v(TAG, "onBind");
-        String action = intent.getAction();
-        if (action != null && action.equals(NearflyService.ACTION_BIND)) {
-            Log.v(TAG, "onBind success");
-            return localBinder;
-        } else {
-            Log.e(TAG, "onBind only defined for ACTION_BIND");
-            Log.e(TAG, "       did you want to call startService? ");
-            return null;
-        }
-    }
-
-
-    @Override
-    public void onDestroy() {
-        Log.d(TAG, "onStop");
-
-        // TODO
-        if (mConnectionMode == USE_NEARBY)
-            disconnectToNearby();
-        else
-            disconnectToMQTT();
-
-        super.onDestroy();
-    }
 
     public boolean IsTechSwitching(){
         return (mTechSwitcher!=PAUSED);
@@ -665,7 +666,7 @@ public class NearflyService extends Service {
 
     /* TODO: ****************************************************** */
     private void connectToMQTT() {
-        mqttClient.registerMqttListener(getApplicationContext(), mqttListener);
+        mqttClient.registerMqttListener(app.getApplicationContext(), mqttListener);
         mqttClient.connect();
         for (String channel : subscribedChannels) {
             mqttClient.subscribe(room + "/" + channel);
@@ -682,7 +683,7 @@ public class NearflyService extends Service {
     }
 
     private void connectToNearby() {
-        nearbyConnectionsClient.initClient(getApplicationContext(), nearbyConnectionListener, room);
+        nearbyConnectionsClient.initClient(app.getApplicationContext(), nearbyConnectionListener, room);
         nearbyConnectionsClient.startConnection();
 
         for (String channel : subscribedChannels) {

@@ -13,13 +13,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
-import de.pbma.nearfly.ConnectionsActivityWithPermissions;
+import de.pbma.nearfly.NearflyBindingActivity;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
 
-public class MainActivityWithService extends ConnectionsActivityWithPermissions {
+public class MainActivityWithService extends AppCompatActivity {
     /** If true, debug logs are shown on the device. */
     private static final boolean DEBUG = true;
 

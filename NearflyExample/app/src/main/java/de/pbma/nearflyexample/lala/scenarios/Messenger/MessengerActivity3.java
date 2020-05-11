@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -49,11 +50,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import de.pbma.nearfly.NearflyListener;
-import de.pbma.nearfly.NearflyService;
+import de.pbma.nearfly.NearflyClient;
 import de.pbma.nearflyexample.R;
 import de.pbma.nearfly.NearflyBindingActivity;
 
-public class MessengerActivity extends NearflyBindingActivity {
+public class MessengerActivity3 extends AppCompatActivity {
     /**
      * If true, debug logs are shown on the device.
      */
@@ -97,25 +98,7 @@ public class MessengerActivity extends NearflyBindingActivity {
 
     private boolean neaflyServiceConnectCalled = false;
     private SharedPreferences mSharedPreferences;
-
-
-    @Override
-    public void onNearflyServiceBound() {
-        /** TODO: WARNING ONSERVICECONNECT IS CALLED MULTIPLE TIMES,
-         *  TODO: THIS LEADS TO PERMANENT RECONNECTIONS**/
-        if (!neaflyServiceConnectCalled) {
-            nearflyService.askForPermissions(this, true);
-            nearflyService.addSubCallback(nearflyListener);
-            nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
-            nearflyService.subIt(mRoomChannel);
-            neaflyServiceConnectCalled = true;
-        }
-    }
-
-    @Override
-    public void onNearflyServiceUnbound() {
-        // nearflyService.disconnect();
-    }
+    NearflyClient nearflyClient = new NearflyClient();
 
     @Override
     public void onBackPressed() {
@@ -359,7 +342,7 @@ public class MessengerActivity extends NearflyBindingActivity {
             e.printStackTrace();
         }
 
-        nearflyService.pubIt(PUB_CHANNEL, msg.toString());
+        nearflyClient.pubIt(PUB_CHANNEL, msg.toString());
     }
 
     public void sendBinary(ParcelFileDescriptor pfd) {
@@ -375,7 +358,7 @@ public class MessengerActivity extends NearflyBindingActivity {
             e.printStackTrace();
         }*/
 
-        // nearflyService.pubBinary("19moa18/test", pfd);
+        // nearflyClient.pubBinary("19moa18/test", pfd);
     }
 
     @Override
@@ -405,6 +388,12 @@ public class MessengerActivity extends NearflyBindingActivity {
             openSettings();
 
         mRoomChannel = PUB_CHANNEL + "/" + mRoom;
+
+        nearflyClient.askForPermissions(this, true);
+        nearflyClient.addSubCallback(nearflyListener);
+        nearflyClient.connect("19moa18", NearflyClient.USE_NEARBY);
+        nearflyClient.subIt(mRoomChannel);
+        neaflyServiceConnectCalled = true;
     }
 
     public void openSettings(){
@@ -456,7 +445,7 @@ public class MessengerActivity extends NearflyBindingActivity {
             });
         }
 
-        nearflyService.pubIt(mRoomChannel, obj.toString());
+        nearflyClient.pubIt(mRoomChannel, obj.toString());
     }
 
     public void openPhotoTaker() {
@@ -516,10 +505,10 @@ public class MessengerActivity extends NearflyBindingActivity {
                 mRoom = resultData.getStringExtra(ACTIVITY_NAME + ".newRoom");
 
                 // RECONNECT WITH NEW ROOM STRING
-                nearflyService.disconnect();
+                nearflyClient.disconnect();
                 mRoomChannel = PUB_CHANNEL + "/" + mRoom;
-                nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
-                nearflyService.subIt(mRoomChannel);
+                nearflyClient.connect("19moa18", NearflyClient.USE_NEARBY);
+                nearflyClient.subIt(mRoomChannel);
                 neaflyServiceConnectCalled = true;
             } else
                 Toast.makeText(this, "You haven't entered a username jet", Toast.LENGTH_LONG).show();
@@ -560,7 +549,7 @@ public class MessengerActivity extends NearflyBindingActivity {
                         startActivity(Intent.createChooser(intent, "Open folder"));*/
                         /*if (ContextCompat.checkSelfPermission(this,
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE)==0)*/
-                        nearflyService.pubFile(mRoomChannel, uri, mUsername + ":MEDIA");
+                    nearflyClient.pubFile(mRoomChannel, uri, mUsername + ":MEDIA");
                 } catch (FileNotFoundException e) {
                     Log.e("MyApp", "File not found", e);
                 }
@@ -582,7 +571,7 @@ public class MessengerActivity extends NearflyBindingActivity {
 
         // final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
         // Payload streamPayload = Payload.fromStream(imageStream);
-        // nearflyService.pubStream(streamPayload);
+        // nearflyClient.pubStream(streamPayload);
         // Finally, send the file payload.
 
             /*byte[] imageBytes;
@@ -595,7 +584,7 @@ public class MessengerActivity extends NearflyBindingActivity {
 //
 //        if (imageBytes.length*/1 <= 16384) {
 //            Payload streamPayload = Payload.fromStream(imageStream);
-//            nearflyService.pubStream(streamPayload);
+//            nearflyClient.pubStream(streamPayload);
 //        } else {
 //                /*for(int i=0; i<bytes.length; i++){
 //                    byte[] partBytes = Arrays.copyOfRange(bytes, i, (bytes.length<i*16384?bytes.length:i*16384));
@@ -644,7 +633,7 @@ public class MessengerActivity extends NearflyBindingActivity {
                 });
             }
 
-            nearflyService.pubFile(mRoomChannel, uri, mUsername + ":IMG");
+            nearflyClient.pubFile(mRoomChannel, uri, mUsername + ":IMG");
         } catch (FileNotFoundException e) {
             Log.e("MyApp", "File not found", e);
         }
@@ -665,7 +654,7 @@ public class MessengerActivity extends NearflyBindingActivity {
 
             File fileToSend = new File(this.getFilesDir(), "hello.txt");
             copyInputStreamToFile(imageStream, fileToSend);
-            /** TODO **/ // nearflyService.pubBinary(PUB_CHANNEL, fileToSend);
+            /** TODO **/ // nearflyClient.pubBinary(PUB_CHANNEL, fileToSend);
 
             imageStream.close();
 
@@ -731,7 +720,7 @@ public class MessengerActivity extends NearflyBindingActivity {
             System.arraycopy(header, 0, payload, 0, header.length);
             System.arraycopy(body, 0, payload, header.length, body.length);
 
-            // nearflyService.pubBinaryTST(payload);
+            // nearflyClient.pubBinaryTST(payload);
         }
     }
 
@@ -844,6 +833,6 @@ public class MessengerActivity extends NearflyBindingActivity {
 
 
     public void logIt(String str) {
-        super.logIt(str);
+        //super.logIt(str);
     }
 }

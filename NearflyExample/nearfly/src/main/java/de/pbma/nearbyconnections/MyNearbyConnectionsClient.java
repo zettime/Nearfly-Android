@@ -297,7 +297,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
             return;
         }
 
-        logD("State set to " + state);
+        logD("State set to " + getStateAsString(state));
 
         if (myConnectionsListener != null)
             myConnectionsListener.onStateChanged(getStateAsString(state));

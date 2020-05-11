@@ -1,8 +1,6 @@
 package de.pbma.nearflyexample.lala.connections;
 
-import de.pbma.nearfly.ConnectionsActivityWithPermissions;
-
-public class MainActivity extends ConnectionsActivityWithPermissions {
+public class MainActivity {
 //    MyNearbyConnectionsClient myNearbyConnectionsClient;
 //
 //    /** If true, debug logs are shown on the device. */
