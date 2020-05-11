@@ -23,18 +23,13 @@ import com.google.android.gms.nearby.connection.Strategy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.lang.reflect.Array;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import static de.pbma.nearfly.Constants.TAG;
 
@@ -150,7 +145,7 @@ abstract class MyNearbyConnectionsAbstract {
     public void initService(Context context) {
         this.context = context;
         mConnectionsClient = Nearby.getConnectionsClient(context);
-        mPayloadCallback = new ReceivePayloadCallback(context) {
+        mPayloadCallback = new PayloadReceiver(context) {
             @Override
             public void onFile(String endpointId, String channel, String path, String textAttachment) {
                 MyNearbyConnectionsAbstract.this.onFile(mEstablishedConnections.get(endpointId),

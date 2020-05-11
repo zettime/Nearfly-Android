@@ -388,7 +388,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
 
     public void publishIt(String channel, String message) {
         // NeConExtMessage neConExtMessage = new NeConExtMessage(message, channel, NeConExtMessage.STRING);
-        NeCon.TextMessage textMessage = neCon.new TextMessage(message, channel);
+        NeCon.TextMessage textMessage = neCon.new TextMessage(message.getBytes(), channel);
         logD(message + " published");
         // send(Payload.fromBytes(neConExtMessage.getBytes()));
         send(Payload.fromBytes(textMessage.getBytes()));
@@ -411,7 +411,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         }
 
         Payload fileAsPayload = Payload.fromFile(pfd);
-        String fileinformations = fileExtension + "/" + fileAsPayload.getId() + "/" + textAttachment;
+        // String fileinformations = fileExtension + "/" + fileAsPayload.getId() + "/" + textAttachment;
 
         // NeConExtMessage neConExtMessage = new NeConExtMessage(fileinformations, channel, NeConExtMessage.FILEINFORMATION);
         NeCon.FileInfMessage fileMessage = neCon.new FileInfMessage(channel, fileExtension,
@@ -463,7 +463,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         NeCon.TextMessage msg = neCon.createTextMessage(payload);
 
         if (mSubscribedChannels.contains(msg.getChannel()) && myConnectionsListener != null) {
-            myConnectionsListener.onMessage(msg.getChannel(), msg.getPayload());
+            myConnectionsListener.onMessage(msg.getChannel(), new String(msg.getPayload()));
         }
 
         /*if (payload.getType() == Payload.Type.STREAM)

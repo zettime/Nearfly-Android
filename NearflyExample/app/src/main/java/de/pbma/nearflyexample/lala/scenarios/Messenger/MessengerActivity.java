@@ -1,10 +1,12 @@
 package de.pbma.nearflyexample.lala.scenarios.Messenger;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,7 +29,9 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.content.PermissionChecker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -554,7 +558,9 @@ public class MessengerActivity extends NearflyBindingActivity {
                                 + Environment.DIRECTORY_DOWNLOADS + File.separator + "Nearby");
                         intent.setData(uri2);
                         startActivity(Intent.createChooser(intent, "Open folder"));*/
-                    nearflyService.pubFile(mRoomChannel, uri, mUsername + ":MEDIA");
+                        /*if (ContextCompat.checkSelfPermission(this,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE)==0)*/
+                        nearflyService.pubFile(mRoomChannel, uri, mUsername + ":MEDIA");
                 } catch (FileNotFoundException e) {
                     Log.e("MyApp", "File not found", e);
                 }

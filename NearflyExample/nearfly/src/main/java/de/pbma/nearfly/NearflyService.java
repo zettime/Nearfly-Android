@@ -3,6 +3,7 @@ package de.pbma.nearfly;
 
 import android.Manifest;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Binder;
@@ -18,6 +19,7 @@ import com.google.android.gms.nearby.connection.Payload;
 
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -145,7 +147,8 @@ public class NearflyService extends Service {
     /**
      * Listeners
      **/
-    private NearflyListener nearflyListener;
+    // private NearflyListener nearflyListener;
+    final private CopyOnWriteArrayList<NearflyListener> listeners = new CopyOnWriteArrayList<>();
     private MyNearbyConnectionsClient nearbyConnectionsClient = new MyNearbyConnectionsClient();
     private MyMQTTClient mqttClient = new MyMQTTClient();
 
@@ -247,16 +250,16 @@ public class NearflyService extends Service {
     private MyNearbyConnectionsClient.MyConnectionsListener nearbyConnectionListener = new MyNearbyConnectionsClient.MyConnectionsListener() {
         @Override
         public void onLogMessage(CharSequence msg) {
-            nearflyListener.onLogMessage(String.valueOf(msg));
+            ThisOnLogMessage(String.valueOf(msg));
 
             if (mConnectionMode == USE_NEARBY) {
                 if (msg.equals("connected")) {
                     setConnected(true);
-                    nearflyListener.onLogMessage(State.CONNECTED);
+                    ThisOnLogMessage(State.CONNECTED);
                 }
                 if (msg.equals("disconnected")) {
                     setConnected(false);
-                    nearflyListener.onLogMessage(State.DISCONNECTED);
+                    ThisOnLogMessage(State.DISCONNECTED);
                 }
             }
 
@@ -271,18 +274,18 @@ public class NearflyService extends Service {
 
         @Override
         public void onStateChanged(String state) {
-            nearflyListener.onLogMessage("STATE CHANGED: " + state);
+            onLogMessage("STATE CHANGED: " + state);
         }
 
         @Override
         public void onRootNodeChanged(String rootNode) {
-            nearflyListener.onLogMessage("ROOT NODE CHANGED: " + rootNode);
+            onLogMessage("ROOT NODE CHANGED: " + rootNode);
 
         }
 
         @Override
         public void onMessage(String channel, String msg) {
-            nearflyListener.onMessage(channel, msg);
+            ThisOnMessage(channel, msg);
         }
 
         @Override
@@ -295,24 +298,24 @@ public class NearflyService extends Service {
 
         @Override
         public void onFile(String channel, String path, String textAttachment) {
-            nearflyListener.onFile(channel, path, textAttachment);
+            ThisOnFile(channel, path, textAttachment);
         }
     };
 
     private MyMqttListener mqttListener = new MyMqttListener() {
         @Override
         public void onMessage(String topic, String message) {
-            nearflyListener.onMessage(topic, message);
+            ThisOnMessage(topic, message);
         }
 
         @Override
         public void onStatus(boolean connected) {
             if (connected) {
                 setConnected(true);
-                nearflyListener.onLogMessage(State.CONNECTED);
+                ThisOnLogMessage(State.CONNECTED);
             } else {
                 setConnected(false);
-                nearflyListener.onLogMessage(State.DISCONNECTED);
+                ThisOnLogMessage(State.DISCONNECTED);
             }
 
             if (mTechSwitcher == USE_MQTT) {
@@ -324,14 +327,31 @@ public class NearflyService extends Service {
 
         @Override
         public void onLogMessage(String message) {
-            nearflyListener.onLogMessage(message);
+            ThisOnLogMessage(message);
         }
 
         @Override
         public void onFile(String channel, String path, String textAttachment) {
-            nearflyListener.onFile(channel, path, textAttachment);
+            ThisOnFile(channel, path, textAttachment);
         }
     };
+
+
+    private void ThisOnLogMessage(String output){
+        for (NearflyListener nearflyListener : listeners)
+            nearflyListener.onLogMessage(output);
+    }
+
+    private void ThisOnMessage(String topic, String message) {
+        for (NearflyListener nearflyListener : listeners)
+            nearflyListener.onMessage(topic, message);
+    }
+
+    private void ThisOnFile(String channel, String path, String textAttachment) {
+        for (NearflyListener nearflyListener : listeners)
+            nearflyListener.onFile(channel, path, textAttachment);
+    }
+
 
     /**
      * Subscribes to the given channel so that the {@link NearflyListener} will be dissolved
@@ -421,7 +441,6 @@ public class NearflyService extends Service {
      *               The file is not cached, only the uri. (default false)
      **/
     @RequiresPermission(allOf = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public boolean pubFile(String channel, Uri uri, String textAttachment,
                            @IntRange(from=-20, to=19) Integer nice, boolean retain) {
@@ -436,7 +455,6 @@ public class NearflyService extends Service {
      * @see #pubFile(String, Uri, String, Integer, boolean)
      **/
     @RequiresPermission(allOf = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public boolean pubFile(String channel, Uri uri, String textAttachment) {
         return pubFile(channel, uri, textAttachment, 0, false);
@@ -514,11 +532,19 @@ public class NearflyService extends Service {
      * The {@link NearflyListener} does not offer the possibility to react to certain of the
      * subscribed channels. However, this can easily be implemented by the user.
      * <p>
-     * param nearflyListener listener to respond to issues from {@code NearflyService}
+     * @param nearflyListener listener to respond to issues from {@code NearflyService}
+     *
+     * @return {@code true} if the nearflyListener was added
+     *
      **/
-    public void addSubCallback(NearflyListener nearflyListener) {
-        this.nearflyListener = nearflyListener;
+    public boolean addSubCallback(NearflyListener nearflyListener) {
+        return listeners.addIfAbsent(nearflyListener);
     }
+    /*public void addSubCallback(NearflyListener nearflyListener) {
+        this.nearflyListener = nearflyListener;
+    }*/
+
+
 
 
     /**
@@ -554,13 +580,19 @@ public class NearflyService extends Service {
     }
 
     /**
-     * removes the {@link NearflyListener} previously added by
-     * {@link #addSubCallback(NearflyListener)}
+     * Removes the {@link NearflyListener} previously added by
+     * {@link #addSubCallback(NearflyListener)}.
+     *
+     * @param nearflyListener nearflylistener to be removed from the list, if present
+     * @return {@code true} if the nearflyListener was added before.
      **/
-    public void removeSubCallback(NearflyListener nearflyListener) {
+    public boolean removeSubCallback(NearflyListener nearflyListener) {
+        return listeners.remove(nearflyListener);
+    }
+    /*public void removeSubCallback(NearflyListener nearflyListener) {
         // listeners.remove(nearflyListener);
         this.nearflyListener = null;
-    }
+    }*/
 
     /********************************************************************/
     public class LocalBinder extends Binder {

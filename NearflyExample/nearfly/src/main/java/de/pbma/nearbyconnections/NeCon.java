@@ -1,20 +1,26 @@
 package de.pbma.nearbyconnections;
+import android.util.Log;
+
 import com.google.android.gms.nearby.connection.Payload;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 public class NeCon {
     // Payloads
-    final static private String CHANNEL = "c";
-    final static private String PAYLOAD = "p";
+    private final static String CHANNEL = "c";
+    private final static String PAYLOAD = "p";
 
-    final static private String FILE_EXTENSION = "e";
-    final static private String FILE_ID = "i";
-    final static private String TEXT_ATTACHMENT = "t";
+    private final static String FILE_EXTENSION = "e";
+    private final static String FILE_ID = "i";
+    private final static String TEXT_ATTACHMENT = "t";
 
-    final public static int STRING = 0;
-    final public static int FILEINFORMATION = 1;
+    public final static int STRING = 0;
+    public final static int FILEINFORMATION = 1;
+
+    public final String PREHEADER_FORMAT = "I:000:";
+
 
     public static int getMessageType(Payload payload){
         String str = new String(payload.asBytes());
@@ -27,31 +33,46 @@ public class NeCon {
 
     public class TextMessage extends Message {
         final private int type = STRING;
-        private String payload;
+        private byte[] payload;
         private String channel;
-        private JSONObject message;
+        private JSONObject jsonHeader;
         public Long time;
 
-        public String getPayload() { return payload; }
+        public byte[] getPayload() { return payload; }
         public String getChannel() { return channel; }
 
-        public TextMessage(String payload, String channel){
+        public TextMessage(byte[] payload, String channel){
             this.payload = payload;
             this.channel = channel;
             this.time = System.currentTimeMillis();
 
             buildMessage();
-        }
+        }/******* TODO ***********/
 
         public byte[] getBytes(){
-            return (type+":"+message.toString()).getBytes(StandardCharsets.UTF_8);
+            String jsonStr = jsonHeader.toString();
+            int payloadBegin = PREHEADER_FORMAT.length()
+                    +jsonStr.getBytes(StandardCharsets.UTF_8).length;
+
+            byte[] header = (type+":"+strPadding(""+payloadBegin, 3)+":"+jsonStr).getBytes(StandardCharsets.UTF_8);
+
+            byte[] message = new byte[header.length+payload.length];
+            System.arraycopy(header, 0, message, 0, header.length);
+            System.arraycopy(payload, 0, message, payloadBegin, payload.length);
+
+
+            return message;
+        }
+
+        private String strPadding(String toPad, int width) {
+            return new String(new char[width - toPad.length()]).replace('\0', '0') + toPad;
         }
 
         private void buildMessage(){
-            message = new JSONObject();
+            jsonHeader= new JSONObject();
             try {
-                message.put(PAYLOAD, payload);
-                message.put(CHANNEL, channel);
+                // message.put(PAYLOAD, payload);
+                jsonHeader.put(CHANNEL, channel);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -61,11 +82,23 @@ public class NeCon {
     public TextMessage createTextMessage(Payload payload){
         try {
             String str= new String(payload.asBytes());
-            String[] parts = str.split(":", 2);
-            JSONObject jsonObject= new JSONObject(parts[1]);
+            String[] segments = str.split(":", 3);
+            int payloadBegin =  Integer.valueOf(segments[1]);
+
+            byte[] fullMessage = payload.asBytes();
+
+            byte[] jsonHeader = new byte[payloadBegin-PREHEADER_FORMAT.length()];
+            byte[] byteMessage = new byte[fullMessage.length-payloadBegin];
+
+            System.arraycopy(fullMessage, PREHEADER_FORMAT.length(), jsonHeader, 0, jsonHeader.length);
+            System.arraycopy(fullMessage, payloadBegin, byteMessage, 0, byteMessage.length);
+
+            JSONObject jsonObject= new JSONObject(new String(jsonHeader));
+
+            Log.v("testy", new String(byteMessage));
 
             return new TextMessage(
-                    jsonObject.getString(PAYLOAD),
+                    byteMessage,
                     jsonObject.getString(CHANNEL)
             );
         } catch (JSONException e) {

@@ -29,7 +29,7 @@ import java.util.Date;
 /**
  * TODO -------------------------------------------------------------------------------------
  **/
-abstract class ReceivePayloadCallback extends PayloadCallback {
+abstract class PayloadReceiver extends PayloadCallback {
     private final Context context;
     private final SimpleArrayMap<Long, Payload> incomingFilePayloads = new SimpleArrayMap<>();
     private final SimpleArrayMap<Long, Payload> completedFilePayloads = new SimpleArrayMap<>();
@@ -47,7 +47,7 @@ abstract class ReceivePayloadCallback extends PayloadCallback {
     public NeCon neCon = new NeCon();
 
 
-    public ReceivePayloadCallback(Context context) {
+    public PayloadReceiver(Context context) {
         this.context = context;
     }
 
