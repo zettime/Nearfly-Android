@@ -15,6 +15,7 @@ import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  *
  */
 
-public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
+public class NeConClient extends NeConEssentials {
 
     private static final long INITIAL_DISCOVERY_TIME = 1000;
     private static final long SECONDS_TO_CONNODE_ECO = 60;
@@ -84,6 +85,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         initService(context);
         this.myConnectionsListener = myConnectionsListener;
         mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(context);
+        // FOR DEBUG PURPOSE
         // mName = new EndpointNameGenerator().getNamePendentFromTime();
         logV("MyEndpointName: "+mName);
 
@@ -98,7 +100,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
 
         void onRootNodeChanged(String rootNode);
 
-        void onMessage(String channel, String msg);
+        void onMessage(String channel, byte[] message);
 
         void onStream(Payload payload);
 
@@ -423,6 +425,27 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         logD(fileAsPayload.toString() + " published");
     }
 
+    public void pubFileBytes(String channel, File file, String textAttachment) {
+        Payload fileAsPayload = null;
+        try {
+            fileAsPayload = Payload.fromFile(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        String path = file.getAbsolutePath();
+        String parts[] = path.split(".");
+        String fileExtension = parts[parts.length-1];
+
+        NeCon.FileInfMessage fileMessage = neCon.new FileInfMessage(channel, fileExtension,
+                fileAsPayload.getId(), textAttachment);
+        // send(Payload.fromBytes(neConExtMessage.getBytes()));
+        send(Payload.fromBytes(fileMessage.getBytes()));
+        send(fileAsPayload);
+
+        logD(fileAsPayload.toString() + " published");
+    }
+
     public void pubBinaryTST(byte[] bytes) {
         send(Payload.fromStream(new ByteArrayInputStream(bytes)));
         logD(bytes + " published");
@@ -463,7 +486,7 @@ public class MyNearbyConnectionsClient extends MyNearbyConnectionsAbstract {
         NeCon.TextMessage msg = neCon.createTextMessage(payload);
 
         if (mSubscribedChannels.contains(msg.getChannel()) && myConnectionsListener != null) {
-            myConnectionsListener.onMessage(msg.getChannel(), new String(msg.getPayload()));
+            myConnectionsListener.onMessage(msg.getChannel(), msg.getPayload());
         }
 
         /*if (payload.getType() == Payload.Type.STREAM)

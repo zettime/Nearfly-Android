@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
+@Deprecated
 class NeConExtMessage {
     /*public static String SEPERATOR;
     static {

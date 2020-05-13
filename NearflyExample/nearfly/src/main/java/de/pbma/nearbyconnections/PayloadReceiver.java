@@ -52,7 +52,7 @@ abstract class PayloadReceiver extends PayloadCallback {
     }
 
     /**
-     * Functions which are needed from {@link MyNearbyConnectionsAbstract}
+     * Functions which are needed from {@link NeConEssentials}
      **/
     public abstract void onFile(String endpointId, String channel, String path, String textAttachment);
 
@@ -119,7 +119,7 @@ abstract class PayloadReceiver extends PayloadCallback {
         }*/
 
     /**
-     * Pentant {@link MyNearbyConnectionsClient#pubFile(String, Uri, String)}
+     * Pentant {@link NeConClient#pubFile(String, Uri, String)}
      **/
     /*private long addPayloadFilename(String channel, String payloadFilenameMessage) {
         String[] parts = payloadFilenameMessage.split("\\/", 3);

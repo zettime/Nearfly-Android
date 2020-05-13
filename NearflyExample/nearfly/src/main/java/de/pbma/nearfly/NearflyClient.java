@@ -26,7 +26,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import de.pbma.mqtt.MyMQTTClient;
 import de.pbma.mqtt.MyMqttListener;
-import de.pbma.nearbyconnections.MyNearbyConnectionsClient;
+import de.pbma.nearbyconnections.NeConClient;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -105,7 +105,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * @author Alexis Danilo Morgado dos Santos
  * @edited 01.05.2020
  */ // JUST TEST
-private class NearflyClient {
+class NearflyClient {
     /* This are the both Modes that can be used for Nearfly */
     @Retention(SOURCE)
     @IntDef({USE_MQTT, USE_NEARBY})
@@ -152,7 +152,7 @@ private class NearflyClient {
      **/
     // private NearflyListener nearflyListener;
     final private CopyOnWriteArrayList<NearflyListener> listeners = new CopyOnWriteArrayList<>();
-    private MyNearbyConnectionsClient nearbyConnectionsClient = new MyNearbyConnectionsClient();
+    private NeConClient nearbyConnectionsClient = new NeConClient();
     private MyMQTTClient mqttClient = new MyMQTTClient();
 
     /**
@@ -193,7 +193,7 @@ private class NearflyClient {
         }
     }
 
-    private MyNearbyConnectionsClient.MyConnectionsListener nearbyConnectionListener = new MyNearbyConnectionsClient.MyConnectionsListener() {
+    private NeConClient.MyConnectionsListener nearbyConnectionListener = new NeConClient.MyConnectionsListener() {
         @Override
         public void onLogMessage(CharSequence msg) {
             ThisOnLogMessage(String.valueOf(msg));
@@ -230,8 +230,8 @@ private class NearflyClient {
         }
 
         @Override
-        public void onMessage(String channel, String msg) {
-            ThisOnMessage(channel, msg);
+        public void onMessage(String channel, byte[] msg) {
+            ThisOnMessage(channel, new String(msg));
         }
 
         @Override

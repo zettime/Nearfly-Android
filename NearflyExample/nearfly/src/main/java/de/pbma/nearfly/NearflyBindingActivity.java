@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 // import de.pbma.nearfly.NearflyListener;
-
 /**
  * Helps the integration of {@link NearflyService}, manages the binding of the
  * {@link NearflyService} and queries the necessary permissions at the beginning of the

@@ -60,7 +60,6 @@ public class NeCon {
             System.arraycopy(header, 0, message, 0, header.length);
             System.arraycopy(payload, 0, message, payloadBegin, payload.length);
 
-
             return message;
         }
 

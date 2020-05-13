@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +32,7 @@ public class MyMQTTClient {
     private static final String MQTT_PASSWORD = "779747ee";
     private static final String MQTT_USERNAME = "19moa18";
     private static final String MQTT_CONNECTION_URL = "ssl://pma.inftech.hs-mannheim.de:8883";
+    final String PREHEADER_FORMAT="000:";
 
     private static final String TYPE_FILE =  "f";
     private static final String TYPE_MSG =  "m";
@@ -38,7 +40,6 @@ public class MyMQTTClient {
     MqttConnectOptions options;
     Context context;
 
-    final private CopyOnWriteArrayList<MyMqttListener> listeners = new CopyOnWriteArrayList<>();
     MyMqttListener listener;
     private MqttMessaging mqttMessaging;
 
@@ -86,13 +87,7 @@ public class MyMQTTClient {
             logD("Disconnected from Broker");
         }
     };
-    final private MqttMessaging.MessageListener messageListener = (topic, rawPayload) -> {
-        // onMessage
-        /*String[] parts =  payload.split("/", 2);
-        logD(Arrays.toString(parts));
-        if (!parts[0].equals(uniqueId))
-            listener.onMessage(topic, parts[1]);*/
-
+    /*final private MqttMessaging.MessageListener messageListener = (topic, rawPayload) -> {
         JSONObject json;
         try {
             json = new JSONObject(rawPayload);
@@ -134,6 +129,69 @@ public class MyMQTTClient {
         } catch (JSONException e) {
             e.printStackTrace(System.err);
         }
+    };*/
+
+    final private MqttMessaging.MessageListener messageListener = (topic, msgAsBytes) -> {
+        JSONObject json;
+        try {
+            String str = new String(msgAsBytes);
+            String[] parts= str.split(":", 2);
+            int payloadBegin = Integer.valueOf(parts[0]);
+
+
+            /*if (payloadBegin==0){
+                // Check if this is my own message -> no Echo
+
+                json = new JSONObject(parts[1]);
+
+                if (json.getString("uniqueId").equals(uniqueId))
+                    return;
+
+                String payload = json.getString("payload");
+                listener.onMessage(topic, payload);
+                logD(topic + " " + json);
+
+
+            }else{*/
+            byte[] jsonBytes = new byte[payloadBegin-PREHEADER_FORMAT.length()];
+            byte[] payloadAsBytes = new byte[msgAsBytes.length-payloadBegin];
+
+            System.arraycopy(msgAsBytes, PREHEADER_FORMAT.length(), jsonBytes, 0, jsonBytes.length);
+            System.arraycopy(msgAsBytes, payloadBegin, payloadAsBytes,0,payloadAsBytes.length);
+
+            Log.v("testy", new String(jsonBytes));
+
+            json = new JSONObject(new String(jsonBytes));
+
+            // Check if this is my own message -> no Echo
+            if (json.getString("uniqueId").equals(uniqueId))
+                return;
+
+            if (json.getString("msgType").equals(TYPE_MSG)){
+                listener.onMessage(topic, new String(payloadAsBytes));
+                logD(topic + " " + json);
+            }else {
+
+                String textAttachment = json.getString("textAttachment");
+                String fileExtension = json.getString("fileExtension");
+                String filePath = Constants.fileDirectory + File.separator
+                        + genFileName(fileExtension);
+
+                // Get Message
+                try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                    fos.write(payloadAsBytes);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                listener.onFile(topic, filePath, textAttachment);
+                logD(topic + " " + json);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace(System.err);
+        }
     };
 
     public String genFileName(String fileExtension) {
@@ -146,32 +204,42 @@ public class MyMQTTClient {
     }
 
     public void registerMqttListener(Context context, MyMqttListener myMqttListener) {
-        // return listeners.addIfAbsent(myMqttListener);
         this.listener = myMqttListener;
         this.context = context;
     }
 
-    //public boolean deregisterMqttListener(MyMqttListener myMqttListener) {
     public void deregisterMqttListener() {
-        // return listeners.remove(myMqttListener);
         this.listener = null;
     }
 
     public void publishIt(String topic, String payload) {
+        byte[] payloadAsBytes = payload.getBytes();
+
         JSONObject json = new JSONObject();
         try {
             json.put("uniqueId", uniqueId);
             json.put("msgType", TYPE_MSG);
-            json.put("payload", payload);
         } catch (JSONException e) {
             e.printStackTrace(System.err);
         }
 
-        // String header = TYPE_MSG + "/" ;//+ "f" +
-        mqttMessaging.send(topic, json.toString());
+        String jsonStr = json.toString();
+        int payloadBegin = PREHEADER_FORMAT.length() + jsonStr.getBytes(StandardCharsets.UTF_8).length;
+
+        byte[] header = (strPadding(""+payloadBegin)+":"+jsonStr).getBytes();
+
+        byte[] message = new byte[header.length+payloadAsBytes.length];
+        System.arraycopy(header, 0, message, 0, header.length);
+        System.arraycopy(payloadAsBytes, 0, message, payloadBegin, payloadAsBytes.length);
+
+        mqttMessaging.send(topic, message);
+
+        /*byte[] header = (PREHEADER_FORMAT+json.toString()).getBytes();
+        mqttMessaging.send(topic, header);*/
     }
 
-    public void pubFile(String topic, Uri uri, String textAttachment) {
+    @Deprecated
+    private void pubFileAsBase64(String topic, Uri uri, String textAttachment) {
         // BODY
         /*try {
             pfd = cr.openFileDescriptor(uri, "r");
@@ -228,16 +296,50 @@ public class MyMQTTClient {
             return;
         }
 
-        mqttMessaging.send(topic, json.toString());
+        mqttMessaging.send(topic, json.toString().getBytes());
     }
 
-    public void createHeaderForMSG(String uniqueId){
+    public void pubFile(String topic, Uri uri, String textAttachment) {
+        ContentResolver cr = context.getContentResolver();
+        String fileExtension = cr.getType(uri).split("\\/")[1]; // MimeType e.g. image/jpeg
+        final InputStream fileStream;
+        byte[] fileAsBytes;
 
+        try {
+            fileStream = cr.openInputStream(uri);
+            fileAsBytes = readBytes(fileStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        JSONObject json = new JSONObject();
+        try {
+            json.put("uniqueId", uniqueId);
+            json.put("msgType", TYPE_FILE);
+            json.put("textAttachment", textAttachment);
+            json.put("fileExtension", fileExtension);
+        } catch (JSONException e) {
+            e.printStackTrace(System.err);
+            return;
+        }
+
+        String jsonStr = json.toString();
+        int payloadBegin = PREHEADER_FORMAT.length() + jsonStr.getBytes(StandardCharsets.UTF_8).length;
+
+        byte[] header = (strPadding(""+payloadBegin)+":"+jsonStr).getBytes();
+
+        byte[] message = new byte[header.length+fileAsBytes.length];
+        System.arraycopy(header, 0, message, 0, header.length);
+        System.arraycopy(fileAsBytes, 0, message, payloadBegin, fileAsBytes.length);
+
+        mqttMessaging.send(topic, message);
     }
-    public void createHeaderForFILE(String uniqueId, String fileExtension, String textAttachment){
 
+    private String strPadding(String toPad) {
+        final int width = 3;
+        return new String(new char[width - toPad.length()]).replace('\0', '0') + toPad;
     }
-
 
     public byte[] readBytes(InputStream inputStream) throws IOException {
         // this dynamically extends to take the bytes you read

@@ -36,7 +36,7 @@ import static de.pbma.nearfly.Constants.TAG;
 /**
  * A class that connects to Nearby Connections and provides convenience methods and callbacks.
  */
-abstract class MyNearbyConnectionsAbstract {
+abstract class NeConEssentials {
 
     /**
      * Our handler to Nearby Connections.
@@ -100,7 +100,7 @@ abstract class MyNearbyConnectionsAbstract {
                                     endpointId, connectionInfo.getEndpointName()));
                     Endpoint endpoint = new Endpoint(endpointId, connectionInfo.getEndpointName());
                     mPendingConnections.put(endpointId, endpoint);
-                    MyNearbyConnectionsAbstract.this.onConnectionInitiated(endpoint, connectionInfo);
+                    NeConEssentials.this.onConnectionInitiated(endpoint, connectionInfo);
                 }
 
                 @Override
@@ -114,7 +114,7 @@ abstract class MyNearbyConnectionsAbstract {
                         logW(
                                 String.format(
                                         "Connection failed. Received status %s.",
-                                        MyNearbyConnectionsAbstract.toString(result.getStatus())));
+                                        NeConEssentials.toString(result.getStatus())));
                         onConnectionFailed(mPendingConnections.remove(endpointId));
                         return;
                     }
@@ -148,14 +148,14 @@ abstract class MyNearbyConnectionsAbstract {
         mPayloadCallback = new PayloadReceiver(context) {
             @Override
             public void onFile(String endpointId, String channel, String path, String textAttachment) {
-                MyNearbyConnectionsAbstract.this.onFile(mEstablishedConnections.get(endpointId),
+                NeConEssentials.this.onFile(mEstablishedConnections.get(endpointId),
                         channel, path, textAttachment);
             }
 
             @Override
             public void forwardFile(String endpointId, Payload payload, String channel, String path, String textAttachment) {
                 if (getConnectedEndpoints().size()>1)
-                    MyNearbyConnectionsAbstract.this.forwardFile(endpointId, payload, channel, path, textAttachment);
+                    NeConEssentials.this.forwardFile(endpointId, payload, channel, path, textAttachment);
             }
 
             @Override

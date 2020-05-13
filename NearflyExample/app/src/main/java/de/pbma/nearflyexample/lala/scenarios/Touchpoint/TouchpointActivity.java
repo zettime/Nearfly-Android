@@ -31,11 +31,22 @@ public class TouchpointActivity extends NearflyBindingActivity {
     private Handler handler = new Handler();
     private final long FRAME_RATE = 30;
 
+    private boolean neaflyServiceConnectCalled = false;
+
     @Override
     public void onNearflyServiceBound() {
+        nearflyService.askForPermissions(this, true);
         nearflyService.addSubCallback(nearflyListener);
         nearflyService.subIt("19moa18/test");
         nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
+
+        if (!neaflyServiceConnectCalled) {
+            nearflyService.askForPermissions(this, true);
+            nearflyService.addSubCallback(nearflyListener);
+            nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
+            nearflyService.subIt("test");
+            neaflyServiceConnectCalled = true;
+        }
     }
 
     @Override

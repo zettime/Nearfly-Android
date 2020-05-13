@@ -63,7 +63,7 @@ class MqttMessaging {
     }
 
     public interface MessageListener {
-        void onMessage(String topic, String msg);
+        void onMessage(String topic, byte[] msg);
     }
 
     public interface ConnectionListener {
@@ -198,8 +198,8 @@ class MqttMessaging {
         callbackExecutor.execute(() -> {
             MessageListener messageListener = this.messageListener;
             if (messageListener != null) {
-                String msg = message.toString(); // of the payload
-                messageListener.onMessage(topic, msg);
+                // String msg = message.toString(); // of the payload
+                messageListener.onMessage(topic, message.getPayload());
             }
         });
     }
@@ -252,7 +252,7 @@ class MqttMessaging {
         });
     }
 
-    public void send(final String topic, final String msg) {
+    /*public void send(final String topic, final String msg) {
         if (!ready.get() && !connectPending.get()) {
             throw new RuntimeException("connect not yet called");
         }
@@ -275,9 +275,9 @@ class MqttMessaging {
                 doMessageFailure(e, topic, msg);
             }
         });
-    }
+    }*/
 
-    public void sendBytes(final String topic, final byte[] msg) {
+    public void send(final String topic, final byte[] msg) {
         if (!ready.get() && !connectPending.get()) {
             throw new RuntimeException("connect not yet called");
         }

@@ -98,7 +98,6 @@ public class MessengerActivity extends NearflyBindingActivity {
     private boolean neaflyServiceConnectCalled = false;
     private SharedPreferences mSharedPreferences;
 
-
     @Override
     public void onNearflyServiceBound() {
         /** TODO: WARNING ONSERVICECONNECT IS CALLED MULTIPLE TIMES,
@@ -106,7 +105,7 @@ public class MessengerActivity extends NearflyBindingActivity {
         if (!neaflyServiceConnectCalled) {
             nearflyService.askForPermissions(this, true);
             nearflyService.addSubCallback(nearflyListener);
-            nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
+            nearflyService.connect("19moa18", NearflyService.USE_MQTT);
             nearflyService.subIt(mRoomChannel);
             neaflyServiceConnectCalled = true;
         }
@@ -518,7 +517,7 @@ public class MessengerActivity extends NearflyBindingActivity {
                 // RECONNECT WITH NEW ROOM STRING
                 nearflyService.disconnect();
                 mRoomChannel = PUB_CHANNEL + "/" + mRoom;
-                nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
+                nearflyService.connect("19moa18", NearflyService.USE_MQTT);
                 nearflyService.subIt(mRoomChannel);
                 neaflyServiceConnectCalled = true;
             } else
