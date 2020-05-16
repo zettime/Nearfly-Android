@@ -8,6 +8,7 @@ import com.google.android.gms.nearby.connection.Payload;
 import java.util.LinkedList;
 import java.util.Queue;
 
+@Deprecated
 class PublishForwarder {
     public static Object Task;
     private Thread threadForwarder;

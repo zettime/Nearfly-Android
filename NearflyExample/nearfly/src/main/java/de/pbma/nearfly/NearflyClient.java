@@ -34,12 +34,9 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * A Bound Service that wrap up the feature functions from the Google Nearby API and MQTT Paho.
  *
  * <p>The {@code NeaflyService} is started according to the usual procedure for starting
- * bound service via {@link #startService(Intent)}. After the activity is bound,
+ * bound service via {@link AppCompatActivity#startService(Intent)}}. After the activity is bound,
  * {@code NearflyService} can be used. In order to facilitate the integration of
- * the {@code NeaflyService} it is recommended to inherit from the {@link NearflyBindingActivity},
- * also ensures that the necessary permissions are queried by the activity
- * The {@link NearflyBindingActivity} also ensures that the necessary permissions are queried
- * by the activity at the beginning.
+ * the {@code NeaflyService} the Activity can inherit from the {@link NearflyBindingActivity}.
  *
  * <h3>Usage Examples</h3>
  * <p>
@@ -105,6 +102,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * @author Alexis Danilo Morgado dos Santos
  * @edited 01.05.2020
  */ // JUST TEST
+@Deprecated
 class NearflyClient {
     /* This are the both Modes that can be used for Nearfly */
     @Retention(SOURCE)
@@ -193,7 +191,7 @@ class NearflyClient {
         }
     }
 
-    private NeConClient.MyConnectionsListener nearbyConnectionListener = new NeConClient.MyConnectionsListener() {
+    private NeConClient.NeConListener nearbyConnectionListener = new NeConClient.NeConListener() {
         @Override
         public void onLogMessage(CharSequence msg) {
             ThisOnLogMessage(String.valueOf(msg));

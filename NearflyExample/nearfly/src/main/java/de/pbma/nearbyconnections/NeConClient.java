@@ -53,6 +53,7 @@ public class NeConClient extends NeConEssentials {
     private static final long INITIAL_DISCOVERY_TIME = 1000;
     private static final long SECONDS_TO_CONNODE_ECO = 60;
     private static final int RANDRANGE_COLAVOID = 1000;// AntiCollision Random max Range
+    private static final String TAG = "NeConClient";
     private final int BACKOFFF_TIME = 1000;
 
     @Retention(SOURCE)
@@ -81,9 +82,9 @@ public class NeConClient extends NeConEssentials {
      */
     private String mName;
 
-    public void initClient(Context context, MyConnectionsListener myConnectionsListener, String SERVICE_ID) {
+    public void initClient(Context context, NeConListener neConListener, String SERVICE_ID) {
         initService(context);
-        this.myConnectionsListener = myConnectionsListener;
+        this.myConnectionsListener = neConListener;
         mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(context);
         // FOR DEBUG PURPOSE
         // mName = new EndpointNameGenerator().getNamePendentFromTime();
@@ -93,7 +94,7 @@ public class NeConClient extends NeConEssentials {
     }
 
     // TODO: Listener that includes all relevant Informations
-    public interface MyConnectionsListener {
+    public interface NeConListener {
         void onLogMessage(CharSequence msg);
 
         void onStateChanged(String state);
@@ -109,7 +110,7 @@ public class NeConClient extends NeConEssentials {
         void onFile(String channel, String path, String textAttachment);
     }
 
-    MyConnectionsListener myConnectionsListener;
+    NeConListener myConnectionsListener;
 
     /** Call this to Start the auto network creation process. **/
     public void startConnection() {
@@ -389,8 +390,8 @@ public class NeConClient extends NeConEssentials {
     }
 
     public void publishIt(String channel, String message) {
-        // NeConExtMessage neConExtMessage = new NeConExtMessage(message, channel, NeConExtMessage.STRING);
-        NeCon.TextMessage textMessage = neCon.new TextMessage(message.getBytes(), channel);
+        // NeConExtMessage neConExtMessage = new NeConExtMessage(message, channel, NeConExtMessage.BYTES);
+        NeCon.BytesMessage textMessage = neCon.new BytesMessage(message.getBytes(), channel);
         logD(message + " published");
         // send(Payload.fromBytes(neConExtMessage.getBytes()));
         send(Payload.fromBytes(textMessage.getBytes()));
@@ -480,13 +481,13 @@ public class NeConClient extends NeConEssentials {
      */
     @Override
     @CallSuper
-    protected void onReceive(Endpoint endpoint, Payload payload) {
+    protected void onReceive(Endpoint endpoint, NeCon.BytesMessage bytesMessage) {
         // logD(new String(payload.asBytes()) + "from" + endpoint);
         // NeConExtMessage msg = NeConExtMessage.createExtMessage(payload);
-        NeCon.TextMessage msg = neCon.createTextMessage(payload);
+        // NeCon.BytesMessage msg = neCon.createTextMessage(bytesMessage);
 
-        if (mSubscribedChannels.contains(msg.getChannel()) && myConnectionsListener != null) {
-            myConnectionsListener.onMessage(msg.getChannel(), msg.getPayload());
+        if (mSubscribedChannels.contains(bytesMessage.getChannel()) && myConnectionsListener != null) {
+            myConnectionsListener.onMessage(bytesMessage.getChannel(), bytesMessage.getPayload());
         }
 
         /*if (payload.getType() == Payload.Type.STREAM)
@@ -499,12 +500,12 @@ public class NeConClient extends NeConEssentials {
         /** Executor **/
         //if (msgForwardExecutor!=null)
         if (getConnectedEndpoints().size()>1) // Only Root has more than 2 Connected Endpoints
-            forward(payload, endpoint.getId());
+            forward(bytesMessage, endpoint.getId());
             // publishForwarder.newMessage(payload, endpointId);
 
     }
 
-    private void forward(final Payload payload, final String excludedEntpointId) {
+    private void forward(final NeCon.BytesMessage bytesMessage, final String excludedEntpointId) {
         // logE(++mCnt + " - forwarding Message: " + new String(payload.asBytes()));
         // final long starttime = System.currentTimeMillis();
 
@@ -517,7 +518,7 @@ public class NeConClient extends NeConEssentials {
             }
         }
         //msgForwardExecutor.execute(() -> {
-        send(payload, broadcastList);
+        send(Payload.fromBytes(bytesMessage.getBytes()), broadcastList);
         //});
     }
 

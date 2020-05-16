@@ -1,5 +1,6 @@
 package de.pbma.nearbyconnections;
 
+@Deprecated
 class ReceiveWithProgressCallback /*extends PayloadCallback */{
 //    private final SimpleArrayMap<Long, NotificationCompat.Builder> incomingPayloads =
 //            new SimpleArrayMap<>();

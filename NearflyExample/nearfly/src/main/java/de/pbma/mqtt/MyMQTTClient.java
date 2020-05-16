@@ -2,6 +2,8 @@ package de.pbma.mqtt;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.util.Base64;
@@ -18,8 +20,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -40,6 +46,8 @@ public class MyMQTTClient {
     MqttConnectOptions options;
     Context context;
 
+    Random random = new Random();
+
     MyMqttListener listener;
     private MqttMessaging mqttMessaging;
 
@@ -47,11 +55,7 @@ public class MyMQTTClient {
         mqttMessaging = new MqttMessaging(failureListener, messageListener, connectionListener);
 
         // Create Random Name Generator
-        uniqueId= "";
-        Random random = new Random();
-        for (int i = 0; i < 5; i++) {
-            uniqueId += random.nextInt(10);
-        }
+        uniqueId= ""+random.nextInt(99_999);
     }
 
     final private MqttMessaging.FailureListener failureListener = new MqttMessaging.FailureListener() {
@@ -130,6 +134,7 @@ public class MyMQTTClient {
             e.printStackTrace(System.err);
         }
     };*/
+    HashMap<Integer, ArrayList<byte[]>> incomingBinary = new HashMap<>();
 
     final private MqttMessaging.MessageListener messageListener = (topic, msgAsBytes) -> {
         JSONObject json;
@@ -138,21 +143,6 @@ public class MyMQTTClient {
             String[] parts= str.split(":", 2);
             int payloadBegin = Integer.valueOf(parts[0]);
 
-
-            /*if (payloadBegin==0){
-                // Check if this is my own message -> no Echo
-
-                json = new JSONObject(parts[1]);
-
-                if (json.getString("uniqueId").equals(uniqueId))
-                    return;
-
-                String payload = json.getString("payload");
-                listener.onMessage(topic, payload);
-                logD(topic + " " + json);
-
-
-            }else{*/
             byte[] jsonBytes = new byte[payloadBegin-PREHEADER_FORMAT.length()];
             byte[] payloadAsBytes = new byte[msgAsBytes.length-payloadBegin];
 
@@ -176,17 +166,61 @@ public class MyMQTTClient {
                 String fileExtension = json.getString("fileExtension");
                 String filePath = Constants.fileDirectory + File.separator
                         + genFileName(fileExtension);
+                int maxSqn = json.getInt("maxSqn");
+                int sqn = json.getInt("sqn");
+                int fileId = json.getInt("fileId");
 
-                // Get Message
-                try (FileOutputStream fos = new FileOutputStream(filePath)) {
-                    fos.write(payloadAsBytes);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (maxSqn==1){
+                    // Save Data
+                    try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                        fos.write(payloadAsBytes);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    listener.onFile(topic, filePath, textAttachment);
+                }else{
+                    if (!incomingBinary.containsKey(fileId))
+                        incomingBinary.put(fileId, new ArrayList<>());
+
+
+                    /*for (int i = 0; i < payloadAsBytes.length; i++) {
+                        incomingBinary.get(fileId).add(payloadAsBytes[i]);
+                    }*/
+                    incomingBinary.get(fileId).add(sqn, payloadAsBytes);
+
+                    Log.v("testy", ""+incomingBinary.size());
+
+                    // CHUNKNIG?
+                    if (sqn == maxSqn - 1) {
+
+                        // Convert Byte to byte
+                        // byte[] filaAsBytes = new byte[incomingBinary.get(fileId).size()];
+                        /*for (int i = 0; i < incomingBinary.size(); i++) {
+                            filaAsBytes[i] = incomingBinary.get(fileId).get(i);
+                        }*/
+
+                        // Save Data
+                        try (FileOutputStream fos = new FileOutputStream(filePath)) {
+                            // fos.write(filaAsBytes);
+                            for (int i = 0; i < incomingBinary.get(fileId).size(); i++) {
+                                fos.write(incomingBinary.get(fileId).get(i));
+                            }
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }finally {
+                            incomingBinary.remove(fileId);
+                        }
+
+                        listener.onFile(topic, filePath, textAttachment);
+
+                        incomingBinary.clear();
+                    }
                 }
-
-                listener.onFile(topic, filePath, textAttachment);
                 logD(topic + " " + json);
             }
         } catch (JSONException e) {
@@ -313,27 +347,45 @@ public class MyMQTTClient {
             return;
         }
 
-        JSONObject json = new JSONObject();
-        try {
-            json.put("uniqueId", uniqueId);
-            json.put("msgType", TYPE_FILE);
-            json.put("textAttachment", textAttachment);
-            json.put("fileExtension", fileExtension);
-        } catch (JSONException e) {
-            e.printStackTrace(System.err);
-            return;
+        final int MAX_CHUNK_SIZE = 2_000_000;
+
+        int maxSqn = (int) Math.ceil(
+                Float.valueOf((float) fileAsBytes.length / (float) MAX_CHUNK_SIZE)
+        );
+
+        int fileId = random.nextInt(99_9999);
+
+        // Payload Fragment
+        for (int sqn = 0; sqn < maxSqn; sqn++) {  // e.g. 0 - 1*16381; 1*16381 - 2*16381; ...
+            int from = sqn * MAX_CHUNK_SIZE;
+            int to = (fileAsBytes.length < (sqn + 1) * MAX_CHUNK_SIZE ? fileAsBytes.length : (sqn + 1) * MAX_CHUNK_SIZE);
+            byte[] chunk = Arrays.copyOfRange(fileAsBytes, from, to);
+
+            JSONObject json = new JSONObject();
+            try {
+                json.put("uniqueId", uniqueId);
+                json.put("msgType", TYPE_FILE);
+                json.put("sqn", sqn);
+                json.put("maxSqn", maxSqn);
+                json.put("textAttachment", textAttachment);
+                json.put("fileExtension", fileExtension);
+                json.put("fileId", fileId);
+            } catch (JSONException e) {
+                e.printStackTrace(System.err);
+                return;
+            }
+
+            String jsonStr = json.toString();
+            int payloadBegin = PREHEADER_FORMAT.length() + jsonStr.getBytes(StandardCharsets.UTF_8).length;
+            byte[] header = (strPadding(""+payloadBegin)+":"+jsonStr).getBytes();
+
+            /** PREPARE TO SEND**/
+            byte[] message = new byte[header.length+chunk.length];
+            System.arraycopy(header, 0, message, 0, header.length);
+            System.arraycopy(chunk, 0, message, payloadBegin, chunk.length);
+
+            mqttMessaging.send(topic, message);
         }
-
-        String jsonStr = json.toString();
-        int payloadBegin = PREHEADER_FORMAT.length() + jsonStr.getBytes(StandardCharsets.UTF_8).length;
-
-        byte[] header = (strPadding(""+payloadBegin)+":"+jsonStr).getBytes();
-
-        byte[] message = new byte[header.length+fileAsBytes.length];
-        System.arraycopy(header, 0, message, 0, header.length);
-        System.arraycopy(fileAsBytes, 0, message, payloadBegin, fileAsBytes.length);
-
-        mqttMessaging.send(topic, message);
     }
 
     private String strPadding(String toPad) {

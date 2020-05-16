@@ -159,8 +159,8 @@ abstract class NeConEssentials {
             }
 
             @Override
-            public void onByteMessage(String endpointId, Payload payload) {
-                onReceive(mEstablishedConnections.get(endpointId), payload);
+            public void onByteMessage(String endpointId, NeCon.BytesMessage bytesMessage) {
+                onReceive(mEstablishedConnections.get(endpointId), bytesMessage);
             }
         };
     }
@@ -528,7 +528,7 @@ abstract class NeConEssentials {
      * @param endpoint The sender.
      * @param payload  The data.
      */
-    protected void onReceive(Endpoint endpoint, Payload payload) {
+    protected void onReceive(Endpoint endpoint, NeCon.BytesMessage bytesMessage) {
     }
 
     // TODO

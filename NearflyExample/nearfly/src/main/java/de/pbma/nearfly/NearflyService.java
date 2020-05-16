@@ -32,8 +32,83 @@ import de.pbma.nearbyconnections.NeConClient;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
-/** {@inheritDoc} **/
+/**
+ * A Bound Service that wrap up the feature functions from the Google Nearby API and MQTT Paho.
+ *
+ * <p>The {@code NeaflyService} is started according to the usual procedure for starting
+ * bound service via {@link AppCompatActivity#startService(Intent)}}. After the activity is bound,
+ * {@code NearflyService} can be used. In order to facilitate the integration of
+ * the {@code NeaflyService} the Activity can inherit from the {@link NearflyBindingActivity}.
+ *
+ * <h3>Usage Examples</h3>
+ * <p>
+ * Here is an example of an activity that extends from the {@link NearflyBindingActivity}
+ * and publishes message as soon as it is connected to the {@code NeaflyService}.
+ *
+ * <pre> {@code
+ *
+ * public class NearflySampleActivity extends NearflyBindingActivity {
+ *
+ *     private final String NEARFLY_CHANNEL = "sensors/humidity";
+ *     private boolean neaflyServiceConnectCalled = false;
+ *
+ *     \@Override
+ *     public void onNearflyServiceUnbound() {
+ *         if (!neaflyServiceConnectCalled) {
+ *             nearflyService.addSubCallback(nearflyListener);
+ *             nearflyService.connect("ThisIsMyUniqueRoomString", NearflyService.USE_NEARBY);
+ *             nearflyService.subIt(NEARFLY_CHANNEL);
+ *             neaflyServiceConnectCalled = true;
+ *         }
+ *     }
+ *
+ *     \@Override
+ *     public void onNearflyServiceUnbound() {
+ *     }
+ *
+ *     NearflyListener nearflyListener = new NearflyListener() {
+ *         @Override
+ *         public void onLogMessage(String state) {
+ *             // Log.v("test", output);
+ *             switch (state){
+ *                 case NearflyService.State.CONNECTED:
+ *                     Log.v("test", "Hello World!");
+ *                     nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!");
+ *                     // OR
+ *                     // nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!", -10, true);
+ *                     break;
+ *                 case NearflyService.State.DISCONNECTED:
+ *                     Log.v("test", "disconnected");
+ *                     break;
+ *             }
+ *         }
+ *
+ *         @Override
+ *         public void onMessage(String channel, String message) {
+ *             Log.v("test",channel + " " + message);
+ *         }
+ *
+ *         @Override
+ *         public void onFile(String path, String textAttachment) {
+ *         }
+ *     };
+ *
+ *     @Override
+ *     protected void onCreate(@Nullable Bundle savedInstanceState) {
+ *         super.onCreate(savedInstanceState);
+ *         setContentView(R.layout.main);
+ *     }
+ * }
+ * </pre>
+ *
+ * @author Alexis Danilo Morgado dos Santos
+ * @edited 01.05.2020
+ * */
 public class NearflyService extends Service {
+    /** Maximal payload size for the  {@link #pubIt(String, String, Integer, boolean)}
+     * command(in KBytes)**/
+    private static final int MAX_PUBIT_MESSAGE_SIZE = 30_000;
+
     /* This are the both Modes that can be used for Nearfly */
     @Retention(SOURCE)
     @IntDef({USE_MQTT, USE_NEARBY})
@@ -176,7 +251,7 @@ public class NearflyService extends Service {
         }
     }
 
-    private NeConClient.MyConnectionsListener nearbyConnectionListener = new NeConClient.MyConnectionsListener() {
+    private NeConClient.NeConListener nearbyConnectionListener = new NeConClient.NeConListener() {
         @Override
         public void onLogMessage(CharSequence msg) {
             ThisOnLogMessage(String.valueOf(msg));
@@ -377,11 +452,19 @@ public class NearflyService extends Service {
      * @param nice (optional) the priority of the message to be published. (default 0)
      * @param retain (optional) if this is true, the message is kept until it can be published.
      *                (default false)
+     *
+     * @return {@code false} if publishing was aborted due to a nonexistent connection or
+     *                          exceeding the maximum size
      **/
     public boolean pubIt(String channel, String message,
                          @IntRange(from=-20, to=19) Integer nice, boolean retain) {
         if (!isConnected() && !retain)
             return false;
+
+        if (message.getBytes().length>MAX_PUBIT_MESSAGE_SIZE){
+            Log.e(TAG, "the message to be sent is larger than the maximum allowed size");
+            return false;
+        }
 
         nearflyQueue.add(nearflyNice.new NearflyTextMessage(channel, message, nice));
         return isConnected();

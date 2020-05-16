@@ -31,7 +31,7 @@
             android:buttonTint="@color/black"/>
     </LinearLayout>
 
-    <de.pbma.nearflyexample.lala.scenarios.Touchpoint.CustomView
+    <de.pbma.nearflyexample.scenarios.Touchpoint.CustomView
         android:id="@+id/custom_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

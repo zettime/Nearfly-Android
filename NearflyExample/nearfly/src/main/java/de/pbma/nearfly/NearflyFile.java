@@ -7,6 +7,7 @@ import android.os.ParcelFileDescriptor;
 
 import java.io.FileNotFoundException;
 
+@Deprecated
 class NearflyFile {
     private String filename;
     private String extentsion;
