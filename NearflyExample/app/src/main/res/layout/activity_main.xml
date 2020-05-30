@@ -9,12 +9,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <!-- <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="startAdvertising"
-            android:text="start Advertising" /> -->
-
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,7 +19,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="toggleConnectionMode"
-            android:text="toggle Connection Mode" />
+            android:text="toggle\nMode" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="connect"
+            android:text="con" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="disconenct"
+            android:text="dcon" />
 
         <TextView
             android:id="@+id/name"

@@ -6,14 +6,14 @@ class ReceiveWithProgressCallback /*extends PayloadCallback */{
 //            new SimpleArrayMap<>();
 //    private final SimpleArrayMap<Long, NotificationCompat.Builder> outgoingPayloads =
 //            new SimpleArrayMap<>();
-//    private Context context;
+//    private Context mContext;
 //
 //    NotificationManager notificationManager;
 //
 //
-//    public ReceiveWithProgressCallback(Context context){
-//        this.context = context;
-//        this.notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//    public ReceiveWithProgressCallback(Context mContext){
+//        this.mContext = mContext;
+//        this.notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 //    }
 //
 //    private void sendPayload(String endpointId, Payload payload) {
@@ -31,7 +31,7 @@ class ReceiveWithProgressCallback /*extends PayloadCallback */{
 //    }
 //
 //    private NotificationCompat.Builder buildNotification(Payload payload, boolean isIncoming) {
-//        NotificationCompat.Builder notification = new NotificationCompat.Builder(context)
+//        NotificationCompat.Builder notification = new NotificationCompat.Builder(mContext)
 //                .setContentTitle(isIncoming ? "Receiving..." : "Sending...")
 //                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark_focused);
 //

@@ -10,7 +10,7 @@ import java.util.Random;
 class EndpointNameGenerator {
 
     public String generateRandomName_if_not_in_sharedPref(Context context) {
-        String endpointName;
+        String endpointName = null;
 
         SharedPreferences sharedPreferences
                 = context.getSharedPreferences("NearflyEndpointName", Context.MODE_PRIVATE);
@@ -32,6 +32,10 @@ class EndpointNameGenerator {
             long DURATION = 20;
             // Bei 1300 zu 1700 Zeit*4 bei 1500 zu 1700 Zeit*2
             return ""+(time+(num*10*DURATION));
+    }
+
+    public String getNamePendentFromTimeTEST(){
+        return ""+currMillis();
     }
 
     private long currMillis() {
@@ -79,7 +83,7 @@ class EndpointNameGenerator {
      *
      * @return Random Name
      */
-    private String generateRandomName() {
+    public String generateRandomName() {
         String name = "";
         Random random = new Random();
         for (int i = 0; i < 5; i++) {

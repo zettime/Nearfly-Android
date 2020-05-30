@@ -1,11 +1,17 @@
 package de.pbma.nearflyexample.scenarios.Touchpoint;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RadioButton;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 
 
 import org.json.JSONException;
@@ -32,21 +38,25 @@ public class TouchpointActivity extends NearflyBindingActivity {
     private final long FRAME_RATE = 30;
 
     private boolean neaflyServiceConnectCalled = false;
+    private String NEARFLY_CHANNEL = "/touchpoint";
+    private Button mBtnToggleConMode;
 
     @Override
     public void onNearflyServiceBound() {
-        nearflyService.askForPermissions(this, true);
-        nearflyService.addSubCallback(nearflyListener);
-        nearflyService.subIt("19moa18/test");
-        nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
-
         if (!neaflyServiceConnectCalled) {
-            nearflyService.askForPermissions(this, true);
+            nearflyService.askForPermissions(this, false);
             nearflyService.addSubCallback(nearflyListener);
-            nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
-            nearflyService.subIt("test");
+            nearflyService.connect("19moa18", NearflyService.USE_MQTT);
+            nearflyService.subIt(NEARFLY_CHANNEL);
             neaflyServiceConnectCalled = true;
         }
+    }
+
+    public void toggleConnectionMode(View view){
+        if (nearflyService.getConnectionMode()==nearflyService.USE_MQTT)
+            nearflyService.switchConnectionMode(NearflyService.USE_NEARBY);
+        else
+            nearflyService.switchConnectionMode(NearflyService.USE_MQTT);
     }
 
     @Override
@@ -56,6 +66,20 @@ public class TouchpointActivity extends NearflyBindingActivity {
     NearflyListener nearflyListener = new NearflyListener() {
         @Override
         public void onLogMessage(String output) {
+            switch (output){
+                case NearflyService.State.CONNECTED:
+                    int color = (nearflyService.getConnectionMode()==nearflyService.USE_MQTT)? R.color.state_connected: R.color.colorAccent;
+                    runOnUiThread(() ->
+                            mBtnToggleConMode.setBackgroundColor(ResourcesCompat.getColor(
+                                    getResources(), color, null)));
+
+                    break;
+                case NearflyService.State.DISCONNECTED:
+                    runOnUiThread(() ->
+                    mBtnToggleConMode.setBackgroundColor(ResourcesCompat.getColor(
+                            getResources(), R.color.gray, null)));
+                    break;
+            }
         }
 
         @Override
@@ -94,7 +118,7 @@ public class TouchpointActivity extends NearflyBindingActivity {
             e.printStackTrace();
         }
 
-        nearflyService.pubIt("19moa18/test", msg.toString());
+        nearflyService.pubIt(NEARFLY_CHANNEL, msg.toString());
     }
 
     @Override
@@ -103,6 +127,8 @@ public class TouchpointActivity extends NearflyBindingActivity {
 
         setContentView(R.layout.touchpoint);
         btnUColor = findViewById(R.id.btn_ucolor);
+
+        mBtnToggleConMode = findViewById(R.id.btn_toggle_conmode);
 
         /** Listener for the {@linkplain CustomView} **/
         gameView = findViewById(R.id.custom_view);

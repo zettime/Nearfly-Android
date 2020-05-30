@@ -131,10 +131,11 @@ class MqttMessaging {
         return options;
     }
 
-    public void connect(String broker, final MqttConnectOptions options) { // do in startCommand
+    public boolean connect(String broker, final MqttConnectOptions options) { // do in startCommand
         if (ready.get() || connectPending.get()) { // already connected and ready
-            return;
+            return true;
         }
+
         if (mqttExecutor != null) {
             mqttExecutor.shutdown();
         }
@@ -170,6 +171,8 @@ class MqttMessaging {
                 });
             }
         });
+
+        return true;
     }
 
     private void doConnectionFailure(Throwable e) {
@@ -232,10 +235,15 @@ class MqttMessaging {
         });
     }
 
+    public boolean isConnected(){
+        return !(!ready.get() && !connectPending.get());
+    }
+
     public void unsubscribe(String topicFilter) {
         if (!ready.get() && !connectPending.get()) {
             throw new RuntimeException("connect not yet called");
         }
+
         mqttExecutor.execute(() -> {
             try {
                 boolean contained = subscriptions.remove(topicFilter);

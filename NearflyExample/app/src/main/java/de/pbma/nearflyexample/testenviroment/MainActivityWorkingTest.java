@@ -376,7 +376,7 @@ public class MainActivityWorkingTest extends ConnectionsActivityTest {
 //
 //    public int cnt = 0;
 //    public void publish(View view){
-//        /*ExtMessage extMessage = new ExtMessage(String.valueOf(++cnt), "test");
+//        /*ExtMessage extMessage = new ExtMessage(String.valueOf(++cnt), "measureTest");
 //
 //        send(Payload.fromBytes(extMessage.getBytes()));*/
 //        showImageChooser();
@@ -593,11 +593,11 @@ public class MainActivityWorkingTest extends ConnectionsActivityTest {
 //            // Send the filename message as a bytes payload.
 //            Payload filenameBytesPayload =
 //                    Payload.fromBytes(filenameMessage.getBytes(StandardCharsets.UTF_8));
-//            // Nearby.getConnectionsClient(context).sendPayload(endpointId, filenameBytesPayload);
+//            // Nearby.getConnectionsClient(mContext).sendPayload(endpointId, filenameBytesPayload);
 //            send(filenameBytesPayload);
 //
 //            // Finally, send the file payload.
-//            // Nearby.getConnectionsClient(context).sendPayload(endpointId, filePayload);
+//            // Nearby.getConnectionsClient(mContext).sendPayload(endpointId, filePayload);
 //            send(filePayload);
 //        }
 //    }

@@ -43,7 +43,7 @@ abstract class PayloadReceiver extends PayloadCallback {
 
     public NeCon neCon = new NeCon();
     /**String notDeprecatedAlternativeDestinationDirectory
-     = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+     = mContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
      // BUT IS NOT ACTUALLY THE SAME, IS DELETED WHEN APP IS DELETED**/
     private final String DESTINATION_DIRECTORY = Environment.getExternalStorageDirectory() + File.separator
             + Environment.DIRECTORY_DOWNLOADS + File.separator + "Nearby";
@@ -128,7 +128,7 @@ abstract class PayloadReceiver extends PayloadCallback {
                     InputStream in = new FileInputStream(pfd.getFileDescriptor());
                     InputStream bufin = new BufferedInputStream(in); // Faster than fileInputStream
 
-                    // File destFile = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS + File.separator + "Nearby/"+filename);
+                    // File destFile = mContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS + File.separator + "Nearby/"+filename);
 
                     filename = makeFileName(fileMessage.getFileExtension());
                     Log.v("NearbyTest", context.getCacheDir().getAbsolutePath().toString());
@@ -162,7 +162,7 @@ abstract class PayloadReceiver extends PayloadCallback {
                 logD(payloadFile.getAbsolutePath());>
 
                 Uri uri = Uri.fromFile(new File(payloadFile.getAbsolutePath()));
-                ContentResolver cr = context.getContentResolver();
+                ContentResolver cr = mContext.getContentResolver();
                 try {
                     ParcelFileDescriptor pfd = cr.openFileDescriptor(uri, "r");
                 } catch (FileNotFoundException e) {
@@ -231,7 +231,7 @@ abstract class PayloadReceiver extends PayloadCallback {
 
 
                         File from = new File(fileRelatedData.path);
-                        Log.v("test", "path: " + fileRelatedData.path);
+                        Log.v("measureTest", "path: " + fileRelatedData.path);
                         try {
                             forwardFile(endpointId, Payload.fromFile(from), fileRelatedData.channel, fileRelatedData.path, fileRelatedData.textAttachment);
                         } catch (FileNotFoundException e) {

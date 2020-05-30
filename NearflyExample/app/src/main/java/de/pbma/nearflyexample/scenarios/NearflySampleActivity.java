@@ -31,24 +31,24 @@ public class NearflySampleActivity extends NearflyBindingActivity {
     NearflyListener nearflyListener = new NearflyListener() {
         @Override
         public void onLogMessage(String state) {
-            // Log.v("test", output);
+            // Log.v("measureTest", output);
             switch (state){
                 case NearflyService.State.CONNECTED:
-                    Log.v("test", "Hello World!");
+                    Log.v("measureTest", "Hello World!");
                     nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!");
                     // OR
                     // nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!", -10, true);
                     break;
                 case NearflyService.State.DISCONNECTED:
-                    Log.v("test", "disconnected");
+                    Log.v("measureTest", "disconnected");
                     break;
             }
-            // Log.v("test", state);
+            // Log.v("measureTest", state);
         }
 
         @Override
         public void onMessage(String channel, String message) {
-            Log.v("test",channel + " " + message);
+            Log.v("measureTest",channel + " " + message);
         }
 
         @Override

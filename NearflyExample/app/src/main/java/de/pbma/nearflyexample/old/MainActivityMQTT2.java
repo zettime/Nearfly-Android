@@ -57,7 +57,7 @@ public class MainActivityMQTT2 extends AppCompatActivity {
     }
 
     public void pubIt(View v){
-        String topic = "test";
+        String topic = "measureTest";
         String payload = "Hallo";
         byte[] encodedPayload = new byte[0];
         try {

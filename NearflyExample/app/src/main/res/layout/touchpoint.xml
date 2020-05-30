@@ -31,10 +31,18 @@
             android:buttonTint="@color/black"/>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_toggle_conmode"
+        android:layout_width="match_parent"
+        android:layout_height="13sp"
+        android:onClick="toggleConnectionMode"
+        android:text="Change connecetion mode"
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        android:background="@color/gray"/>
     <de.pbma.nearflyexample.scenarios.Touchpoint.CustomView
         android:id="@+id/custom_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         />
 </LinearLayout>

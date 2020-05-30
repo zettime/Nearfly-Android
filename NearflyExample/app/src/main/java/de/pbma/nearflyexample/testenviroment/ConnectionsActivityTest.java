@@ -538,9 +538,9 @@ public abstract class ConnectionsActivityTest extends AppCompatActivity {
 //   * Returns {@code true} if the app was granted all the permissions. Otherwise, returns {@code
 //   * false}.
 //   */
-//  public static boolean hasPermissions(Context context, String... permissions) {
+//  public static boolean hasPermissions(Context mContext, String... permissions) {
 //    for (String permission : permissions) {
-//      if (ContextCompat.checkSelfPermission(context, permission)
+//      if (ContextCompat.checkSelfPermission(mContext, permission)
 //          != PackageManager.PERMISSION_GRANTED) {
 //        return false;
 //      }

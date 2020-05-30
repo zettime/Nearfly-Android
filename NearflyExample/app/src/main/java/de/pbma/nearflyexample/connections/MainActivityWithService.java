@@ -72,7 +72,7 @@ public class MainActivityWithService extends AppCompatActivity {
             logIt("onServiceConnected");
             nearflyService = ((NearflyService.LocalBinder) service).getNearflyService();
             nearflyService.addSubCallback(nearflyListener);
-            nearflyService.subIt("19moa18/test");
+            nearflyService.subIt("19moa18/measureTest");
             nearflyServiceBound = true;
 
             startNearflyService();
@@ -130,7 +130,7 @@ public class MainActivityWithService extends AppCompatActivity {
     }
 
     public void publish(View view){
-        nearflyService.pubIt("19moa18/test", String.valueOf(++cnt) );
+        nearflyService.pubIt("19moa18/measureTest", String.valueOf(++cnt) );
     }
 
     private void bindNearflyService() {

@@ -51,7 +51,7 @@ public class CustomView extends View{
     CustomViewListener customViewListener;
 
     public void registerListener(CustomViewListener customViewListener) {
-        // super(context);
+        // super(mContext);
         this.customViewListener = customViewListener;
         avaibleColors = new AvailableColors();
 

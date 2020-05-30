@@ -5,7 +5,7 @@ import android.graphics.Paint;
 
 import java.util.Random;
 
-public class AvailableColors {
+class AvailableColors {
     private int[] mIntColors = {Color.RED, Color.GREEN, Color.BLUE, Color.BLACK,
             Color.YELLOW, Color.CYAN, Color.MAGENTA,
             Color.DKGRAY, Color.GRAY, Color.LTGRAY

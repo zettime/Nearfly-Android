@@ -69,7 +69,7 @@ class NearbyService extends Service {
     public void pubIt() {
 
         cnt++;
-        final ExtMessage extMessage = new ExtMessage("test/", cnt.toString());
+        final ExtMessage extMessage = new ExtMessage("measureTest/", cnt.toString());
 
         //final Message mActiveMessage = new Message(cnt.toString().getBytes());
         //pubQueue.add(extMessage);

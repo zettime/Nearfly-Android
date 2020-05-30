@@ -449,7 +449,10 @@ public class MyMQTTClient {
     }
 
     public void unsubscribe(String topic) {
-        mqttMessaging.unsubscribe(topic);
+        if (mqttMessaging.isConnected())
+            mqttMessaging.unsubscribe(topic);
+        else
+            Log.e(TAG, "unsubscribe failed because not connected");
     }
 
     /**

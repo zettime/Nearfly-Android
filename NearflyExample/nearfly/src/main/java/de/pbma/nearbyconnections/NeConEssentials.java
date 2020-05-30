@@ -49,16 +49,16 @@ abstract class NeConEssentials {
     /**
      * The devices we've discovered near us.
      */
-    private final Map<String, Endpoint> mDiscoveredEndpoints = new HashMap<>();
+    private final Map<String, Endpoint> mDiscoveredEndpoints = new ConcurrentHashMap<>();
 
     // TODO
-    protected Context context;
+    protected Context mContext;
 
     /**
      * The devices we have pending connections to. They will stay pending until we call {@link
      * #acceptConnection(Endpoint)} or {@link #rejectConnection(Endpoint)}.
      */
-    private final Map<String, Endpoint> mPendingConnections = new HashMap<>();
+    private final Map<String, Endpoint> mPendingConnections = new ConcurrentHashMap<>();
 
     /**
      * The devices we are currently connected to. For advertisers, this may be large. For discoverers,
@@ -84,7 +84,7 @@ abstract class NeConEssentials {
     private boolean mIsAdvertising = false;
 
     // TODO
-    protected abstract void changeConnectionState(boolean isConnected);
+    // protected abstract void changeConnectionState(boolean isConnected);
 
     /**
      * Callbacks for connections to other devices.
@@ -143,7 +143,7 @@ abstract class NeConEssentials {
      */
 
     public void initService(Context context) {
-        this.context = context;
+        this.mContext = context;
         mConnectionsClient = Nearby.getConnectionsClient(context);
         mPayloadCallback = new PayloadReceiver(context) {
             @Override
@@ -374,6 +374,7 @@ abstract class NeConEssentials {
         for (Endpoint endpoint : mEstablishedConnections.values()) {
             mConnectionsClient.disconnectFromEndpoint(endpoint.getId());
         }
+
         mEstablishedConnections.clear();
     }
 
@@ -427,10 +428,12 @@ abstract class NeConEssentials {
     private void connectedToEndpoint(Endpoint endpoint) {
         logD(String.format("connectedToEndpoint(endpoint=%s)", endpoint));
 
-        if (getConnectedEndpoints().isEmpty())
-            changeConnectionState(true);
+        // changeConnectionState(true);
+        if (endpoint.getId()==null) // Error occurs sometimes in LG?
+            return;
 
         mEstablishedConnections.put(endpoint.getId(), endpoint);
+
         onEndpointConnected(endpoint);
     }
 
@@ -438,8 +441,7 @@ abstract class NeConEssentials {
         logD(String.format("disconnectedFromEndpoint(endpoint=%s)", endpoint));
         mEstablishedConnections.remove(endpoint.getId());
 
-        if (getConnectedEndpoints().isEmpty())
-            changeConnectionState(false);
+        // changeConnectionState(false);
 
         onEndpointDisconnected(endpoint);
     }

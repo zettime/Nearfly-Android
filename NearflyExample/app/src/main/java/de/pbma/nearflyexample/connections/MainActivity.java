@@ -90,6 +90,6 @@ public class MainActivity {
 //
 //    public int cnt = 0;
 //    public void publish(View view){
-//        myNearbyConnectionsClient.publishIt(String.valueOf(++cnt), "test");
+//        myNearbyConnectionsClient.publishIt(String.valueOf(++cnt), "measureTest");
 //    }
 }

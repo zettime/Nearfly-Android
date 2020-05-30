@@ -37,7 +37,7 @@ public class MessengerActivity3 extends AppCompatActivity {
 //    private String mRoom;
 //    private int mUserColorIndex = 10;
 //
-//    private final String PUB_CHANNEL = "19moa18/test";
+//    private final String PUB_CHANNEL = "19moa18/measureTest";
 //    private String mRoomChannel;
 //
 //    private String TEXT = "text";
@@ -307,7 +307,7 @@ public class MessengerActivity3 extends AppCompatActivity {
 //            e.printStackTrace();
 //        }*/
 //
-//        // nearflyClient.pubBinary("19moa18/test", pfd);
+//        // nearflyClient.pubBinary("19moa18/measureTest", pfd);
 //    }
 //
 //    @Override
@@ -423,9 +423,9 @@ public class MessengerActivity3 extends AppCompatActivity {
 //    public void openFileView(String filename) {
 //        File file = new File(Environment.getExternalStorageDirectory() + File.separator
 //                + Environment.DIRECTORY_DOWNLOADS + File.separator + "Nearby" + File.separator, filename);
-//        Context context = getApplicationContext();
+//        Context mContext = getApplicationContext();
 //        Uri uri = FileProvider.getUriForFile(
-//                context, context.getApplicationContext().getPackageName() + ".provider", file);
+//                mContext, mContext.getApplicationContext().getPackageName() + ".provider", file);
 //
 //        Intent intent = new Intent(Intent.ACTION_VIEW);
 //        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

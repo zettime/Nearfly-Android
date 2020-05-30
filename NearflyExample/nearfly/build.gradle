@@ -12,7 +12,7 @@ android {
         versionName "1.0"
         multiDexEnabled true
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.measureTest.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
     }
 
@@ -32,11 +32,11 @@ android {
 // https://dominoc925.blogspot.com/2015/09/how-to-create-and-use-android-archive.html
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+
+    // testImplementation 'junit:junit:4.12'
+    // androidTestImplementation 'androidx.measureTest.ext:junit:1.1.0'
+    // androidTestImplementation 'androidx.measureTest.espresso:espresso-core:3.1.1'
 
     // Nearby
     implementation 'com.google.android.gms:play-services-nearby:17.0.0'

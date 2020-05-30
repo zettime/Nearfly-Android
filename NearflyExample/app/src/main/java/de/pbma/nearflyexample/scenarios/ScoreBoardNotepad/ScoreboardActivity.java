@@ -53,7 +53,7 @@ public class ScoreboardActivity extends NearflyBindingActivity {
     private LinkedList<Player> playerList = new LinkedList<>();
 
     /** Channels **/
-    private final String DEFAULT_CHANNEL = "19moa18/test/";
+    private final String DEFAULT_CHANNEL = "19moa18/measureTest/";
     private final String SEARCH_PLAYER_NUMBER = "searchPlayerNumber";
     private final String START_GAME = "startGame";
     private final String NEXT_PLAYER = "nextPlayer";
@@ -278,7 +278,7 @@ public class ScoreboardActivity extends NearflyBindingActivity {
     private void pubStartGame() {
         mLobbyLooper.interrupt();
         changeState(STATE_ON_TURN);
-        nearflyService.pubIt(DEFAULT_CHANNEL + START_GAME, "");
+        nearflyService.pubIt(DEFAULT_CHANNEL + START_GAME, "", 0, true);
     }
 
     private void pubSearchPlayerNumber_afterConnected() {
@@ -319,7 +319,7 @@ public class ScoreboardActivity extends NearflyBindingActivity {
             e.printStackTrace();
         }
 
-        nearflyService.pubIt(DEFAULT_CHANNEL + SEARCH_PLAYER_NUMBER, msg.toString());
+        nearflyService.pubIt(DEFAULT_CHANNEL + SEARCH_PLAYER_NUMBER, msg.toString(), 0, true);
 
         refreshScoreBoard();
     }
@@ -380,7 +380,7 @@ public class ScoreboardActivity extends NearflyBindingActivity {
             e.printStackTrace();
         }
 
-        nearflyService.pubIt(DEFAULT_CHANNEL + NEW_PLAYER_SCORE, msg.toString());
+        nearflyService.pubIt(DEFAULT_CHANNEL + NEW_PLAYER_SCORE, msg.toString(), 0, true);
 
         // Next Players Turn
         if (playerOnTurn.totalTurns % 10 == 0) {
@@ -389,10 +389,10 @@ public class ScoreboardActivity extends NearflyBindingActivity {
             if (mPlayerOnTurn != 1) {
                 // changeState(STATE_SPECTATOR);
                 onNextPlayer("" + mPlayerOnTurn);
-                nearflyService.pubIt(DEFAULT_CHANNEL + NEXT_PLAYER, "" + mPlayerOnTurn);
+                nearflyService.pubIt(DEFAULT_CHANNEL + NEXT_PLAYER, "" + mPlayerOnTurn, 0, true);
             } else {
                 changeState(STATE_GAME_END);
-                nearflyService.pubIt(DEFAULT_CHANNEL + END_GAME, "");
+                nearflyService.pubIt(DEFAULT_CHANNEL + END_GAME, "", 0, true);
             }
         }
 

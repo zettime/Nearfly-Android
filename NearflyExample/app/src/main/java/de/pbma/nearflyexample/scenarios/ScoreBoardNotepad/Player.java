@@ -2,7 +2,7 @@ package de.pbma.nearflyexample.scenarios.ScoreBoardNotepad;
 
 import androidx.annotation.Nullable;
 
-public class Player {
+class Player {
     /*private LinkedList<String> playerScore = new LinkedList<>();
     private LinkedList<String> playerId = new LinkedList<>();
     private LinkedList<String> playerNumber = new LinkedList<>();

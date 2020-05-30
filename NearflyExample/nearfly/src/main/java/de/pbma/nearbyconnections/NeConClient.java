@@ -67,6 +67,8 @@ public class NeConClient extends NeConEssentials {
     private static final int STATE_BACKOFF = 5;
     private static final int STATE_STANDBY = 6;
 
+    private long mClientStartedTime = 0;
+
     private ArrayList<String> mSubscribedChannels = new ArrayList<>();
 
     /** AtomicInteger so that the async sleep-threads gain visibility **/
@@ -82,15 +84,27 @@ public class NeConClient extends NeConEssentials {
      */
     private String mName;
 
-    public void initClient(Context context, NeConListener neConListener, String SERVICE_ID) {
-        initService(context);
-        this.myConnectionsListener = neConListener;
-        mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(context);
+
+    /*public void initClient(String SERVICE_ID) {
+    }*/
+
+    /*public NeConClient(){
+        mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(mContext);
         // FOR DEBUG PURPOSE
         // mName = new EndpointNameGenerator().getNamePendentFromTime();
         logV("MyEndpointName: "+mName);
 
         this.SERVICE_ID = SERVICE_ID;
+        mClientStartedTime = System.currentTimeMillis();
+    }*/
+
+    public void registerListener(Context context, NeConListener neConListener){
+        initService(context);
+        this.mNeConListener = neConListener;
+    }
+
+    public void deregisterListener(){
+        mNeConListener = null;
     }
 
     // TODO: Listener that includes all relevant Informations
@@ -110,10 +124,24 @@ public class NeConClient extends NeConEssentials {
         void onFile(String channel, String path, String textAttachment);
     }
 
-    NeConListener myConnectionsListener;
+    NeConListener mNeConListener;
+
+    public NeConClient(){
+        mName = new EndpointNameGenerator().generateRandomName();
+        if (mName.matches("18.*"))
+            mName = "0000 0000"+new Random().nextInt(10);
+
+        // FOR DEBUG PURPOSE
+        // mName = new EndpointNameGenerator().getNamePendentFromTimeTEST();
+        // mName = new EndpointNameGenerator().getNamePendentFromTime();
+        mClientStartedTime = System.currentTimeMillis();
+        logV("MyEndpointName: "+mName);
+    }
 
     /** Call this to Start the auto network creation process. **/
-    public void startConnection() {
+    public void startConnection(String SERVICE_ID) {
+        this.SERVICE_ID = SERVICE_ID;
+
         setState(STATE_FINDROOT);
     }
 
@@ -147,14 +175,16 @@ public class NeConClient extends NeConEssentials {
      * **/
     private void connectToRoot(final Endpoint other, long delay){
         new Thread(() -> {
-            if (!sleep(delay+new Random().nextInt(RANDRANGE_COLAVOID), STATE_NODE))
+            if (isConnecting())
+                return;
+
+            final long waitTime = delay+new Random().nextInt(RANDRANGE_COLAVOID);
+            logV("time COLAVOID: "+waitTime);
+            if (!sleep(waitTime, STATE_NODE))
                 return;
 
             root = findRoot();
-            // if (other==root)
-            // if (!getConnectedEndpoints().contains(root))
             connectToEndpoint(root);
-
         }).start();
     }
 
@@ -167,7 +197,10 @@ public class NeConClient extends NeConEssentials {
             if (other.getName().compareTo(mName) > 0){
                 setState(STATE_NODE);
                 // Wait before conenction if you can find annother node
-                connectToRoot(other, INITIAL_DISCOVERY_TIME );
+                if ((mClientStartedTime-System.currentTimeMillis())<5000)
+                    connectToRoot(other, INITIAL_DISCOVERY_TIME );
+                else
+                    connectToRoot(other, 0);
             }
         }
 
@@ -179,28 +212,35 @@ public class NeConClient extends NeConEssentials {
         }
     }
 
-    @Override
+    private boolean tmpConnected = false;
     protected void changeConnectionState(boolean isConnected) {
-        myConnectionsListener.onLogMessage(isConnected?"connected":"disconnected");
+        if (tmpConnected==isConnected)
+                return;
+        else
+            tmpConnected=isConnected;
+
+        mNeConListener.onLogMessage(isConnected?"connected":"disconnected");
     }
 
     @Override
     protected void onConnectionInitiated(Endpoint other, ConnectionInfo connectionInfo) {
-        // TODO 2503: Discovering Device found -> Switch to Advertising Mode
-        // A connection to another device has been initiated! We'll accept the connection immediately.
         acceptConnection(other);
     }
 
     @Override
     protected void onEndpointConnected(Endpoint other) {
         Toast.makeText(
-                context, "Connected to " + other.getName(), Toast.LENGTH_SHORT)
+                mContext, "Connected to " + other.getName(), Toast.LENGTH_SHORT)
                 .show();
 
+        if (getConnectedEndpoints().size()==1)
+            changeConnectionState(true);
+
         // Set new root
-        if (getState() == STATE_NODE ||getState() == STATE_BACKOFF){
+        if (getState() == STATE_NODE || getState() == STATE_BACKOFF){
             setState(STATE_CONNODE);
             root = other;
+            attemptsInBackoff.set(0);
         }
 
         /** Only Roots are here still in FINDROOT-State **/
@@ -222,8 +262,11 @@ public class NeConClient extends NeConEssentials {
     @Override
     protected void onEndpointDisconnected(Endpoint endpoint) {
         Toast.makeText(
-                context, "Disconnected from " + endpoint.getName(), Toast.LENGTH_SHORT)
+                mContext, "Disconnected from " + endpoint.getName(), Toast.LENGTH_SHORT)
                 .show();
+
+        if (getConnectedEndpoints().isEmpty())
+            changeConnectionState(false);
 
         if (getState() == STATE_ROOT && getConnectedEndpoints().isEmpty())
             setState(STATE_FINDROOT);
@@ -246,6 +289,7 @@ public class NeConClient extends NeConEssentials {
         try {
             for(int i=0; i<millis/checkTime; i++){
                 Thread.sleep(checkTime);
+                // logV("th "+state);
 
                 if (getState() != state)
                     return false;
@@ -268,9 +312,11 @@ public class NeConClient extends NeConEssentials {
         if (getState()!=STATE_BACKOFF)
             return;
 
-        if (!getDiscoveredEndpoints().isEmpty()){
+        if (!getDiscoveredEndpoints().isEmpty() &&  attemptsInBackoff.get()<3){
             new Thread(() -> {
-                if (!sleep(BACKOFFF_TIME+new Random().nextInt(BACKOFFF_TIME), STATE_BACKOFF))
+                final long waitTime = BACKOFFF_TIME+new Random().nextInt(BACKOFFF_TIME);
+                logV("time BACKOFF: "+waitTime);
+                if (!sleep(waitTime, STATE_BACKOFF))
                     return;
 
                 root = findRoot();
@@ -278,14 +324,16 @@ public class NeConClient extends NeConEssentials {
                     connectToEndpoint(root);
                     logV("attemptsInBackoff: "+ attemptsInBackoff.incrementAndGet());
                 }
-                else if (getState()==STATE_BACKOFF & attemptsInBackoff.get()%2==0){
+                /*else if (getState()==STATE_BACKOFF & attemptsInBackoff.get()%2==0){
                     setState(STATE_STANDBY);
                     setState(STATE_FINDROOT);
-                }
+                }*/
             }).start();
         }
-        else {
+        else if (attemptsInBackoff.get()>3){
+            setState(STATE_STANDBY);
             setState(STATE_FINDROOT);
+            attemptsInBackoff.set(0);
         }
     }
 
@@ -302,8 +350,8 @@ public class NeConClient extends NeConEssentials {
 
         logD("State set to " + getStateAsString(state));
 
-        if (myConnectionsListener != null)
-            myConnectionsListener.onStateChanged(getStateAsString(state));
+        if (mNeConListener != null)
+            mNeConListener.onStateChanged(getStateAsString(state));
 
         mState.set(state);
         onStateChanged(state);
@@ -328,12 +376,17 @@ public class NeConClient extends NeConEssentials {
         return mState.get();
     }
 
+    private void disconnectFromAllEndpointsA(){
+        disconnectFromAllEndpoints();
+        changeConnectionState(false);
+    }
+
     private void onStateChanged(@NodeState int newState) {
 
         // Update Nearby Connections to the new STATE_
         switch (newState) {
             case STATE_NODE:
-                disconnectFromAllEndpoints(); // NODES are not connected
+                disconnectFromAllEndpointsA(); // NODES are not connected
                 if (isAdvertising()) {
                     stopAdvertising();
                 }
@@ -345,7 +398,7 @@ public class NeConClient extends NeConEssentials {
                 if (isDiscovering()) {
                     stopDiscovering();
                 }
-                // disconnectFromAllEndpoints();
+                // disconnectFromAllEndpointsA();
                 if (!isAdvertising())
                     startAdvertising();
                 break;
@@ -368,8 +421,9 @@ public class NeConClient extends NeConEssentials {
                 if (isDiscovering()) {
                     stopDiscovering();
                 }
-                disconnectFromAllEndpoints();
+                disconnectFromAllEndpointsA();
                 stopAllEndpoints();
+                mClientStartedTime = 0;
                 break;
             case STATE_FINDROOT:
                 if (isAdvertising()) {
@@ -378,7 +432,7 @@ public class NeConClient extends NeConEssentials {
                 if (isDiscovering()) {
                     stopDiscovering();
                 }
-                disconnectFromAllEndpoints();
+                disconnectFromAllEndpointsA();
                 stopAllEndpoints();
 
                 startAdvertising();
@@ -402,7 +456,7 @@ public class NeConClient extends NeConEssentials {
 
         // Get ParcelFileDescriptor
         // Uri uri = Uri.fromFile(file);
-        ContentResolver cr = context.getContentResolver();
+        ContentResolver cr = mContext.getContentResolver();
         ParcelFileDescriptor pfd = null;
         // logD("####################### MIME:" + cr.getType(uri));
         String fileExtension = cr.getType(uri).split("\\/")[1]; // MimeType e.g. image/jpeg
@@ -486,15 +540,15 @@ public class NeConClient extends NeConEssentials {
         // NeConExtMessage msg = NeConExtMessage.createExtMessage(payload);
         // NeCon.BytesMessage msg = neCon.createTextMessage(bytesMessage);
 
-        if (mSubscribedChannels.contains(bytesMessage.getChannel()) && myConnectionsListener != null) {
-            myConnectionsListener.onMessage(bytesMessage.getChannel(), bytesMessage.getPayload());
+        if (mSubscribedChannels.contains(bytesMessage.getChannel()) && mNeConListener != null) {
+            mNeConListener.onMessage(bytesMessage.getChannel(), bytesMessage.getPayload());
         }
 
         /*if (payload.getType() == Payload.Type.STREAM)
-            myConnectionsListener.onStream(payload);
+            mNeConListener.onStream(payload);
         else
-            // myConnectionsListener.onMessage(new String(payload.asBytes()));
-            myConnectionsListener.onBinary(payload);*/
+            // mNeConListener.onMessage(new String(payload.asBytes()));
+            mNeConListener.onBinary(payload);*/
 
 
         /** Executor **/
@@ -524,8 +578,8 @@ public class NeConClient extends NeConEssentials {
 
     @Override
     protected void onFile(Endpoint endpoint, String channel, String path, String textAttachment) {
-        if (mSubscribedChannels.contains(channel) && myConnectionsListener != null) {
-            myConnectionsListener.onFile(channel, path, textAttachment);
+        if (mSubscribedChannels.contains(channel) && mNeConListener != null) {
+            mNeConListener.onFile(channel, path, textAttachment);
         }
     }
 
@@ -573,41 +627,41 @@ public class NeConClient extends NeConEssentials {
     @Override
     protected void logV(String msg) {
         super.logV(msg);
-        if (myConnectionsListener != null)
-            myConnectionsListener.onLogMessage(toColor(msg, 0xFFFFFFFF));
+        if (mNeConListener != null)
+            mNeConListener.onLogMessage(toColor(msg, 0xFFFFFFFF));
     }
 
     @Override
     protected void logD(String msg) {
         super.logD(msg);
-        if (myConnectionsListener != null)
-            myConnectionsListener.onLogMessage(toColor(msg, 0xFFEEEEEE));
+        if (mNeConListener != null)
+            mNeConListener.onLogMessage(toColor(msg, 0xFFEEEEEE));
     }
 
     @Override
     protected void logW(String msg) {
         super.logW(msg);
-        if (myConnectionsListener != null)
-            myConnectionsListener.onLogMessage(toColor(msg, 0xFFE57373));
+        if (mNeConListener != null)
+            mNeConListener.onLogMessage(toColor(msg, 0xFFE57373));
     }
 
     @Override
     protected void logW(String msg, Throwable e) {
         super.logW(msg, e);
-        if (myConnectionsListener != null)
-            myConnectionsListener.onLogMessage(toColor(msg, 0xFFE57373));
+        if (mNeConListener != null)
+            mNeConListener.onLogMessage(toColor(msg, 0xFFE57373));
     }
 
     @Override
     protected void logE(String msg, Throwable e) {
         super.logE(msg, e);
-        if (myConnectionsListener != null)
-            myConnectionsListener.onLogMessage(toColor(msg, 0xFFF44336));
+        if (mNeConListener != null)
+            mNeConListener.onLogMessage(toColor(msg, 0xFFF44336));
     }
 
     protected void logE(String msg) {
-        if (myConnectionsListener != null)
-            myConnectionsListener.onLogMessage(toColor(msg, 0xFFF44336));
+        if (mNeConListener != null)
+            mNeConListener.onLogMessage(toColor(msg, 0xFFF44336));
     }
 
     private static CharSequence toColor(String msg, int color) {

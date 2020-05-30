@@ -48,6 +48,7 @@ import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
 import de.pbma.nearfly.NearflyBindingActivity;
+import de.pbma.nearflyexample.measureTimes.Logger;
 
 public class MessengerActivity extends NearflyBindingActivity {
     /**
@@ -83,7 +84,7 @@ public class MessengerActivity extends NearflyBindingActivity {
     private String mRoom;
     private int mUserColorIndex = 10;
 
-    private final String PUB_CHANNEL = "19moa18/test";
+    private final String PUB_CHANNEL = "19moa18/measureTest";
     private String mRoomChannel;
 
     private String TEXT = "text";
@@ -93,6 +94,10 @@ public class MessengerActivity extends NearflyBindingActivity {
 
     private boolean neaflyServiceConnectCalled = false;
     private SharedPreferences mSharedPreferences;
+    private int useTech = NearflyService.USE_NEARBY;
+
+    private Logger mLogger = new Logger((
+            ((useTech==NearflyService.USE_NEARBY)?"nearby":"mqtt"))+"_pubFile_");
 
     @Override
     public void onNearflyServiceBound() {
@@ -101,7 +106,7 @@ public class MessengerActivity extends NearflyBindingActivity {
         if (!neaflyServiceConnectCalled) {
             nearflyService.askForPermissions(this, true);
             nearflyService.addSubCallback(nearflyListener);
-            nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
+            nearflyService.connect("19moa18", useTech);
             nearflyService.subIt(mRoomChannel);
             neaflyServiceConnectCalled = true;
         }
@@ -374,7 +379,7 @@ public class MessengerActivity extends NearflyBindingActivity {
             e.printStackTrace();
         }*/
 
-        // nearflyService.pubBinary("19moa18/test", pfd);
+        // nearflyService.pubBinary("19moa18/measureTest", pfd);
     }
 
     @Override
@@ -601,9 +606,6 @@ public class MessengerActivity extends NearflyBindingActivity {
 //        }
     }
 
-    /**
-     * Don't work at this moment
-     **/
     private void pubFileOnResult(Intent resultData) {
         // The URI of the file selected by the user.
         Uri uri = resultData.getData();

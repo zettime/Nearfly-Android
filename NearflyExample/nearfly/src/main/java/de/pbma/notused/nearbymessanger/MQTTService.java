@@ -24,7 +24,7 @@ class MQTTService extends Service {
     // Messages
     private static final String MQTT_PASSWORD= "779747ee";
     private static final String MQTT_USERNAME= "19moa18";
-    //private static final String MQTT_PUB_TOPIC= "19moa18/test";
+    //private static final String MQTT_PUB_TOPIC= "19moa18/measureTest";
     //private static final String MQTT_SUB_TOPIC= "19moa18/#";
     private static final String MQTT_CONNECTION_URL = "ssl://pma.inftech.hs-mannheim.de:8883";
 
