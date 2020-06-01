@@ -126,6 +126,11 @@ public class ScoreboardActivity extends NearflyBindingActivity {
         @Override
         public void onFile(String channel, String path, String textAttachment) {
         }
+
+        @Override
+        public void onBigBytes(String channel, byte[] bytes) {
+
+        }
     };
 
     /** For publishing current Username & entersTime **/

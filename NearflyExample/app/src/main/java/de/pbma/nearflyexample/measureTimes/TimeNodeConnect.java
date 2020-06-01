@@ -148,6 +148,11 @@ public class TimeNodeConnect extends NearflyBindingActivity {
         public void onFile(String channel, String path, String textAttachment){
             logView(channel + " " + path + " " + textAttachment + "\n");
         }
+
+        @Override
+        public void onBigBytes(String channel, byte[] bytes) {
+
+        }
     };
 
     public void connect(View view){

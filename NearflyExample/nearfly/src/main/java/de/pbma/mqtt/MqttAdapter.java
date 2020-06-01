@@ -2,8 +2,6 @@ package de.pbma.mqtt;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.util.Base64;
@@ -25,15 +23,15 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.pbma.nearfly.Constants;
+import de.pbma.nearfly.NearflyClientTarget;
 
-public class MyMQTTClient {
-    final static String TAG = MyMQTTClient.class.getCanonicalName();
+public class MqttAdapter implements NearflyClientTarget {
+    final static String TAG = MqttAdapter.class.getCanonicalName();
     // Messages
     private static final String MQTT_PASSWORD = "779747ee";
     private static final String MQTT_USERNAME = "19moa18";
@@ -46,12 +44,18 @@ public class MyMQTTClient {
     MqttConnectOptions options;
     Context context;
 
+    private AtomicBoolean mForceConnection = new AtomicBoolean(false);
+
     Random random = new Random();
 
     MyMqttListener listener;
     private MqttMessaging mqttMessaging;
+    private AtomicBoolean thRunning = new AtomicBoolean(false);
+    private volatile Boolean mConnected = false;
+    // private ExecutorService mReconnectExecutor = Executors.newSingleThreadExecutor();
+    private ArrayList<String> mSubscriptionBuffer = new ArrayList<>();
 
-    public MyMQTTClient(){
+    public MqttAdapter(){
         mqttMessaging = new MqttMessaging(failureListener, messageListener, connectionListener);
 
         // Create Random Name Generator
@@ -61,9 +65,15 @@ public class MyMQTTClient {
     final private MqttMessaging.FailureListener failureListener = new MqttMessaging.FailureListener() {
         @Override
         public void onConnectionError(Throwable throwable) {
+            mConnected = false;
             listener.onLogMessage("ConnectionError: " + throwable.getMessage());
-
             listener.onLogMessage("disconnected");
+
+            // Try to reconnect, if disconnect was not explicit called
+            if (mForceConnection.get()==true && !thRunning.get()){
+                // mReconnectExecutor.execute(() -> loopReconnection());
+                new Thread(() -> loopReconnection()).start();
+            }
         }
 
         @Override
@@ -79,16 +89,27 @@ public class MyMQTTClient {
     final private MqttMessaging.ConnectionListener connectionListener = new MqttMessaging.ConnectionListener() {
         @Override
         public void onConnect() {
+            mConnected = true;
             if (listener!=null)
                 listener.onStatus(true); // on purpose a little weird, typical to have interface translation
             logD("Connected to Broker");
+
+            for (String topic: mSubscriptionBuffer)
+                mqttMessaging.subscribe(topic);
         }
 
         @Override
         public void onDisconnect() {
+            mConnected = false;
             if (listener!=null)
                 listener.onStatus(false);
             logD("Disconnected from Broker");
+
+            // Try to reconnect, if disconnect() was not explicit called
+            if (mForceConnection.get()==true && !thRunning.get()){
+                // mReconnectExecutor.execute(() -> loopReconnection());
+                new Thread(() -> loopReconnection()).start();
+            }
         }
     };
     /*final private MqttMessaging.MessageListener messageListener = (topic, rawPayload) -> {
@@ -246,8 +267,8 @@ public class MyMQTTClient {
         this.listener = null;
     }
 
-    public void publishIt(String topic, String payload) {
-        byte[] payloadAsBytes = payload.getBytes();
+    public void publishIt(String topic, byte[] payload) {
+        byte[] payloadAsBytes = payload;
 
         JSONObject json = new JSONObject();
         try {
@@ -426,7 +447,7 @@ public class MyMQTTClient {
      **/
     public void connect() {
         if (mqttMessaging != null) {
-            disconnect();
+            intDisconnect();
             Log.w(TAG, "reconnect");
         }
 
@@ -441,24 +462,57 @@ public class MyMQTTClient {
         Log.v(TAG, String.format("username=%s, password=%s, ", MQTT_USERNAME, MQTT_PASSWORD));
 
         // connect
+        mForceConnection.set(true);
         mqttMessaging.connect(MQTT_CONNECTION_URL, options); // secure via URL
+
+        // Try to reconnect, if disconnect was not explicit called
+        if (!thRunning.get()){
+            // mReconnectExecutor.execute(() -> loopReconnection());
+            new Thread(() -> loopReconnection()).start();
+        }
+    }
+
+    /** Should only be called with thread **/
+    public void loopReconnection(){
+        // Reconnection must be called in Loop cause asking for connectionstate needs additional permissions
+        thRunning.set(true);
+        // Log.v(TAG, "1");
+        try {
+            while (mForceConnection.get()) {
+                // Log.v(TAG, "2");
+                Thread.sleep(1000);
+                if (mqttMessaging != null && mConnected) {
+                    break;
+                }else{
+                    // connect();
+                    mqttMessaging.connect(MQTT_CONNECTION_URL, options); // secure via URL
+                    listener.onLogMessage("trying to connect...");
+                }
+            }
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        thRunning.set(false);
     }
 
     public void subscribe(String topic) {
-        mqttMessaging.subscribe(topic);
+        if (isConnected())
+            mqttMessaging.subscribe(topic);
+        else
+            mSubscriptionBuffer.add(topic);
     }
 
     public void unsubscribe(String topic) {
-        if (mqttMessaging.isConnected())
+        if (isConnected())
             mqttMessaging.unsubscribe(topic);
         else
-            Log.e(TAG, "unsubscribe failed because not connected");
+            mSubscriptionBuffer.remove(topic);
+            // Log.e(TAG, "unsubscribe failed because not connected");
     }
 
-    /**
-     * Stoppen
-     **/
-    public void disconnect() {
+
+    /** Same as disconnect but without touching {@link #mForceConnection} **/
+    private void intDisconnect() {
         Log.v(TAG, "disconnect");
         if (mqttMessaging != null) {
 
@@ -470,7 +524,28 @@ public class MyMQTTClient {
         mqttMessaging = null;
     }
 
+    /**
+     * Stoppen
+     **/
+    public void disconnect() {
+        mForceConnection.set(false);
+
+        Log.v(TAG, "disconnect");
+        if (mqttMessaging != null) {
+
+            List<MqttMessaging.Pair<String, String>> pending = mqttMessaging.disconnect();
+            if (!pending.isEmpty()) {
+                Log.w(TAG, "pending messages: " + pending.size());
+            }
+        }
+        // mqttMessaging = null;
+    }
+
     private void logD(String msg) {
         Log.d("MQTTClient", msg);
+    }
+
+    public boolean isConnected() {
+        return mConnected;
     }
 }

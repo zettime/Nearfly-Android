@@ -59,6 +59,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <TextView
+            app:layout_constraintTop_toTopOf="@+id/game_view"
+            app:layout_constraintLeft_toLeftOf="@+id/game_view"
+            android:id="@+id/playerboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
         <LinearLayout
             android:id="@+id/gameover_screen"
             android:layout_width="wrap_content"

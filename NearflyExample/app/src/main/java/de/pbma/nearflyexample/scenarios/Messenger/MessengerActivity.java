@@ -254,6 +254,11 @@ public class MessengerActivity extends NearflyBindingActivity {
                 });
             }
         }
+
+        @Override
+        public void onBigBytes(String channel, byte[] bytes) {
+
+        }
     };
 
 //    private void onMessageForBase64(String strJson){
@@ -561,6 +566,7 @@ public class MessengerActivity extends NearflyBindingActivity {
                     }
 
                     nearflyService.pubFile(mRoomChannel, uri, mUsername + ":MEDIA");
+
                 } catch (FileNotFoundException e) {
                     Log.e("MyApp", "File not found", e);
                 }

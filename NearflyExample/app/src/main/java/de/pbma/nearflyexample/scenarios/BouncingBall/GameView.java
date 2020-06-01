@@ -101,7 +101,7 @@ public class GameView extends View {
         /** @see also https://developer.android.com/training/gestures/multi */
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_POINTER_DOWN:
+            // case MotionEvent.ACTION_POINTER_DOWN:
                 if (mState == STATE_GAMEOVER && (System.currentTimeMillis()-mGameOverWaitTime) >= 1000)
                     changeState(STATE_PLAYING);
                 break;
@@ -110,6 +110,9 @@ public class GameView extends View {
     }
 
     public void changeState(int state) {
+        if (mState==state)
+            return;
+
         mState = state;
         mGameViewListener.onStateChanged(state);
 
@@ -122,6 +125,8 @@ public class GameView extends View {
             mMyX = mCanvasWidth / 2;
             mMyY = mCanvasHeight / 2;
             mStartTime = System.currentTimeMillis();
+            vOrientationBuff.clear();
+            hOrientationBuff.clear();
         }
     }
 
@@ -129,9 +134,17 @@ public class GameView extends View {
         return mScore;
     }
 
+    Queue<Float> vOrientationBuff = new ArrayDeque<>();
+    Queue<Float> hOrientationBuff = new ArrayDeque<>();
+    // float mVOrientation;
+    // float mHOrientation;
+
     public void addValToPosition(float vOrientation, float hOrientation){
         mMyY -= vOrientation * mUnit;
         mMyX += hOrientation * mUnit;
+
+        /*mVOrientation = 0;
+        mHOrientation = 0;*/
 
         /*try {
             mMyY -= vOrientationBuff.remove() * mUnit;
@@ -140,9 +153,6 @@ public class GameView extends View {
             e.printStackTrace();
         }*/
     }
-
-    Queue<Float> vOrientationBuff = new ArrayDeque<>();
-    Queue<Float> hOrientationBuff = new ArrayDeque<>();
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -157,15 +167,21 @@ public class GameView extends View {
                 float vOrientation = mOrientationData.getOrientation()[1];
                 float hOrientation = mOrientationData.getOrientation()[2];
 
-                logIt("v: "+vOrientation+"  h: "+hOrientation);
+                vOrientationBuff.add(vOrientation);
+                vOrientationBuff.add(hOrientation);
+
+                // logIt("v: "+vOrientation+"  h: "+hOrientation);
                 mGameViewListener.onStep(vOrientation, hOrientation);
+
+                mMyY -= vOrientationBuff.poll() * mUnit;
+                mMyX += vOrientationBuff.poll() * mUnit;
 
                 /*if (vOrientationBuff.isEmpty()) {
                     vOrientationBuff.add(vOrientation);
                     hOrientationBuff.add(hOrientation);
                 }else{*/
-                    mMyY -= vOrientation * mUnit;
-                    mMyX += hOrientation * mUnit;
+                    // mMyY -= vOrientation * mUnit;
+                    // mMyX += hOrientation * mUnit;
                 //}
             }
 

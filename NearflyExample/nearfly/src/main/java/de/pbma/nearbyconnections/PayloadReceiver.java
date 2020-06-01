@@ -1,5 +1,6 @@
 package de.pbma.nearbyconnections;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.icu.text.SimpleDateFormat;
@@ -16,6 +17,8 @@ import com.google.android.gms.nearby.connection.PayloadCallback;
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,6 +35,7 @@ import java.util.Date;
 abstract class PayloadReceiver extends PayloadCallback {
     private final Context context;
     private final SimpleArrayMap<Long, Payload> incomingFilePayloads = new SimpleArrayMap<>();
+    private final SimpleArrayMap<Long, Payload> incomingStreamPayload = new SimpleArrayMap<>();
     private final SimpleArrayMap<Long, Payload> completedFilePayloads = new SimpleArrayMap<>();
     private final SimpleArrayMap<Long, NeCon.FileInfMessage> mFileInformation = new SimpleArrayMap<>();
     private long timeMeasureBegin = 0;
@@ -62,6 +66,8 @@ abstract class PayloadReceiver extends PayloadCallback {
                                      String textAttachment);
 
     public abstract void onByteMessage(String endpointId, NeCon.BytesMessage bytesMessage);
+
+    protected abstract void onBigBytes(String channel, byte[] bigBytes);
 
     class fileRelatedData {
         public String channel;
@@ -99,10 +105,31 @@ abstract class PayloadReceiver extends PayloadCallback {
         } else if (payload.getType() == Payload.Type.FILE) {
             // Add this to our tracking map, so that we can retrieve the payload later.
             incomingFilePayloads.put(payload.getId(), payload);
-        }
-
+        }// TODO: in work
+        /*else if (payload.getType() == Payload.Type.STREAM){
+            incomingFilePayloads.put(payload.getId(), payload);
+        }*/
         logD("incomingPayloads: " + payload.toString());
         timeMeasureBegin = System.currentTimeMillis();
+    }
+
+    /** {@link de.pbma.mqtt.MqttAdapter#readBytes(InputStream)} **/
+    public byte[] readBytes(InputStream inputStream) throws IOException {
+        // this dynamically extends to take the bytes you read
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+
+        // this is storage overwritten on each iteration with bytes
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        // we need to know how may bytes were read to write them to the byteBuffer
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+
+        // and then we can return your byte array.
+        return byteBuffer.toByteArray();
     }
 
     private fileRelatedData processFilePayload(long payloadId) {
@@ -114,6 +141,39 @@ abstract class PayloadReceiver extends PayloadCallback {
 
         String textAttachment = fileMessage.getTextAttachment();
         String channel = fileMessage.getChannel();
+
+        // TODO provisorisch ---------------------------------------------
+        if (filePayload != null && textAttachment != null &&
+                textAttachment.equals(NeConAdapter.BIG_BYTES_BYPASS)){
+            completedFilePayloads.remove(payloadId);
+            mFileInformation.remove(payloadId);
+
+            FileInputStream fileInputStream = null;
+            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                fileInputStream = new FileInputStream(
+                        filePayload.asFile().asParcelFileDescriptor().getFileDescriptor());
+            /*}else{
+                File payloadFile = filePayload.asFile().asJavaFile();
+                try {
+                    fileInputStream = new FileInputStream(payloadFile);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }*/
+
+            byte[] fileAsBytes = null;
+
+            try {
+                fileAsBytes = readBytes(fileInputStream);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            File oldFile = new File(DESTINATION_DIRECTORY, String.valueOf(payloadId));
+            oldFile.delete();
+            onBigBytes(channel, fileAsBytes);
+            return null;
+        }// TODO provisorisch ----------------------------------------
 
         if (filePayload != null && textAttachment != null) {
             completedFilePayloads.remove(payloadId);
@@ -189,8 +249,6 @@ abstract class PayloadReceiver extends PayloadCallback {
                         textAttachment
                 );
             }
-            // TODO .......................
-
         }
         return null;
     }
@@ -239,6 +297,13 @@ abstract class PayloadReceiver extends PayloadCallback {
                         }
                     }
                 }
+                /*else if (payload.getType() == Payload.Type.STREAM){
+                    try {
+                        onBigBytes(toByteArray(payload.asStream().asInputStream()));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }*/
 
                 logD("SUCCESS " + update.toString());
                 logD(" -> time needed " + (System.currentTimeMillis() - timeMeasureBegin));
@@ -278,6 +343,23 @@ abstract class PayloadReceiver extends PayloadCallback {
             out.close();
         }
     }
+
+    public static byte[] toByteArray(InputStream in) throws IOException {
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        byte[] buffer = new byte[1024];
+        int len;
+
+        // read bytes from the input stream and store them in buffer
+        while ((len = in.read(buffer)) != -1) {
+            // write bytes from the buffer into output stream
+            os.write(buffer, 0, len);
+        }
+
+        return os.toByteArray();
+    }
+
 
     private void logD(String output) {
         Log.d(TAG, output);

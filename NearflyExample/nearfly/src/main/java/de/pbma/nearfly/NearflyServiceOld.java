@@ -2,17 +2,21 @@ package de.pbma.nearfly;
 
 
 import android.Manifest;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Binder;
 import android.os.Build;
+import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.IntRange;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -105,11 +109,11 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * @author Alexis Danilo Morgado dos Santos
  * @edited 01.05.2020
  * */
-public class NearflyClient{
+@Deprecated
+public class NearflyServiceOld extends Service {
     /** Maximal payload size for the  {@link #pubIt(String, String, Integer, boolean)}
      * command(in KBytes)**/
     private static final int MAX_PUBIT_MESSAGE_SIZE = 30_000;
-    private Context mContext;
 
     /* This are the both Modes that can be used for Nearfly */
     @Retention(SOURCE)
@@ -127,10 +131,13 @@ public class NearflyClient{
     @ConnectionMode
     public int mConnectionMode;
     private int mModeSwitcher = PAUSED;
-    private WifiManager mWifiManager;
 
-    private String TAG = "NearflyClient";
+    private String TAG = "NearflyServices";
     private ArrayList<String> subscribedChannels = new ArrayList<>();
+
+    public final static String ACTION_START = "start";
+    public final static String ACTION_STOP = "stop";
+    public final static String ACTION_BIND = "bind";
 
     private boolean mConnected = false;
     ReentrantLock connectedLock = new ReentrantLock();
@@ -152,8 +159,8 @@ public class NearflyClient{
      **/
     // private NearflyListener nearflyListener;
     final private CopyOnWriteArrayList<NearflyListener> listeners = new CopyOnWriteArrayList<>();
-    private NeConAdapter mNeConAdapter = new NeConAdapter();
-    private MqttAdapter mMqttAdapter = new MqttAdapter();
+    private NeConAdapter neConAdapter = new NeConAdapter();
+    private MqttAdapter mqttAdapter = new MqttAdapter();
 
     /**
      * Helps to interpret the {@link NearflyListener#onLogMessage(String)} correctly
@@ -172,11 +179,11 @@ public class NearflyClient{
         public final static String DISCONNECTED = "disconnected";
     }
 
-    public NearflyClient(Context context) {
-        mContext = context;
-        mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
-        mMqttAdapter.registerMqttListener(mContext, mMqttListener);
-        mNeConAdapter.registerListener(mContext, mNeConListener);
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mqttAdapter.registerMqttListener(getApplicationContext(), mMqttListener);
+        neConAdapter.registerListener(getApplicationContext(), mNeConListener);
 
         // ---------------
         new Thread(() -> {
@@ -200,37 +207,26 @@ public class NearflyClient{
 
                         switch (mConnectionMode) {
                             case USE_NEARBY:
-                                mNeConAdapter.pubFile(room + "/" + channel, uri, textAttachment);
+                                neConAdapter.pubFile(room + "/" + channel, uri, textAttachment);
                                 break;
                             case USE_MQTT:
-                                mMqttAdapter.pubFile(room + "/" + channel, uri, textAttachment);
+                                mqttAdapter.pubFile(room + "/" + channel, uri, textAttachment);
                                 break;
                         }
                     }
 
                     if (msg instanceof NearflyNice.NearflyTextMessage) {
                         NearflyNice.NearflyTextMessage textMsg = (NearflyNice.NearflyTextMessage)msg;
-                        String channel = textMsg.getChannel();
+                        byte[] channel = textMsg.getChannel().getBytes();
                         byte[] payload = textMsg.getPayload().getBytes();
 
-                        if (payload.length<MAX_PUBIT_MESSAGE_SIZE){
-                            switch (mConnectionMode) {
-                                case USE_NEARBY:
-                                    mNeConAdapter.publishIt(room + "/" + channel, payload);
-                                    break;
-                                case USE_MQTT:
-                                    mMqttAdapter.publishIt(room + "/" + channel, payload);
-                                    break;
-                            }
-                        }else{
-                            switch (mConnectionMode) {
-                                case USE_NEARBY:
-                                    mNeConAdapter.pubBigBytes(room + "/" + channel, payload);
-                                    break;
-                                case USE_MQTT:
-                                    mMqttAdapter.publishIt(room + "/" + channel, payload);
-                                    break;
-                            }
+                        switch (mConnectionMode) {
+                            case USE_NEARBY:
+                                neConAdapter.publishIt(room + "/" + channel, payload);
+                                break;
+                            case USE_MQTT:
+                                mqttAdapter.publishIt(room + "/" + channel, payload);
+                                break;
                         }
                     }
 
@@ -284,10 +280,8 @@ public class NearflyClient{
                 ThisOnLogMessage(State.CONNECTED);
             }
             if (msg.equals("disconnected")) {
-                if (!mMqttAdapter.isConnected() && !mNeConAdapter.isConnected()){
-                    setConnected(false);
-                    ThisOnLogMessage(State.DISCONNECTED);
-                }
+                setConnected(false);
+                ThisOnLogMessage(State.DISCONNECTED);
             }
         }
 
@@ -298,28 +292,24 @@ public class NearflyClient{
 
         @Override
         public void onMessage(String channel, byte[] message) {
-            String channelWithoutRoom = channel.replaceFirst(room+"/", "");
-            ThisOnMessage(channelWithoutRoom, new String(message));
+            ThisOnMessage(channel, new String(message));
         }
 
         @Override
         public void onFile(String channel, String path, String textAttachment) {
-            String channelWithoutRoom = channel.replaceFirst(room+"/", "");
-            ThisOnFile(channelWithoutRoom, path, textAttachment);
+            ThisOnFile(channel, path, textAttachment);
         }
 
         @Override
         public void onBigBytes(String channel, byte[] bigBytes) {
-            String channelWithoutRoom = channel.replaceFirst(room+"/", "");
-            ThisOnBigBytes(channelWithoutRoom, bigBytes);
+
         }
     };
 
     private MyMqttListener mMqttListener = new MyMqttListener() {
         @Override
-        public void onMessage(String channel, String message) {
-            String channelWithoutRoom = channel.replaceFirst(room+"/", "");
-            ThisOnMessage(channelWithoutRoom, message);
+        public void onMessage(String topic, String message) {
+            ThisOnMessage(topic, message);
         }
 
         @Override
@@ -337,10 +327,8 @@ public class NearflyClient{
                 ThisOnLogMessage(State.CONNECTED);
 
             } else {
-                if (!mMqttAdapter.isConnected() && !mNeConAdapter.isConnected()) {
-                    setConnected(false);
-                    ThisOnLogMessage(State.DISCONNECTED);
-                }
+                setConnected(false);
+                ThisOnLogMessage(State.DISCONNECTED);
             }
         }
 
@@ -351,8 +339,7 @@ public class NearflyClient{
 
         @Override
         public void onFile(String channel, String path, String textAttachment) {
-            String channelWithoutRoom = channel.replaceFirst(room+"/", "");
-            ThisOnFile(channelWithoutRoom, path, textAttachment);
+            ThisOnFile(channel, path, textAttachment);
         }
     };
 
@@ -387,25 +374,15 @@ public class NearflyClient{
         });
     }
 
-    private void ThisOnBigBytes(String channel, byte[] bytes){
-        if (callbackExecutor==null)
-            return;
-
-        callbackExecutor.execute(() -> {
-            for (NearflyListener nearflyListener : listeners)
-                nearflyListener.onBigBytes(channel, bytes);
-        });
-    }
-
     private static final String[] REQUIRED_PERMISSIONS = {
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION
-    };
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            };
 
     private static final String[] STORAGE_PERMISSIONS = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
 
     private static final String[] FULL_PERMISSIONS ={
             REQUIRED_PERMISSIONS[0],
@@ -430,7 +407,7 @@ public class NearflyClient{
         return false;
     }
 
-    private boolean hasPermissions(Context context, String... permissions) {
+    private static boolean hasPermissions(Context context, String... permissions) {
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(context, permission)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -447,9 +424,9 @@ public class NearflyClient{
      * @param channel to subscribed channel
      **/
     public void subIt(String channel) {
-        // mNeConAdapter.addSubCallback("measureTest", mNeConAdapter);
-        /*mNeConAdapter.subscirbe(channel);
-        mMqttAdapter.subscribe(channel);*/
+        // neConAdapter.addSubCallback("measureTest", neConAdapter);
+        /*neConAdapter.subscirbe(channel);
+        mqttAdapter.subscribe(channel);*/
 
         if (!subscribedChannels.contains(channel))
             subscribedChannels.add(channel);
@@ -458,9 +435,9 @@ public class NearflyClient{
             return;*/
 
         if (mConnectionMode == USE_NEARBY)
-            mNeConAdapter.subscribe(room + "/" + channel);
+            neConAdapter.subscribe(room + "/" + channel);
         else
-            mMqttAdapter.subscribe(room + "/" +  channel);
+            mqttAdapter.subscribe(room + "/" +  channel);
     }
 
 
@@ -478,9 +455,9 @@ public class NearflyClient{
             return;*/
 
         if (mConnectionMode == USE_NEARBY)
-            mNeConAdapter.unsubscribe(room + "/" + channel);
+            neConAdapter.unsubscribe(room + "/" + channel);
         else
-            mMqttAdapter.unsubscribe(room + "/" +  channel);
+            mqttAdapter.unsubscribe(room + "/" +  channel);
     }
 
     /**
@@ -503,9 +480,8 @@ public class NearflyClient{
             return false;
 
         if (message.getBytes().length>MAX_PUBIT_MESSAGE_SIZE){
-            // Log.e(TAG, "the message to be sent is larger than the maximum allowed size");
-            Log.e(TAG, "Your file is too large to run a normal publish, pubBigBytes() is used instead");
-            // return false;
+            Log.e(TAG, "the message to be sent is larger than the maximum allowed size");
+            return false;
         }
 
         nearflyQueue.add(nearflyNice.new NearflyTextMessage(channel, message, nice));
@@ -566,7 +542,7 @@ public class NearflyClient{
      * only for testing
      **/
     private void pubStream(Payload stream) {
-        mNeConAdapter.pubStream(stream);
+        neConAdapter.pubStream(stream);
     }
 
     /**
@@ -612,7 +588,7 @@ public class NearflyClient{
         }
         callbackExecutor = Executors.newSingleThreadExecutor();
 
-        if (!hasPermissions(mContext, REQUIRED_PERMISSIONS)){
+        if (!hasPermissions(this, REQUIRED_PERMISSIONS)){
             Log.e(TAG, "the application does not have the required permissions.");
             return;
         }
@@ -662,6 +638,41 @@ public class NearflyClient{
         this.nearflyListener = nearflyListener;
     }*/
 
+
+
+
+    /**
+     * OTHERS
+     **/
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.v(TAG, "onStartCommand");
+        String action;
+        if (intent != null) {
+            action = intent.getAction();
+        } else {
+            Log.w(TAG, "upps, restart");
+            action = ACTION_START;
+        }
+        if (action == null) {
+            Log.w(TAG, "  action=null, nothing further to do");
+            return START_STICKY;
+        }
+        switch (action) {
+            case ACTION_START:
+                Log.v(TAG, "onStartCommand: starting Nearfly");
+                // connect();
+                return START_STICKY;
+            case ACTION_STOP:
+                Log.v(TAG, "onStartCommand: stopping Nearfly");
+                // disconnect();
+                return START_NOT_STICKY;
+            default:
+                Log.w(TAG, "onStartCommand: unkown action=" + action);
+                return START_NOT_STICKY;
+        }
+    }
+
     /**
      * Removes the {@link NearflyListener} previously added by
      * {@link #addSubCallback(NearflyListener)}.
@@ -672,8 +683,42 @@ public class NearflyClient{
     public boolean removeSubCallback(NearflyListener nearflyListener) {
         return listeners.remove(nearflyListener);
     }
+    /*public void removeSubCallback(NearflyListener nearflyListener) {
+        // listeners.remove(nearflyListener);
+        this.nearflyListener = null;
+    }*/
 
-    public void cleanUp() {
+    /********************************************************************/
+    public class LocalBinder extends Binder {
+        public NearflyServiceOld getNearflyService() {
+            Log.v(TAG, "onBinding");
+            return NearflyServiceOld.this;
+        }
+    }
+
+    final private IBinder localBinder = new LocalBinder();
+
+    /*********************************************************************/
+
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        Log.v(TAG, "onBind");
+        String action = intent.getAction();
+        if (action != null && action.equals(NearflyServiceOld.ACTION_BIND)) {
+            Log.v(TAG, "onBind success");
+            return localBinder;
+        } else {
+            Log.e(TAG, "onBind only defined for ACTION_BIND");
+            Log.e(TAG, "       did you want to call startService? ");
+            return null;
+        }
+    }
+
+
+    @Override
+    public void onDestroy() {
         Log.d(TAG, "onStop");
 
         // TODO
@@ -681,9 +726,11 @@ public class NearflyClient{
             disconnectToNearby();
         else
             disconnectToMQTT();
+
+        super.onDestroy();
     }
 
-    public boolean isModeSwitching(){
+    public boolean IsModeSwitching(){
         return (mModeSwitcher !=PAUSED);
     }
 
@@ -700,7 +747,7 @@ public class NearflyClient{
      * e.g. on the part of MQTT, since there is no internet, the process is canceled. Note that
      * nearby connections sometimes turns on the hotspot and interferes with MQTT, since MQTT may
      * not have internet in this case. if this happens you can repeat the process.
-     * {@link #isModeSwitching()} can be used to query whether the
+     * {@link #IsModeSwitching()} can be used to query whether the
      * switching process is still running. Note that when you switch to Nearby, the techSwitch
      * is complete when a network with 2 nodes has been set up. Messages that are published
      * during the switch will therefore not reach everyone.
@@ -716,8 +763,6 @@ public class NearflyClient{
         mModeSwitcher = destConnectionMode;
         if (destConnectionMode == USE_MQTT) {
             // disconnectToNearby();
-            // Disable Wifi to disconnect from Hotspot
-            setWifiEnabled(false);
             connectToMQTT();
         } else {
             // disconnectToMQTT();
@@ -727,58 +772,47 @@ public class NearflyClient{
         return true;
     }
 
-    /** Starting with Android 10, changing the WiFi status is no longer possible **/
-    private void setWifiEnabled(boolean val){
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            mWifiManager.setWifiEnabled(val);
-        }
-    }
-
-    private void pubBigBytes(String channel, byte[] bigBytes){
-        mNeConAdapter.pubBigBytes(channel, bigBytes);
-    }
-
     /* TODO: ****************************************************** */
     private void connectToMQTT() {
-        setWifiEnabled(true);
+        WifiManager wifiManager= (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(true);
         // WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         // Boolean wifiOn = (wifiInfo.getSupplicantState() == SupplicantState.ASSOCIATED);
 
-        // mMqttAdapter.registerMqttListener(getApplicationContext(), mMqttListener);
-        mMqttAdapter.connect();
-
+        // mqttAdapter.registerMqttListener(getApplicationContext(), mMqttListener);
+        mqttAdapter.connect();
         for (String channel : subscribedChannels) {
-            mMqttAdapter.subscribe(room + "/" + channel);
+            mqttAdapter.subscribe(room + "/" + channel);
         }
     }
 
     private void disconnectToMQTT() {
         for (String channel : subscribedChannels) {
-            mMqttAdapter.unsubscribe(room + "/" + channel);
+            mqttAdapter.unsubscribe(room + "/" + channel);
         }
-        mMqttAdapter.disconnect();
-        // mMqttAdapter.deregisterMqttListener();
+        mqttAdapter.disconnect();
+        // mqttAdapter.deregisterMqttListener();
     }
 
     private void connectToNearby() {
-        // mNeConAdapter.initClient(getApplicationContext(), mNeConListener, room);
-        mNeConAdapter.startConnection(room);
+        // neConAdapter.initClient(getApplicationContext(), mNeConListener, room);
+        neConAdapter.startConnection(room);
 
         for (String channel : subscribedChannels) {
-            mNeConAdapter.subscribe(room + "/" + channel);
+            neConAdapter.subscribe(room + "/" + channel);
         }
     }
 
     private void disconnectToNearby() {
-        /*if (mNeConAdapter==null)
+        /*if (neConAdapter==null)
             return;*/
 
         for (String channel : subscribedChannels) {
-            mNeConAdapter.unsubscribe(room + "/" + channel);
+            neConAdapter.unsubscribe(room + "/" + channel);
         }
 
-        mNeConAdapter.stopConnection();
-        // mNeConAdapter = null;
-        // mNeConAdapter.deregisterNearbyListener(mNeConListener);
+        neConAdapter.stopConnection();
+        // neConAdapter = null;
+        // neConAdapter.deregisterNearbyListener(mNeConListener);
     }
 }

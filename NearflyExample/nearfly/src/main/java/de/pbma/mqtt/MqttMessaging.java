@@ -217,26 +217,30 @@ class MqttMessaging {
 
     public void subscribe(String topicFilter) {
         if (!ready.get() && !connectPending.get()) {
-            throw new RuntimeException("connect not yet called");
+            // throw new RuntimeException("connect not yet called");
+            Log.e(TAG, "connect not yet called");
         }
         subscriptions.add(topicFilter);
-        mqttExecutor.execute(() -> {
-            try {
-                Log.v(TAG, "subscribe: " + topicFilter + ready.get());
-                MqttClient c = client;
-                if (c != null && ready.get()) {
-                    c.subscribe(topicFilter);
+        if (mqttExecutor!=null){
+            mqttExecutor.execute(() -> {
+                try {
+                    Log.v(TAG, "subscribe: " + topicFilter + ready.get());
+                    MqttClient c = client;
+                    if (c != null && ready.get()) {
+                        c.subscribe(topicFilter);
+                    }
+                } catch (MqttException e) {
+                    Log.e(TAG, String.format("  subscribe failed: topic=%s, cause=%s", topicFilter, e.getMessage()));
+                    subscriptions.remove(topicFilter);
+                    doSubscriptionFailure(e, topicFilter);
                 }
-            } catch (MqttException e) {
-                Log.e(TAG, String.format("  subscribe failed: topic=%s, cause=%s", topicFilter, e.getMessage()));
-                subscriptions.remove(topicFilter);
-                doSubscriptionFailure(e, topicFilter);
-            }
-        });
+            });
+        }
     }
 
     public boolean isConnected(){
-        return !(!ready.get() && !connectPending.get());
+        // return !(!ready.get() && !connectPending.get());
+        return ready.get();
     }
 
     public void unsubscribe(String topicFilter) {
@@ -244,20 +248,21 @@ class MqttMessaging {
             throw new RuntimeException("connect not yet called");
         }
 
-        mqttExecutor.execute(() -> {
-            try {
-                boolean contained = subscriptions.remove(topicFilter);
-                if (contained) {
-                    MqttClient c = client;
-                    if (c != null && ready.get()) {
-                        client.unsubscribe(topicFilter);
+        if (mqttExecutor!=null)
+            mqttExecutor.execute(() -> {
+                try {
+                    boolean contained = subscriptions.remove(topicFilter);
+                    if (contained) {
+                        MqttClient c = client;
+                        if (c != null && ready.get()) {
+                            client.unsubscribe(topicFilter);
+                        }
                     }
+                } catch (MqttException e) {
+                    // even failed unsubscribe is a subscription failure
+                    doSubscriptionFailure(e, topicFilter);
                 }
-            } catch (MqttException e) {
-                // even failed unsubscribe is a subscription failure
-                doSubscriptionFailure(e, topicFilter);
-            }
-        });
+            });
     }
 
     /*public void send(final String topic, final String msg) {

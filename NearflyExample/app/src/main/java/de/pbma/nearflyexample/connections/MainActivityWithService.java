@@ -64,6 +64,11 @@ public class MainActivityWithService extends AppCompatActivity {
 
         @Override
         public void onFile(String channel, String path, String textAttachment){}
+
+        @Override
+        public void onBigBytes(String channel, byte[] bytes) {
+
+        }
     };
 
     private ServiceConnection serviceConnection = new ServiceConnection() {

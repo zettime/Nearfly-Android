@@ -173,6 +173,11 @@ public class TimeFreePubTest extends NearflyBindingActivity{
                     mLogger.log("time;"+neededTime+";bytes;"+fileSize+"\n");
                 });
         }
+
+        @Override
+        public void onBigBytes(String channel, byte[] bytes) {
+
+        }
     };
 
     @Override

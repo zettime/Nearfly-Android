@@ -162,6 +162,11 @@ abstract class NeConEssentials {
             public void onByteMessage(String endpointId, NeCon.BytesMessage bytesMessage) {
                 onReceive(mEstablishedConnections.get(endpointId), bytesMessage);
             }
+
+            @Override
+            protected void onBigBytes(String channel, byte[] bigBytes) {
+                NeConEssentials.this.onBigBytes(channel, bigBytes);
+            }
         };
     }
 
@@ -524,17 +529,14 @@ abstract class NeConEssentials {
                         });
     }
 
-    /**
-     * Someone connected to us has sent us data. Override this method to act on the event.
-     *
-     * @param endpoint The sender.
-     * @param payload  The data.
-     */
     protected void onReceive(Endpoint endpoint, NeCon.BytesMessage bytesMessage) {
     }
 
     // TODO
     protected void onFile(Endpoint endpoint, String channel, String path, String textAttachment) {
+    }
+
+    protected void onBigBytes(String channel, byte[] bigBytes) {
     }
 
     /** Returns the client's name. Visible to others when connecting. */

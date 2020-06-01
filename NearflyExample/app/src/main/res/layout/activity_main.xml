@@ -18,12 +18,6 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="toggleConnectionMode"
-            android:text="toggle\nMode" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:onClick="connect"
             android:text="con" />
         <Button
@@ -31,6 +25,13 @@
             android:layout_height="wrap_content"
             android:onClick="disconenct"
             android:text="dcon" />
+        <Button
+            android:id="@+id/btn_toggle_conmode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="toggleConnectionMode"
+            android:text="Change conmode"
+            android:background="@color/gray"/>
 
         <TextView
             android:id="@+id/name"

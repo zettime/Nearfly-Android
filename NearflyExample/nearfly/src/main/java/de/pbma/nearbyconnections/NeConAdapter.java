@@ -3,6 +3,7 @@ package de.pbma.nearbyconnections;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -17,12 +18,18 @@ import com.google.android.gms.nearby.connection.Payload;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PipedInputStream;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import de.pbma.nearfly.NearflyClientTarget;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -48,12 +55,12 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  *
  */
 
-public class NeConClient extends NeConEssentials {
+public class NeConAdapter extends NeConEssentials implements NearflyClientTarget {
 
     private static final long INITIAL_DISCOVERY_TIME = 1000;
     private static final long SECONDS_TO_CONNODE_ECO = 60;
     private static final int RANDRANGE_COLAVOID = 1000;// AntiCollision Random max Range
-    private static final String TAG = "NeConClient";
+    private static final String TAG = "NeConAdapter";
     private final int BACKOFFF_TIME = 1000;
 
     @Retention(SOURCE)
@@ -66,6 +73,9 @@ public class NeConClient extends NeConEssentials {
     private static final int STATE_CONNODE = 4;
     private static final int STATE_BACKOFF = 5;
     private static final int STATE_STANDBY = 6;
+
+    /** Used for Bypassing Byte Images over the File transport**/
+    public static String BIG_BYTES_BYPASS = "BIGBYTESBYPASS";
 
     private long mClientStartedTime = 0;
 
@@ -84,11 +94,54 @@ public class NeConClient extends NeConEssentials {
      */
     private String mName;
 
+    public void pubBigBytes(String channel, byte[] bigBytes){
+        try {
+            Payload fileAsPayload =Payload.fromFile(createFile(bigBytes));
+
+            // send(Payload.fromStream(new ByteArrayInputStream(bigBytes)));
+
+            NeCon.FileInfMessage fileMessage = neCon.new FileInfMessage(
+                    channel, "null",
+                    fileAsPayload.getId(), NeConAdapter.BIG_BYTES_BYPASS);
+            // send(Payload.fromBytes(neConExtMessage.getBytes()));
+            send(Payload.fromBytes(fileMessage.getBytes()));
+            send(fileAsPayload);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private File createFile(byte[] fileData) {
+        try {
+            //Create directory..
+            File root = mContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS+ "/Nearfly") ;
+
+            File dir = new File(root + File.separator);
+            if (!dir.exists()) dir.mkdir();
+
+            //Create file..
+            File file = new File(root ,""+System.currentTimeMillis());
+            file.createNewFile();
+
+            FileOutputStream out = new FileOutputStream(file);
+            out.write(fileData);
+            out.close();
+
+            return file;
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /*public void initClient(String SERVICE_ID) {
     }*/
 
-    /*public NeConClient(){
+    /*public NeConAdapter(){
         mName = new EndpointNameGenerator().generateRandomName_if_not_in_sharedPref(mContext);
         // FOR DEBUG PURPOSE
         // mName = new EndpointNameGenerator().getNamePendentFromTime();
@@ -113,20 +166,16 @@ public class NeConClient extends NeConEssentials {
 
         void onStateChanged(String state);
 
-        void onRootNodeChanged(String rootNode);
-
         void onMessage(String channel, byte[] message);
 
-        void onStream(Payload payload);
-
-        void onBinary(Payload payload);
-
         void onFile(String channel, String path, String textAttachment);
+
+        void onBigBytes(String channel, byte[] bigBytes);
     }
 
     NeConListener mNeConListener;
 
-    public NeConClient(){
+    public NeConAdapter(){
         mName = new EndpointNameGenerator().generateRandomName();
         if (mName.matches("18.*"))
             mName = "0000 0000"+new Random().nextInt(10);
@@ -443,9 +492,9 @@ public class NeConClient extends NeConEssentials {
         }
     }
 
-    public void publishIt(String channel, String message) {
+    public void publishIt(String channel, byte[] message) {
         // NeConExtMessage neConExtMessage = new NeConExtMessage(message, channel, NeConExtMessage.BYTES);
-        NeCon.BytesMessage textMessage = neCon.new BytesMessage(message.getBytes(), channel);
+        NeCon.BytesMessage textMessage = neCon.new BytesMessage(message, channel);
         logD(message + " published");
         // send(Payload.fromBytes(neConExtMessage.getBytes()));
         send(Payload.fromBytes(textMessage.getBytes()));
@@ -531,10 +580,9 @@ public class NeConClient extends NeConEssentials {
     }
 
     /**
-     * {@see ConnectionsActivity#onReceive(Endpoint, Payload)}
+     * {@link NeConEssentials#onReceive(Endpoint, NeCon.BytesMessage)}
      */
     @Override
-    @CallSuper
     protected void onReceive(Endpoint endpoint, NeCon.BytesMessage bytesMessage) {
         // logD(new String(payload.asBytes()) + "from" + endpoint);
         // NeConExtMessage msg = NeConExtMessage.createExtMessage(payload);
@@ -557,6 +605,14 @@ public class NeConClient extends NeConEssentials {
             forward(bytesMessage, endpoint.getId());
             // publishForwarder.newMessage(payload, endpointId);
 
+    }
+
+    /**
+     * {@link NeConEssentials#onBigBytes(byte[])}
+     */
+    @Override
+    protected void onBigBytes(String channel, byte[] bigBytes){
+        mNeConListener.onBigBytes(channel, bigBytes);
     }
 
     private void forward(final NeCon.BytesMessage bytesMessage, final String excludedEntpointId) {

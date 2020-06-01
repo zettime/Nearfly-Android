@@ -13,9 +13,19 @@ import androidx.core.content.res.ResourcesCompat;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import de.pbma.nearfly.NearflyBindingActivity;
 import de.pbma.nearfly.NearflyListener;
@@ -24,8 +34,13 @@ import de.pbma.nearflyexample.R;
 
 public class BouncingBallActivity extends NearflyBindingActivity {
 
-    private final String NEARFLY_CHANNEL = "ball";
+    private final String NEARFLY_CHANNEL = "ball/";
     private boolean neaflyServiceConnectCalled = false;
+
+    private final String ALIVE = "alive";
+    private final String PLAY_DATA = "playData";
+    private final String GAME_STATE = "gameState";
+    private final String[] SUBCHANNELS = {ALIVE, PLAY_DATA, GAME_STATE};
 
     private Handler mHandler = new Handler();
     private GameView mGameView;
@@ -35,6 +50,31 @@ public class BouncingBallActivity extends NearflyBindingActivity {
     private LinearLayout mGameOverScreen;
     private TextView mTextViewScore;
     private Button mBtnToggleConMode;
+    private String mPlayerId;
+    private TextView mPlayerBoard;
+
+    /** TeamMates with keepAlive time as value **/
+    // ConcurrentHashMap<String, Integer> mTeamMates = new ConcurrentHashMap<>();
+    class TeamMate{
+        public String id;
+        public int cnt;
+
+        public TeamMate(String id, int cnt){
+            this.id = id;
+            this.cnt = cnt;
+        }
+
+        @Override
+        public boolean equals(@Nullable Object obj) {
+            if (obj instanceof TeamMate){
+                TeamMate other = (TeamMate) obj;
+                return id.equals(other.id);
+            }
+            return false;
+        }
+    }
+
+    List<TeamMate> mTeamMates = Collections.synchronizedList(new ArrayList<>());
 
     @Override
     public void onNearflyServiceBound() {
@@ -42,7 +82,8 @@ public class BouncingBallActivity extends NearflyBindingActivity {
             nearflyService.askForPermissions(this, false);
             nearflyService.addSubCallback(nearflyListener);
             nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
-            nearflyService.subIt(NEARFLY_CHANNEL);
+            for (String subChannel : SUBCHANNELS)
+                nearflyService.subIt(NEARFLY_CHANNEL+subChannel);
             neaflyServiceConnectCalled = true;
         }
     }
@@ -81,11 +122,31 @@ public class BouncingBallActivity extends NearflyBindingActivity {
         public void onMessage(String channel, String message) {
             logIt("message received");
             try {
-                JSONObject json = new JSONObject(message);
-                float vOrientation = (float) json.getDouble("vOrientation");
-                float hOrientation = (float) json.getDouble("hOrientation");
+                switch (channel){
+                    case NEARFLY_CHANNEL+PLAY_DATA:
+                        JSONObject json = new JSONObject(message);
+                        float vOrientation = (float) json.getDouble("vOrientation");
+                        float hOrientation = (float) json.getDouble("hOrientation");
 
-                mGameView.addValToPosition(vOrientation, hOrientation);
+                        mGameView.addValToPosition(vOrientation, hOrientation);
+                        break;
+                    case NEARFLY_CHANNEL+ALIVE:
+                        TeamMate teamMate = new TeamMate(message, 4);
+                        int index = mTeamMates.indexOf(teamMate);
+                        if (index==-1)
+                            mTeamMates.add(teamMate);
+                        else{
+                            mTeamMates.get(index).cnt = 4;
+                        }
+                        break;
+                    case NEARFLY_CHANNEL+GAME_STATE:
+                        if (message.equals("gameOver")){
+                            runOnUiThread(() -> mGameView.changeState(GameView.STATE_GAMEOVER));
+                        }else if (message.equals("startGame")){
+                            runOnUiThread(() -> mGameView.changeState(GameView.STATE_PLAYING));
+                        }
+                        break;
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -93,6 +154,11 @@ public class BouncingBallActivity extends NearflyBindingActivity {
 
         @Override
         public void onFile(String channel, String path, String textAttachment) {
+        }
+
+        @Override
+        public void onBigBytes(String channel, byte[] bytes) {
+
         }
     };
 
@@ -106,7 +172,13 @@ public class BouncingBallActivity extends NearflyBindingActivity {
         mTextViewScore = findViewById(R.id.tv_score);
         mBtnToggleConMode = findViewById(R.id.btn_toggle_conmode);
 
+        mPlayerId = ""+new Random().nextInt(99_999);
+        TeamMate myself = new TeamMate(mPlayerId, 4);
+        mTeamMates.add(myself);
+
         mGameView = findViewById(R.id.game_view);
+        mPlayerBoard = findViewById(R.id.playerboard);
+
         mGameView.onCreate(getApplicationContext());
         mGameView.registerListener(new GameView.GameViewListener() {
             @Override
@@ -115,9 +187,11 @@ public class BouncingBallActivity extends NearflyBindingActivity {
                     case GameView.STATE_GAMEOVER:
                         mGameOverScreen.setVisibility(View.VISIBLE);
                         mSurviveTime.setText(""+mGameView.getScore());
+                        nearflyService.pubIt(NEARFLY_CHANNEL+GAME_STATE,"gameOver");
                         break;
                     case GameView.STATE_PLAYING:
                         mGameOverScreen.setVisibility(View.GONE);
+                        nearflyService.pubIt(NEARFLY_CHANNEL+GAME_STATE,"startGame");
                         break;
                 }
             }
@@ -131,7 +205,7 @@ public class BouncingBallActivity extends NearflyBindingActivity {
                     JSONObject json = new JSONObject();
                     json.put("vOrientation", vOrientation);
                     json.put("hOrientation", hOrientation);
-                    nearflyService.pubIt(NEARFLY_CHANNEL, json.toString());
+                    nearflyService.pubIt(NEARFLY_CHANNEL+PLAY_DATA, json.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -150,5 +224,35 @@ public class BouncingBallActivity extends NearflyBindingActivity {
                     });
                 }
         }, 0, 1000/FPS);
+
+
+
+        /** Keep sending singal, to note  that you're participating **/
+        new Thread(() -> {
+            while(!Thread.interrupted()){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                nearflyService.pubIt(NEARFLY_CHANNEL+ALIVE, mPlayerId);
+                String str = "";
+                for (int i=0; i<mTeamMates.size(); i++){
+                    TeamMate teamMate = mTeamMates.get(i);
+
+                    if (!teamMate.id.equals(mPlayerId)) // If not myself
+                        teamMate.cnt-=1;
+
+                    if (teamMate.cnt==0) {
+                        mTeamMates.remove(teamMate); // Kick player out
+                    }else{
+                        str+=teamMate.id + "\n";
+                    }
+                }
+
+                final String fStr = str;
+                runOnUiThread(() -> mPlayerBoard.setText(fStr));
+            }
+        }).start();
     }
 }

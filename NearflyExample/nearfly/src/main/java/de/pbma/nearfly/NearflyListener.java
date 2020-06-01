@@ -12,6 +12,8 @@ public interface NearflyListener {
     // void onBinary(Payload payload);
     void onFile(String channel, String path, String textAttachment);
 
+    void onBigBytes(String channel, byte[] bytes);
+
     /*public interface StatusChange{
         void onLogMessage(CharSequence msg);
         void onStateChanged(String state);

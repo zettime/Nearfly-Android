@@ -165,6 +165,11 @@ public class TimePubFile extends NearflyBindingActivity {
                 Log.v(TAG, "neddedTime "+neededTime);
                 }
             }
+
+        @Override
+        public void onBigBytes(String channel, byte[] bytes) {
+
+        }
     };
 
     @Override

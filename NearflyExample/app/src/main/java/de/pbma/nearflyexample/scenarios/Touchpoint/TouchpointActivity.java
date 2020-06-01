@@ -106,6 +106,11 @@ public class TouchpointActivity extends NearflyBindingActivity {
 
         @Override
         public void onFile(String channel, String path, String textAttachment){}
+
+        @Override
+        public void onBigBytes(String channel, byte[] bytes) {
+
+        }
     };
 
     public void publish(float percTpX, float percTpY, int tpColorIndex){

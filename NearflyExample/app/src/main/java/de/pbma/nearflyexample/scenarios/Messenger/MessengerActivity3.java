@@ -3,6 +3,7 @@ package de.pbma.nearflyexample.scenarios.Messenger;
 import androidx.appcompat.app.AppCompatActivity;
 
 // JUST TEST
+@Deprecated
 public class MessengerActivity3 extends AppCompatActivity {
 //    /**
 //     * If true, debug logs are shown on the device.
