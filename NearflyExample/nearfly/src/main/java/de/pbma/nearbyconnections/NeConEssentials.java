@@ -37,7 +37,8 @@ import static de.pbma.nearfly.Constants.TAG;
  * A class that connects to Nearby Connections and provides convenience methods and callbacks.
  */
 abstract class NeConEssentials {
-
+    /** Don't changed this **/
+    private final boolean DEBUG = true;
     /**
      * Our handler to Nearby Connections.
      */
@@ -72,19 +73,27 @@ abstract class NeConEssentials {
      * device.
      */
     private boolean mIsConnecting = false;
+    private boolean mCachedDiscovery = false;
 
-    /**
-     * True if we are discovering.
-     */
     private boolean mIsDiscovering = false;
-
-    /**
-     * True if we are advertising.
-     */
     private boolean mIsAdvertising = false;
 
-    // TODO
-    // protected abstract void changeConnectionState(boolean isConnected);
+    /** Stop discvering while connecting -> helps to accelerate the connecting-phase **/
+    private void setConnecting(boolean tmpConnecting){
+        if (mIsConnecting==tmpConnecting)
+            return;
+
+        if (tmpConnecting){
+            mCachedDiscovery = mIsDiscovering;
+            stopDiscovering();
+            mIsConnecting=true;
+        }else {
+            if (mCachedDiscovery==true && mIsDiscovering==false)
+                startDiscovering();
+            mIsConnecting=false;
+        }
+    }
+
 
     /**
      * Callbacks for connections to other devices.
@@ -108,7 +117,7 @@ abstract class NeConEssentials {
                     logD(String.format("onConnectionResponse(endpointId=%s, result=%s)", endpointId, result));
 
                     // We're no longer connecting
-                    mIsConnecting = false;
+                    setConnecting(false);
 
                     if (!result.getStatus().isSuccess()) {
                         logW(
@@ -136,8 +145,8 @@ abstract class NeConEssentials {
      */
     private PayloadCallback mPayloadCallback;
     protected abstract void forwardFile(String endpointId, Payload payload,
-                                     String channel, String path,
-                                     String textAttachment);
+                                        String channel, String path,
+                                        String textAttachment);
     /**
      * ******************************************
      */
@@ -281,7 +290,7 @@ abstract class NeConEssentials {
      */
     protected void startDiscovering() {
         mIsDiscovering = true;
-        mDiscoveredEndpoints.clear();
+        // mDiscoveredEndpoints.clear();
         DiscoveryOptions.Builder discoveryOptions = new DiscoveryOptions.Builder();
         discoveryOptions.setStrategy(getStrategy());
         mConnectionsClient
@@ -290,17 +299,18 @@ abstract class NeConEssentials {
                         new EndpointDiscoveryCallback() {
                             @Override
                             public void onEndpointFound(String endpointId, DiscoveredEndpointInfo info) {
+                                if (getServiceId().equals(info.getServiceId())) {
+                                    Endpoint endpoint = new Endpoint(endpointId, info.getEndpointName());
+                                    // connectToEndpoint(endpoint);
+                                    mDiscoveredEndpoints.put(endpointId, endpoint);
+                                    // logV("dadada", "list: " + mDiscoveredEndpoints.toString());
+                                    onEndpointDiscovered(endpoint);
+                                }
+
                                 logD(
                                         String.format(
                                                 "onEndpointFound(endpointId=%s, serviceId=%s, endpointName=%s)",
                                                 endpointId, info.getServiceId(), info.getEndpointName()));
-
-                                if (getServiceId().equals(info.getServiceId())) {
-                                    Endpoint endpoint = new Endpoint(endpointId, info.getEndpointName());
-                                    mDiscoveredEndpoints.put(endpointId, endpoint);
-                                    Log.v("dadada", "list: " + mDiscoveredEndpoints.toString());
-                                    onEndpointDiscovered(endpoint);
-                                }
                             }
 
                             @Override
@@ -393,7 +403,7 @@ abstract class NeConEssentials {
         mConnectionsClient.stopAllEndpoints();
         mIsAdvertising = false;
         mIsDiscovering = false;
-        mIsConnecting = false;
+        setConnecting(false);
         mDiscoveredEndpoints.clear();
         mPendingConnections.clear();
         mEstablishedConnections.clear();
@@ -407,19 +417,16 @@ abstract class NeConEssentials {
     protected void connectToEndpoint(final Endpoint endpoint) {
         logV("Sending a connection request to endpoint " + endpoint);
         // Mark ourselves as connecting so we don't connect multiple times
-        mIsConnecting = true;
+        setConnecting(true);
 
         // Ask to connect
         mConnectionsClient
                 .requestConnection(getName(), endpoint.getId(), mConnectionLifecycleCallback)
                 .addOnFailureListener(
-                        new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                logW("requestConnection() failed.", e);
-                                mIsConnecting = false;
-                                onConnectionFailed(endpoint);
-                            }
+                        e -> {
+                            logW("requestConnection() failed.", e);
+                            setConnecting(false);
+                            onConnectionFailed(endpoint);
                         });
     }
 
@@ -432,7 +439,6 @@ abstract class NeConEssentials {
 
     private void connectedToEndpoint(Endpoint endpoint) {
         logD(String.format("connectedToEndpoint(endpoint=%s)", endpoint));
-
         // changeConnectionState(true);
         if (endpoint.getId()==null) // Error occurs sometimes in LG?
             return;
@@ -574,31 +580,37 @@ abstract class NeConEssentials {
 
     @CallSuper
     protected void logV(String msg) {
-        Log.v(TAG, msg);
+        if (DEBUG)
+            Log.v(TAG, msg);
     }
 
     @CallSuper
     protected void logD(String msg) {
-        Log.d(TAG, msg);
+        if (DEBUG)
+            Log.d(TAG, msg);
     }
 
     @CallSuper
     protected void logW(String msg) {
-        Log.w(TAG, msg);
+        if (DEBUG)
+            Log.w(TAG, msg);
     }
 
     @CallSuper
     protected void logW(String msg, Throwable e) {
-        Log.w(TAG, msg, e);
+        if (DEBUG)
+            Log.w(TAG, msg, e);
     }
 
     @CallSuper
     protected void logE(String msg, Throwable e) {
-        Log.e(TAG, msg, e);
+        if (DEBUG)
+            Log.e(TAG, msg, e);
     }
 
     private void logE(String msg){
-        Log.e(TAG, msg);
+        if (DEBUG)
+            Log.e(TAG, msg);
     }
 
     /**

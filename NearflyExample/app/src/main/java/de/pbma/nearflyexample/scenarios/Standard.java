@@ -100,7 +100,7 @@ public class Standard extends NearflyBindingActivity {
 
     public void publish(View view){
          // nearflyService.pubBigBytes(NEARFLY_CHANNEL, String.valueOf(++cnt).getBytes());
-        nearflyService.pubIt(NEARFLY_CHANNEL, getRandomData(50_000));
+        nearflyService.pubIt(NEARFLY_CHANNEL, getRandomData(100));
         // nearflyService.pubIt(NEARFLY_CHANNEL, String.valueOf(++cnt) );
         // OR
         // nearflyService.pubIt(NEARFLY_CHANNEL, String.valueOf(++cnt), 0, false );

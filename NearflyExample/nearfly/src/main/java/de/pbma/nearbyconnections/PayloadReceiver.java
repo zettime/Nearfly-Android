@@ -152,6 +152,7 @@ abstract class PayloadReceiver extends PayloadCallback {
             //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 fileInputStream = new FileInputStream(
                         filePayload.asFile().asParcelFileDescriptor().getFileDescriptor());
+                filePayload.asFile().asJavaFile();
             /*}else{
                 File payloadFile = filePayload.asFile().asJavaFile();
                 try {

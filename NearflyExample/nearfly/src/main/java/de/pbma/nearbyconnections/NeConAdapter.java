@@ -25,6 +25,7 @@ import java.io.PipedInputStream;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -59,9 +60,10 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
 
     private static final long INITIAL_DISCOVERY_TIME = 1000;
     private static final long SECONDS_TO_CONNODE_ECO = 60;
-    private static final int RANDRANGE_COLAVOID = 1000;// AntiCollision Random max Range
+    private static final int RANDRANGE_COLAVOID = 1;// AntiCollision Random max Range
     private static final String TAG = "NeConAdapter";
     private final int BACKOFFF_TIME = 1000;
+    private Executor callbackExecutor = Executors.newSingleThreadExecutor();
 
     @Retention(SOURCE)
     @IntDef({STATE_FINDROOT, STATE_ROOT, STATE_NODE, STATE_CONNODE, STATE_STANDBY, STATE_BACKOFF})
@@ -85,7 +87,7 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
     private AtomicInteger mState = new AtomicInteger(STATE_STANDBY);
 
     // TODO: PublishForwarder
-    ThreadPoolExecutor msgForwardExecutor;
+    // ThreadPoolExecutor msgForwardExecutor;
     // PublishForwarder publishForwarder;
     public NeCon neCon = new NeCon();
 
@@ -233,13 +235,18 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
                 return;
 
             root = findRoot();
-            connectToEndpoint(root);
+            if (!root.getName().equals(getName()) && !getConnectedEndpoints().contains(root))
+                connectToEndpoint(root);
         }).start();
     }
 
     /***** TESTST *****/
     @Override
     protected void onEndpointDiscovered(Endpoint other) {
+        // Sometimes Nodes are found multiple times
+        if (getConnectedEndpoints().contains(other))
+            return;
+
         /** TODO ------------------------------ **/
         // FIND OUT IF OTHER ROOT?
         if (getState()==STATE_FINDROOT) {
@@ -253,8 +260,8 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
             }
         }
 
-        if (getState()==STATE_CONNODE ){
-            if (other.getName().compareTo(mName) > 0){
+        if (getState()==STATE_CONNODE){
+            if (other.getName().compareTo(root.getName()) > 0){
                 setState(STATE_NODE);
                 connectToRoot(other, 0);
             }
@@ -298,13 +305,13 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
 
 
         // TODO: Start the Executor *****************************************************
-        if (getConnectedEndpoints().size() > 1) {
+        /*if (getConnectedEndpoints().size() > 1) {
             if (msgForwardExecutor == null) {
                 msgForwardExecutor = (ThreadPoolExecutor)
                         Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 5);
                 logE("Executor started");
             }
-        }
+        }/*
         /**********************************************************************/
     }
 
@@ -324,11 +331,11 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
             setState(STATE_FINDROOT);
 
         /** Shutdown Executor ***/
-        if (msgForwardExecutor != null) {
+        /*if (msgForwardExecutor != null) {
             msgForwardExecutor.shutdownNow();
             msgForwardExecutor = null;
             logE("Executor ended");
-        }
+        }*/
     }
 
     /** Returns false if not anymore in the same State **/
@@ -353,7 +360,9 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
     public AtomicInteger attemptsInBackoff = new AtomicInteger(0);
     @Override
     protected void onConnectionFailed(Endpoint endpoint) {
-        // Let's try someone else.
+        // If other Node disconnect while trying to connect
+        if (getState()==STATE_ROOT)
+            return;
 
         if (getState()==STATE_NODE)
             setState(STATE_BACKOFF);
@@ -379,7 +388,7 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
                 }*/
             }).start();
         }
-        else if (attemptsInBackoff.get()>3){
+        else if (attemptsInBackoff.get()>=3){
             setState(STATE_STANDBY);
             setState(STATE_FINDROOT);
             attemptsInBackoff.set(0);
@@ -431,6 +440,8 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
     }
 
     private void onStateChanged(@NodeState int newState) {
+        /*if (mState.get()==newState)
+            return;*/
 
         // Update Nearby Connections to the new STATE_
         switch (newState) {
@@ -608,7 +619,7 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
     }
 
     /**
-     * {@link NeConEssentials#onBigBytes(byte[])}
+     * {@link NeConEssentials#onBigBytes(String, byte[])}
      */
     @Override
     protected void onBigBytes(String channel, byte[] bigBytes){
@@ -651,7 +662,7 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
             }
         }
 
-        String fileinformations = fileExtension + "/" + fileAsPayload.getId() + "/" + textAttachment;
+        // String fileinformations = fileExtension + "/" + fileAsPayload.getId() + "/" + textAttachment;
         // NeConExtMessage neConExtMessage = new NeConExtMessage(fileinformations, channel, NeConExtMessage.FILEINFORMATION);
         NeCon.FileInfMessage fileMessage = neCon.new FileInfMessage(channel, fileExtension, fileAsPayload.getId(), textAttachment);
 

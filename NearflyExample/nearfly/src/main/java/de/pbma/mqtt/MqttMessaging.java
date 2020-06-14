@@ -219,6 +219,7 @@ class MqttMessaging {
         if (!ready.get() && !connectPending.get()) {
             // throw new RuntimeException("connect not yet called");
             Log.e(TAG, "connect not yet called");
+            return;
         }
         subscriptions.add(topicFilter);
         if (mqttExecutor!=null){
@@ -245,7 +246,9 @@ class MqttMessaging {
 
     public void unsubscribe(String topicFilter) {
         if (!ready.get() && !connectPending.get()) {
-            throw new RuntimeException("connect not yet called");
+            // throw new RuntimeException("connect not yet called");
+            Log.e(TAG, "connect not yet called");
+            return;
         }
 
         if (mqttExecutor!=null)
@@ -292,7 +295,9 @@ class MqttMessaging {
 
     public void send(final String topic, final byte[] msg) {
         if (!ready.get() && !connectPending.get()) {
-            throw new RuntimeException("connect not yet called");
+            // throw new RuntimeException("connect not yet called");
+            Log.e(TAG, "connect not yet called");
+            return;
         }
         final long id = pendingMessageId.incrementAndGet();
         pendingMessages.put(id, Pair.createPair(topic,  msg.toString()));
@@ -302,7 +307,7 @@ class MqttMessaging {
                 Log.v(TAG, String.format("send: topic=%s, msg=%s",topic, msg));
                 MqttMessage message = new MqttMessage();
                 message.setPayload(msg);
-                message.setQos(1); // we always do 1
+                message.setQos(0); // we always do 1
                 MqttClient c = client;
                 if (c != null) {
                     pendingMessages.remove(id);

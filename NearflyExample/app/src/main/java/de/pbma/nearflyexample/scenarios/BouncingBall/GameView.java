@@ -15,13 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ConcurrentLinkedDeque;
-
 import de.pbma.nearflyexample.R;
 
 public class GameView extends View {
@@ -29,6 +22,8 @@ public class GameView extends View {
     private Bitmap mBitmap;
     private int mMyX;
     private int mMyY;
+    private int mMyTmpX;
+    private int mMyTmpY;
     private OrientationData mOrientationData;
     private int mCanvasWidth;
     private int mCanvasHeight;
@@ -43,6 +38,7 @@ public class GameView extends View {
 
     private long mGameOverWaitTime;
     private volatile long mScore = 0;
+    private int mPlayerNum = 1;
 
     public GameView(Context context) {
         super(context);
@@ -61,8 +57,9 @@ public class GameView extends View {
     }
 
     interface GameViewListener {
-        void onStateChanged(int state);
-        void onStep(float vOrientation, float hOrientation); // Ori = orientatonData value
+        void onStateChanged(int state, boolean onMessage);
+        // void onStep(double xAbsolute, double yAbsolute); // Ori = orientatonData value
+        void onStep(double xAbsolute, double yAbsolute, double hOrientation, double vOrientation);
     }
 
     public void registerListener(GameViewListener gameViewListener) {
@@ -103,18 +100,18 @@ public class GameView extends View {
             case MotionEvent.ACTION_DOWN:
             // case MotionEvent.ACTION_POINTER_DOWN:
                 if (mState == STATE_GAMEOVER && (System.currentTimeMillis()-mGameOverWaitTime) >= 1000)
-                    changeState(STATE_PLAYING);
+                    changeState(STATE_PLAYING, false);
                 break;
         }
         return true;
     }
 
-    public void changeState(int state) {
+    public void changeState(int state, boolean onMessage) {
         if (mState==state)
             return;
 
         mState = state;
-        mGameViewListener.onStateChanged(state);
+        mGameViewListener.onStateChanged(state, onMessage);
 
         if (state == STATE_GAMEOVER) {
             mScore = System.currentTimeMillis() - mStartTime;
@@ -125,8 +122,8 @@ public class GameView extends View {
             mMyX = mCanvasWidth / 2;
             mMyY = mCanvasHeight / 2;
             mStartTime = System.currentTimeMillis();
-            vOrientationBuff.clear();
-            hOrientationBuff.clear();
+            // vOrientationBuff.clear();
+            // hOrientationBuff.clear();
         }
     }
 
@@ -134,8 +131,8 @@ public class GameView extends View {
         return mScore;
     }
 
-    Queue<Float> vOrientationBuff = new ArrayDeque<>();
-    Queue<Float> hOrientationBuff = new ArrayDeque<>();
+    // Queue<Float> vOrientationBuff = new ArrayDeque<>();
+    // Queue<Float> hOrientationBuff = new ArrayDeque<>();
     // float mVOrientation;
     // float mHOrientation;
 
@@ -154,6 +151,12 @@ public class GameView extends View {
         }*/
     }
 
+    public void setBallPosition(double xMean, double yMean, int playerNum){
+        mPlayerNum = playerNum;
+        mMyX = (int) (xMean*(double) mCanvasWidth);
+        mMyY = (int) (yMean*(double) mCanvasHeight);
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(Color.WHITE);
@@ -164,17 +167,26 @@ public class GameView extends View {
 
         if (mState == STATE_PLAYING) {
             if (mOrientationData.getOrientation() != null && mOrientationData.getStartOrientation() != null) {
-                float vOrientation = mOrientationData.getOrientation()[1];
-                float hOrientation = mOrientationData.getOrientation()[2];
+                final float hOrientation = mOrientationData.getOrientation()[2]/3;
+                final float vOrientation = mOrientationData.getOrientation()[1]/3;
 
-                vOrientationBuff.add(vOrientation);
-                vOrientationBuff.add(hOrientation);
+
+                // double xAbsolute = (mMyX+(hOrientation*(double)mUnit))/(double)mCanvasWidth;
+                // double yAbsolute = (mMyY-(vOrientation*(double)mUnit))/(double)mCanvasHeight;
+
+                double xAbsolute = mMyX/(double)mCanvasWidth;
+                double yAbsolute = mMyY/(double)mCanvasHeight;
+
+                // vOrientationBuff.add(xAbsolute);
+                // vOrientationBuff.add(yAbsolute);
 
                 // logIt("v: "+vOrientation+"  h: "+hOrientation);
-                mGameViewListener.onStep(vOrientation, hOrientation);
+                /** TODO **/
+                // mGameViewListener.onStep(xAbsolute, yAbsolute);
+                mGameViewListener.onStep(xAbsolute, yAbsolute, hOrientation, vOrientation);
 
-                mMyY -= vOrientationBuff.poll() * mUnit;
-                mMyX += vOrientationBuff.poll() * mUnit;
+                //mMyY -= vOrientationBuff.poll() * mUnit;
+                //mMyX += vOrientationBuff.poll() * mUnit;
 
                 /*if (vOrientationBuff.isEmpty()) {
                     vOrientationBuff.add(vOrientation);
@@ -186,8 +198,8 @@ public class GameView extends View {
             }
 
             // GameOver Condition
-            if (mMyX < 0 || mMyY < 0 || mMyX > mCanvasWidth-mUnit || mMyY > mCanvasHeight-mUnit) {
-                changeState(STATE_GAMEOVER);
+            if (mMyX < 0 || mMyY < 0 || mMyX > mCanvasWidth-(mUnit) || mMyY > mCanvasHeight-(mUnit)) {
+                changeState(STATE_GAMEOVER, false);
             }
         }
 
