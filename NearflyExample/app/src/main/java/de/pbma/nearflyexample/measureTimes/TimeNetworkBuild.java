@@ -28,6 +28,7 @@ import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
 
 /** component for checking the necessary build times of the network **/
+@Deprecated
 public class TimeNetworkBuild extends NearflyBindingActivity {
     /** If true, debug logs are shown on the device. */
     private static final boolean DEBUG = true;
@@ -49,13 +50,13 @@ public class TimeNetworkBuild extends NearflyBindingActivity {
     Date today = Calendar.getInstance().getTime();
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-hh.mm.ss");
     private File filePath = new File(Constants.fileDirectory, "network_build_"+formatter.format(today)+"_statistic.txt");
-    private FileWriter writer=null;
+    // private FileWriter writer=null;
     {
-        try {
+        /*try {
             writer = new FileWriter(filePath);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @Override
@@ -70,12 +71,12 @@ public class TimeNetworkBuild extends NearflyBindingActivity {
     boolean mRoot = false;
 
     private void logFile(String str){
-        try {
+        /*try {
             writer.append(str);
             writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void logView(String str){
@@ -160,7 +161,7 @@ public class TimeNetworkBuild extends NearflyBindingActivity {
         public void onMessage(String channel, String message) {
             logView("channel:"+channel+" message: "+message + "\n");
             if (message.equals("finished")){
-                disconenct(mDebugLogView); // Go to STANDBY MODE
+                disconnect(mDebugLogView); // Go to STANDBY MODE
                 reconnectAtRightTime();
             }
 
@@ -186,7 +187,7 @@ public class TimeNetworkBuild extends NearflyBindingActivity {
         nearflyService.subIt(NEARFLY_CHANNEL);
     }
 
-    public void disconenct(View view){
+    public void disconnect(View view){
         nearflyService.unsubIt(NEARFLY_CHANNEL);
         // logFile("disconnect()\n");
         nearflyService.disconnect();
@@ -221,12 +222,12 @@ public class TimeNetworkBuild extends NearflyBindingActivity {
 
     @Override
     protected void onDestroy() {
-        disconenct(mDebugLogView);
-        try {
+        disconnect(mDebugLogView);
+        /*try {
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         super.onDestroy();

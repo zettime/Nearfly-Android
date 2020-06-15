@@ -58,7 +58,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class NeConAdapter extends NeConEssentials implements NearflyClientTarget {
 
-    private static final long INITIAL_DISCOVERY_TIME = 1000;
+    private static final long INITIAL_DISCOVERY_TIME = 1;
     private static final long SECONDS_TO_CONNODE_ECO = 60;
     private static final int RANDRANGE_COLAVOID = 1;// AntiCollision Random max Range
     private static final String TAG = "NeConAdapter";
@@ -244,8 +244,9 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
     @Override
     protected void onEndpointDiscovered(Endpoint other) {
         // Sometimes Nodes are found multiple times
-        if (getConnectedEndpoints().contains(other))
+        if (getConnectedEndpoints().contains(other) || getState()==STATE_ROOT){
             return;
+        }
 
         /** TODO ------------------------------ **/
         // FIND OUT IF OTHER ROOT?
@@ -587,7 +588,8 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
     }
 
     public void unsubscribe(String channel) {
-        mSubscribedChannels.remove(channel);
+        if (mSubscribedChannels.contains(channel))
+            mSubscribedChannels.remove(channel);
     }
 
     /**

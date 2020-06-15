@@ -25,6 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.locks.ReentrantLock;
 
 import de.pbma.mqtt.MqttAdapter;
@@ -211,7 +212,8 @@ public class NearflyClient{
                     if (msg instanceof NearflyNice.NearflyTextMessage) {
                         NearflyNice.NearflyTextMessage textMsg = (NearflyNice.NearflyTextMessage)msg;
                         String channel = textMsg.getChannel();
-                        byte[] payload = textMsg.getPayload().getBytes();
+                        // byte[] payload = textMsg.getPayload().getBytes();
+                        byte[] payload = textMsg.getPayload();
 
                         if (payload.length<MAX_PUBIT_MESSAGE_SIZE){
                             switch (mConnectionMode) {
@@ -357,44 +359,63 @@ public class NearflyClient{
     };
 
 
-    private void ThisOnLogMessage(String output){
-        if (callbackExecutor==null)
+    private void ThisOnLogMessage(String output) {
+        if (callbackExecutor == null)
             return;
 
-        callbackExecutor.execute(() ->{
-            for (NearflyListener nearflyListener : listeners)
-                nearflyListener.onLogMessage(output);
-        });
+        try {
+            callbackExecutor.execute(() -> {
+                for (NearflyListener nearflyListener : listeners)
+                    nearflyListener.onLogMessage(output);
+            });
+        }
+        catch(RejectedExecutionException e){
+        }
     }
 
     private void ThisOnMessage(String topic, String message) {
         if (callbackExecutor==null)
             return;
 
-        callbackExecutor.execute(() -> {
-            for (NearflyListener nearflyListener : listeners)
-                nearflyListener.onMessage(topic, message);
-        });
+        try{
+            callbackExecutor.execute(() -> {
+                for (NearflyListener nearflyListener : listeners)
+                    nearflyListener.onMessage(topic, message);
+            });
+        }
+        catch( RejectedExecutionException e){
+            Log.e(TAG, "Message callback was not possible");
+        }
     }
 
     private void ThisOnFile(String channel, String path, String textAttachment) {
         if (callbackExecutor==null)
             return;
 
-        callbackExecutor.execute(() -> {
-            for (NearflyListener nearflyListener : listeners)
-                nearflyListener.onFile(channel, path, textAttachment);
-        });
+        try{
+            callbackExecutor.execute(() -> {
+                for (NearflyListener nearflyListener : listeners)
+                    nearflyListener.onFile(channel, path, textAttachment);
+            });
+        }
+        catch( RejectedExecutionException e){
+            Log.e(TAG, "Message callback was not possible");
+        }
     }
 
-    private void ThisOnBigBytes(String channel, byte[] bytes){
-        if (callbackExecutor==null)
+    private void ThisOnBigBytes(String channel, byte[] bytes) {
+        if (callbackExecutor == null)
             return;
 
-        callbackExecutor.execute(() -> {
-            for (NearflyListener nearflyListener : listeners)
-                nearflyListener.onBigBytes(channel, bytes);
-        });
+        try{
+            callbackExecutor.execute(() -> {
+                for (NearflyListener nearflyListener : listeners)
+                    nearflyListener.onBigBytes(channel, bytes);
+            });
+        }
+        catch( RejectedExecutionException e){
+            Log.e(TAG, "Message callback was not possible");
+        }
     }
 
     private static final String[] REQUIRED_PERMISSIONS = {
@@ -489,7 +510,7 @@ public class NearflyClient{
      * first) to 19 (Messages that should arrive last) can be assigned.
      *
      * @param channel the channel to be subscribed to
-     * @param message the message to be published
+     * @param message the message to be published (as String or bytes)
      * @param nice (optional) the priority of the message to be published. (default 0)
      * @param retain (optional) if this is true, the message is kept until it can be published.
      *                (default false)
@@ -497,12 +518,13 @@ public class NearflyClient{
      * @return {@code false} if publishing was aborted due to a nonexistent connection or
      *                          exceeding the maximum size
      **/
-    public boolean pubIt(String channel, String message,
+    public boolean pubIt(String channel, byte[] message,
                          @IntRange(from=-20, to=19) Integer nice, boolean retain) {
         if (!isConnected() && !retain)
             return false;
 
-        if (message.getBytes().length>MAX_PUBIT_MESSAGE_SIZE){
+
+        if (message.length>MAX_PUBIT_MESSAGE_SIZE){
             // Log.e(TAG, "the message to be sent is larger than the maximum allowed size");
             Log.e(TAG, "Your file is too large to run a normal publish, pubBigBytes() is used instead");
             // return false;
@@ -512,9 +534,14 @@ public class NearflyClient{
         return isConnected();
     }
 
+    public boolean pubIt(String channel, String message,
+                         @IntRange(from=-20, to=19) Integer nice, boolean retain) {
+        return pubIt(channel, message.getBytes(), nice, retain);
+    }
+
     /** @see #pubIt(String, String, Integer, boolean) **/
     public boolean pubIt(String channel, String message, Integer nice) {
-        return pubIt(channel, message, 0, false);
+        return pubIt(channel, message, nice, false);
     }
 
     /** @see #pubIt(String, String, Integer, boolean) **/

@@ -218,7 +218,8 @@ public class NearflyServiceOld extends Service {
                     if (msg instanceof NearflyNice.NearflyTextMessage) {
                         NearflyNice.NearflyTextMessage textMsg = (NearflyNice.NearflyTextMessage)msg;
                         byte[] channel = textMsg.getChannel().getBytes();
-                        byte[] payload = textMsg.getPayload().getBytes();
+                        // byte[] payload = textMsg.getPayload().getBytes();
+                        byte[] payload = textMsg.getPayload();
 
                         switch (mConnectionMode) {
                             case USE_NEARBY:
@@ -479,12 +480,14 @@ public class NearflyServiceOld extends Service {
         if (!isConnected() && !retain)
             return false;
 
+        byte[] byteMessage = message.getBytes();
+
         if (message.getBytes().length>MAX_PUBIT_MESSAGE_SIZE){
             Log.e(TAG, "the message to be sent is larger than the maximum allowed size");
             return false;
         }
 
-        nearflyQueue.add(nearflyNice.new NearflyTextMessage(channel, message, nice));
+        nearflyQueue.add(nearflyNice.new NearflyTextMessage(channel, byteMessage, nice));
         return isConnected();
     }
 

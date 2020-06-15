@@ -23,10 +23,10 @@ class NearflyNice {
 
     public class NearflyTextMessage extends NearflyMessage{
         private String channel;
-        private String payload;
+        private byte[] payload;
         private Integer nice;
 
-		public NearflyTextMessage(String channel, String payload, Integer nice) {
+		public NearflyTextMessage(String channel, byte[] payload, Integer nice) {
             this.channel = channel;
             this.payload = payload;
             this.nice = nice;
@@ -40,7 +40,7 @@ class NearflyNice {
             return channel;
         }
 
-        public String getPayload() {
+        public byte[] getPayload() {
             return payload;
         }
 

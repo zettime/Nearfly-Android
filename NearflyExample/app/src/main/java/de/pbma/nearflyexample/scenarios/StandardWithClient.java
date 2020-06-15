@@ -79,7 +79,7 @@ public class StandardWithClient extends AppCompatActivity {
     public void publish(View view){
          // mNearflyClient.pubBigBytes(String.valueOf(++cnt).getBytes());
         // mNearflyClient.pubBigBytes(getRandomData(1_000_000).getBytes());
-        mNearflyClient.pubIt(NEARFLY_CHANNEL, String.valueOf(++cnt) );
+        mNearflyClient.pubIt(NEARFLY_CHANNEL, String.valueOf(++cnt).getBytes(), 0, false);
         // OR
         // mNearflyClient.pubIt(NEARFLY_CHANNEL, String.valueOf(++cnt), 0, false );
     }

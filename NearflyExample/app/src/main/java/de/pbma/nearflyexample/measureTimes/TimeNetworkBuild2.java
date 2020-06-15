@@ -38,22 +38,16 @@ public class TimeNetworkBuild2 extends NearflyBindingActivity {
     /** A running log of debug messages. Only visible when DEBUG=true. */
     private TextView mDebugLogView;
     private Integer cnt = 0;
-    private final int DESIRED_NOTES = 2;
-    private final int INTERVAL = 2;
+    private final int DESIRED_NOTES = 5;
+    private final int INTERVAL = 2; // in Minutes
     private final AtomicBoolean done = new AtomicBoolean(false);
 
     private final String NEARFLY_CHANNEL = "measureTest/a";
     Date today = Calendar.getInstance().getTime();
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-hh.mm.ss");
-    private File filePath = new File(Constants.fileDirectory, "network_build_"+formatter.format(today)+"_statistic.txt");
-    private FileWriter writer=null;
-    {
-        try {
-            writer = new FileWriter(filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    Logger mLogger = new Logger(DESIRED_NOTES+"Nearby Network build");
+    private boolean mDisconnectTimerStarted = false;
+    private boolean mFinished = false;
 
     @Override
     public void onNearflyServiceBound() {
@@ -65,15 +59,6 @@ public class TimeNetworkBuild2 extends NearflyBindingActivity {
     }
 
     boolean mRoot = false;
-
-    private void logFile(String str){
-        try {
-            writer.append(str);
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void logView(String str){
         runOnUiThread(() -> {
@@ -87,30 +72,53 @@ public class TimeNetworkBuild2 extends NearflyBindingActivity {
         public void onLogMessage(String output) {
             if (output.equals("State set to ROOT"))
                 mRoot = true;
+            if (output.equals("State set to NODE"))
+                mRoot = false;
+
+            if (mRoot==false){
+                logView(output+"\n");
+                return;
+            }
 
             if (output.matches("connectedToEndpoint.*")) {
                 if (!strArray.contains(output)){
                     strArray.add(output);
                     mNodeNo++;
-                    logFile((System.currentTimeMillis()- mConnectStartTime.get())+ ",");
+                    mLogger.log((System.currentTimeMillis()- mConnectStartTime.get())+ ";");
+                }
+
+                if (mFinished){
+                    nearflyService.pubIt(NEARFLY_CHANNEL, "finished");
                 }
                 // mNodeNo++;
-                logFile((System.currentTimeMillis()- mConnectStartTime.get())+ ",");
+                mLogger.log((System.currentTimeMillis()- mConnectStartTime.get())+ ";");
                 logView("--> Node " + mNodeNo + "connected in "+
                         (System.currentTimeMillis()- mConnectStartTime.get())+ "ms\n");
             }
             /*if (output.matches("disconnectedFromEndpoint.*"))
                 mNodeNo--;*/
-            if (mRoot==true && mNodeNo>=DESIRED_NOTES){
-                nearflyService.pubIt(NEARFLY_CHANNEL, "finished");
-                nearflyService.pubIt(NEARFLY_CHANNEL, "finished");
-                nearflyService.pubIt(NEARFLY_CHANNEL, "finished");
-                nearflyService.pubIt(NEARFLY_CHANNEL, "finished");
-                mNodeNo=0;
-                strArray.clear();
-                reconnectAtRightTime();
-                logFile("\n");
-            }
+            if (mRoot==true && mNodeNo>=DESIRED_NOTES && mDisconnectTimerStarted==false) {
+                new Thread(() -> {
+                    mDisconnectTimerStarted = true;
+                    try {
+                        Thread.sleep(4000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                if (mRoot==true && mNodeNo>=DESIRED_NOTES) {
+                    mFinished = true;
+                    nearflyService.pubIt(NEARFLY_CHANNEL, "finished");
+                    nearflyService.pubIt(NEARFLY_CHANNEL, "finished");
+                    nearflyService.pubIt(NEARFLY_CHANNEL, "finished");
+                    nearflyService.pubIt(NEARFLY_CHANNEL, "finished");
+                    mNodeNo = 0;
+                    strArray.clear();
+                    reconnectAtRightTime();
+                    mLogger.log("\n");
+                }
+                mDisconnectTimerStarted=false;
+                }).start();
+                }
 
 
         }
@@ -130,6 +138,7 @@ public class TimeNetworkBuild2 extends NearflyBindingActivity {
                             logView("time to connect...");
                             connect(mDebugLogView);
                             mConnectStartTime.set(System.currentTimeMillis());
+                            mFinished=false;
                             break aa;
                         }
                     }
@@ -141,7 +150,7 @@ public class TimeNetworkBuild2 extends NearflyBindingActivity {
         public void onMessage(String channel, String message) {
             logView("channel:"+channel+" message: "+message + "\n");
             if (message.equals("finished")){
-                disconenct(mDebugLogView); // Go to STANDBY MODE
+                disconnect(mDebugLogView); // Go to STANDBY MODE
                 reconnectAtRightTime();
             }
 
@@ -167,9 +176,9 @@ public class TimeNetworkBuild2 extends NearflyBindingActivity {
         nearflyService.subIt(NEARFLY_CHANNEL);
     }
 
-    public void disconenct(View view){
+    public void disconnect(View view){
         nearflyService.unsubIt(NEARFLY_CHANNEL);
-        // logFile("disconnect()\n");
+        // mLogger.log("disconnect()\n");
         nearflyService.disconnect();
         nearflyService.removeSubCallback(nearflyListener);
     }
@@ -193,7 +202,11 @@ public class TimeNetworkBuild2 extends NearflyBindingActivity {
         mDebugLogView = findViewById(R.id.debug_log);
         // mDebugLogView.setVisibility(DEBUG ? View.VISIBLE : View.GONE);
         mDebugLogView.setMovementMethod(new ScrollingMovementMethod());
-        logFile("NODE1, NODE2, NODE3\n");
+        String str = "";
+        for (int i=0; i<DESIRED_NOTES; i++){
+            str+="NODE"+i+"; ";
+        }
+        mLogger.log(str+"\n");
 
         /*tvCurrentState = findViewById(R.id.tv_current_state);
         tvRootNode = findViewById(R.id.tv_root_node);*/
@@ -202,12 +215,8 @@ public class TimeNetworkBuild2 extends NearflyBindingActivity {
 
     @Override
     protected void onDestroy() {
-        disconenct(mDebugLogView);
-        try {
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        disconnect(mDebugLogView);
+        mLogger.close();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         super.onDestroy();

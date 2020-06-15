@@ -41,17 +41,9 @@ public class TimeNodeConnect extends NearflyBindingActivity {
     private Integer cnt = 0;
 
     private final String NEARFLY_CHANNEL = "measureTest/a";
-    Date today = Calendar.getInstance().getTime();
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-hh.mm.ss");
-    private File filePath = new File(Constants.fileDirectory, formatter.format(today)+"_statistic.txt");
-    private FileWriter writer=null;
-    {
-        try {
-            writer = new FileWriter(filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    // private File filePath = new File(Constants.fileDirectory, formatter.format(today)+"_statistic.txt");
+    Logger mLogger = new Logger("NearbyTimeNodeConnect");
+    // private FileWriter writer=null;
 
     @Override
     public void onNearflyServiceBound() {
@@ -63,15 +55,6 @@ public class TimeNodeConnect extends NearflyBindingActivity {
     }
 
     boolean mNode = false;
-
-    private void logFile(String str){
-        try {
-            writer.append(str);
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void logView(String str){
         runOnUiThread(() -> {
@@ -90,7 +73,7 @@ public class TimeNodeConnect extends NearflyBindingActivity {
                     case NearflyService.State.CONNECTED:
                         logView("---------> Needed time for Connection: "+
                                         (System.currentTimeMillis()- mConnectStartTime.get())+ "ms\n");
-                        logFile((System.currentTimeMillis()- mConnectStartTime.get())+ "\n");
+                        mLogger.log((System.currentTimeMillis()- mConnectStartTime.get())+ "\n");
                         if (mNode==true){
                             if (mThRunning.get())
                                 return;
@@ -122,20 +105,20 @@ public class TimeNodeConnect extends NearflyBindingActivity {
                         mNode = true;
                         logView("-----------> Nedded time for NODE State: "+
                                 (System.currentTimeMillis()- mConnectStartTime.get())+ "ms\n");
-                        logFile((System.currentTimeMillis()- mConnectStartTime.get())+ ";");
+                        mLogger.log((System.currentTimeMillis()- mConnectStartTime.get())+ ";");
                         break;
                 }
 
             if (output.matches("attemptsInBackoff:.*")){
                 logView("----------> Nedded time for attemptsInBackoff: "+
                         (System.currentTimeMillis()- mConnectStartTime.get())+ "ms\n");
-                logFile("----------> Nedded time for attemptsInBackoff: "+
+                mLogger.log("----------> Nedded time for attemptsInBackoff: "+
                         (System.currentTimeMillis()- mConnectStartTime.get())+ "ms\n");
             }
 
             if (output.matches("time .*")){
                 logView(output+"\n");
-                logFile(output.split(":")[1].replace(" ","")+";");
+                mLogger.log(output.split(":")[1].replace(" ","")+";");
             }
         }
 
@@ -159,13 +142,13 @@ public class TimeNodeConnect extends NearflyBindingActivity {
         nearflyService.addSubCallback(nearflyListener);
         mConnectStartTime.set(System.currentTimeMillis());
         nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
-        // logFile("connecting()\n");
+        // mLogger.log("connecting()\n");
         nearflyService.subIt(NEARFLY_CHANNEL);
     }
 
     public void disconenct(View view){
         nearflyService.unsubIt(NEARFLY_CHANNEL);
-        // logFile("disconnect()\n");
+        // mLogger.log("disconnect()\n");
         nearflyService.disconnect();
         nearflyService.removeSubCallback(nearflyListener);
     }
@@ -191,7 +174,7 @@ public class TimeNodeConnect extends NearflyBindingActivity {
         mDebugLogView = findViewById(R.id.debug_log);
         // mDebugLogView.setVisibility(DEBUG ? View.VISIBLE : View.GONE);
         mDebugLogView.setMovementMethod(new ScrollingMovementMethod());
-        logFile("NODE, COLAVOID, CONNODE\n");
+        mLogger.log("NODE, COLAVOID, CONNODE\n");
 
 
         /*tvCurrentState = findViewById(R.id.tv_current_state);
@@ -203,11 +186,7 @@ public class TimeNodeConnect extends NearflyBindingActivity {
     @Override
     protected void onDestroy() {
         disconenct(mDebugLogView);
-        try {
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        mLogger.close();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         super.onDestroy();
@@ -216,6 +195,6 @@ public class TimeNodeConnect extends NearflyBindingActivity {
     public void logIt(String str){
         // TODO
         super.logIt(str);
-        logFile(str + "\n");
+        mLogger.log(str + "\n");
     }
 }

@@ -26,7 +26,7 @@
         >
 
         <activity
-            android:name=".scenarios.Standard"
+            android:name=".scenarios.StandardWithClient"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
