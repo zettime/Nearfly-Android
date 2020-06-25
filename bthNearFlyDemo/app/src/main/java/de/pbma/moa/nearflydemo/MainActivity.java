@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onMessage(String channel, String message) {
             Log.v(TAG, "onMessage: channel=" + channel + ", message=" + message);
-            tvMessage.setText(channel + ": " + message);
+            runOnUiThread(() -> tvMessage.setText(channel + ": " + message));
         }
     };
 

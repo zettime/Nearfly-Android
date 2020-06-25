@@ -1,6 +1,7 @@
 package de.pbma.moa.nearflydemo;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -23,21 +24,21 @@ public class LocalService extends Service {
 
     public static final String CHANNEL_DEFAULT = "test/a";
     private static int[] connectionModes = {
-            // ToDo: warum gibt es das nochmal im NearflyService?
+            // ToDo: warum gibt es das nochmal im NearflyService? ✓
             NearflyClient.USE_NEARBY,
             NearflyClient.USE_MQTT
     };
     private static Map<Integer, String> connectionModesMap;
     static {
         connectionModesMap = new TreeMap<>();
-        connectionModesMap.put(NearflyService.USE_NEARBY, "Nearby");
-        connectionModesMap.put(NearflyService.USE_MQTT, "MQTT");
+        connectionModesMap.put(NearflyClient.USE_NEARBY, "Nearby");
+        connectionModesMap.put(NearflyClient.USE_MQTT, "MQTT");
     }
 
     public static final String CMD_START = "start";
     public static final String CMD_STOP = "stop";
 
-    private int connectionMode = NearflyService.USE_NEARBY;
+    private int connectionMode = NearflyClient.USE_NEARBY;
     private boolean permissionsAsked = false;
     private NearflyClient nearflyClient;
 
@@ -146,23 +147,25 @@ public class LocalService extends Service {
         return START_STICKY;
     }
 
-    // TODO: Ich will mir das natürlich merken und dann selbst setzen
-    // TODO: und nicht eine Konstante tippen müssen
+    // TODO: Ich will mir das natürlich merken und dann selbst setzen ✓
+    // TODO: und nicht eine Konstante tippen müssen ✓
     @SuppressLint("WrongConstant")
-    // TODO: Wieso die AppCompatActivity? Echt? Keine Context?
-    public void connect(AppCompatActivity app) {
+    // TODO: Wieso die AppCompatActivity? Echt? Keine Context? ✓
+    public void connect(Activity app) {
         Log.v(TAG, "connect: app=" + app.getLocalClassName() + "nearflyClient=" + nearflyClient);
         if (nearflyClient == null) {
             nearflyClient = new NearflyClient(getApplicationContext());
             nearflyClient.addSubCallback(nearflyListener);
         }
-        if (!permissionsAsked) {
+        // if (!permissionsAsked) {
+        if (!NearflyClient.hasPermissions(this, false)) {
             Log.v(TAG, "do ask for permission");
-            // TODO: How to ask for permission if i do not have the nearflyClient yet?
-            nearflyClient.askForPermissions(app, false);
-            permissionsAsked = true;
+            // TODO: How to ask for permission if i do not have the nearflyClient yet? ✓
+            NearflyClient.askForPermissions(app, false);
+            // permissionsAsked = true;
         }
         nearflyClient.connect(CHANNEL_DEFAULT, connectionMode);
+        nearflyClient.subIt(CHANNEL_DEFAULT);
     }
 
     public void publish(String channel, String message) {

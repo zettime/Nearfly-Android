@@ -1,5 +1,6 @@
 package de.pbma.nearfly;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -90,14 +91,6 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * @edited 01.05.2020
  * */
 public class NearflyService extends Service {
-    /* This are the both Modes that can be used for Nearfly */
-    @Retention(SOURCE)
-    @IntDef({USE_MQTT, USE_NEARBY})
-    public @interface ConnectionMode {
-    }
-    public final static int USE_NEARBY = NearflyClient.USE_NEARBY;
-    public final static int USE_MQTT = NearflyClient.USE_MQTT;
-
     private String TAG = "NearflyServices";
 
     public final static String ACTION_START = "start";
@@ -130,8 +123,8 @@ public class NearflyService extends Service {
     }
 
     /**
-     * Returns {@code true} if either in {@link ConnectionMode} {@link #USE_MQTT}, there is
-     * a connection to the mqtt server or in {@link ConnectionMode} {@link #USE_NEARBY} the
+     * Returns {@code true} if either in {@link NearflyClient.ConnectionMode} {@link NearflyClient#USE_MQTT}, there is
+     * a connection to the mqtt server or in {@link NearflyClient.ConnectionMode} {@link NearflyClient#USE_NEARBY} the
      * device is connected to at least one other node.
      *
      * @return {@code true} the underlying technology has a connection
@@ -144,19 +137,6 @@ public class NearflyService extends Service {
         mNearflyClient.setConnected(connected);
     }
 
-    /** Asks for the permission, which are needed by the NearflyService.
-     * @param app also asks for permissions READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE,
-     *           which are required to execute the pubfile method
-     * @return {@Code true} if the permissions to be granted have already been granted.
-     */
-    public boolean askForPermissions(AppCompatActivity app, boolean filePermission){
-        return mNearflyClient.askForPermissions(app, filePermission);
-    }
-
-    public boolean hasPermissions(Context context, String... permissions) {
-        return hasPermissions(context, permissions);
-    }
-
     /**
      * Subscribes to the given channel so that the {@link NearflyListener} will be dissolved
      * if a publish is made to the specified channel in the future.
@@ -166,7 +146,6 @@ public class NearflyService extends Service {
     public void subIt(String channel) {
         mNearflyClient.subIt(channel);
     }
-
 
     /**
      * Subscribes to the given channel so that the {@link NearflyListener} will be dissolved
@@ -248,9 +227,9 @@ public class NearflyService extends Service {
     }*/
 
     /**
-     * Initializes the connection to the technology currently in use. If {@link ConnectionMode}
-     * {@link #USE_MQTT} is used, an attempt is made to establish a connection to the MQTT broker.
-     * If {@link #USE_NEARBY} is used as {@link ConnectionMode} the automatic construction process
+     * Initializes the connection to the technology currently in use. If {@link NearflyClient.ConnectionMode}
+     * {@link NearflyClient#USE_MQTT} is used, an attempt is made to establish a connection to the MQTT broker.
+     * If {@link NearflyClient#USE_NEARBY} is used as {@link NearflyClient.ConnectionMode} the automatic construction process
      * of a peer-to-peer network is initiated or a network that uses the same room string is
      * joined.
      * <p></p>
@@ -269,7 +248,7 @@ public class NearflyService extends Service {
             "The roomstring should currently be left at 19moa18, since the hs-ma broker limits" +
                     "topics based on the student account and may not let other top-level topics" +
                     "through. limited and they will not be")
-    public void connect(String room, @ConnectionMode int connectionMode) {
+    public void connect(String room, @NearflyClient.ConnectionMode int connectionMode) {
         mNearflyClient.connect(room, connectionMode);
     }
 
@@ -281,8 +260,8 @@ public class NearflyService extends Service {
     }
 
     /**
-     * Disconnects the connection to the MQTT broker when in {@link ConnectionMode}
-     * {@link #USE_MQTT}. in {@link ConnectionMode} {@link #USE_NEARBY}, the connection to
+     * Disconnects the connection to the MQTT broker when in {@link NearflyClient.ConnectionMode}
+     * {@link NearflyClient#USE_MQTT}. in {@link NearflyClient.ConnectionMode} {@link NearflyClient#USE_NEARBY}, the connection to
      * all connected endpoints is disconnected.
      **/
     public void disconnect() {
@@ -396,13 +375,13 @@ public class NearflyService extends Service {
         return mNearflyClient.isModeSwitching();
     }
 
-    @ConnectionMode
+    @NearflyClient.ConnectionMode
     public int getConnectionMode(){
         return mNearflyClient.getConnectionMode();
     }
 
     /**
-     * Allows changing the {@link ConnectionMode} without reconnecting to the
+     * Allows changing the {@link NearflyClient.ConnectionMode} without reconnecting to the
      * {@Code NearflyService}.
      * The current used underlying technology is only disconnected, when the
      * {link #destConnectionMode} technology has been successfully connected. Is there an error,
@@ -414,11 +393,11 @@ public class NearflyService extends Service {
      * is complete when a network with 2 nodes has been set up. Messages that are published
      * during the switch will therefore not reach everyone.
      *
-     * @param destConnectionMode {@link ConnectionMode} to which to switch
+     * @param destConnectionMode {@link NearflyClient.ConnectionMode} to which to switch
      *
-     * @return false if {@Code NearflyService} is already in the desired {@link ConnectionMode}
+     * @return false if {@Code NearflyService} is already in the desired {@link NearflyClient.ConnectionMode}
      **/
-    public boolean switchConnectionMode(@ConnectionMode int destConnectionMode) {
+    public boolean switchConnectionMode(@NearflyClient.ConnectionMode int destConnectionMode) {
         return mNearflyClient.switchConnectionMode(destConnectionMode);
     }
 }

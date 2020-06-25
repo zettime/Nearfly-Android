@@ -2,6 +2,7 @@ package de.pbma.nearfly;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,7 +14,9 @@ import android.util.Log;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.nearby.connection.Payload;
@@ -106,7 +109,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * @author Alexis Danilo Morgado dos Santos
  * @edited 01.05.2020
  * */
-public class NearflyClient{
+public class NearflyClient extends AppCompatActivity{
     /** Maximal payload size for the  {@link #pubIt(String, String, Integer, boolean)}
      * command(in KBytes)**/
     private static final int MAX_PUBIT_MESSAGE_SIZE = 30_000;
@@ -437,21 +440,34 @@ public class NearflyClient{
 
     private static final int REQUEST_CODE_REQUIRED_PERMISSIONS = 18504;
 
-    /** Asks for the permission, which are needed by the NearflyService.
-     * @param app also asks for permissions READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE,
-     *           which are required to execute the pubfile method
-     * @return {@Code true} if the permissions to be granted have already been granted.
+    /**
+     * Asks for the permission, which are needed by the NearflyService.
+     * @param activity activity, which should query the authorizations
+     @param filePermission additionally  asks for permissions READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE,
+      *           which are required to execute the pubFile-method
      */
-    public boolean askForPermissions(AppCompatActivity app, boolean filePermission){
-        if (hasPermissions(app, REQUIRED_PERMISSIONS))
-            return true;
-
-        app.requestPermissions(filePermission?FULL_PERMISSIONS:REQUIRED_PERMISSIONS,
+    public static void askForPermissions(Activity activity, boolean filePermission){
+        ActivityCompat.requestPermissions(activity,filePermission?FULL_PERMISSIONS:REQUIRED_PERMISSIONS,
                 REQUEST_CODE_REQUIRED_PERMISSIONS);
-        return false;
     }
 
-    private boolean hasPermissions(Context context, String... permissions) {
+    /**
+     * Checks whether the authorizations required for the nearfly client have been granted
+     * @param filePermission additionally checks whether the permissions READ_EXTERNAL_STORAGE
+     *                       and WRITE_EXTERNAL_STORAGE which are required to execute the
+     *                       pubFile-method have been granted
+     * @return {@Code true} if the required permissions have already been granted.
+     */
+    public static boolean hasPermissions(Context context, boolean filePermission){
+        boolean hasStoragePermissionsIfNeeded = filePermission?
+                (NearflyClient.hasPermissionsStr(context, STORAGE_PERMISSIONS)):true;
+
+        return (NearflyClient.hasPermissionsStr(context, REQUIRED_PERMISSIONS)
+                && hasStoragePermissionsIfNeeded);
+    }
+
+
+    private static boolean hasPermissionsStr(@NonNull Context context, String... permissions) {
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(context, permission)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -520,9 +536,11 @@ public class NearflyClient{
      **/
     public boolean pubIt(String channel, byte[] message,
                          @IntRange(from=-20, to=19) Integer nice, boolean retain) {
+        if (subscribedChannels.isEmpty())
+            Log.e(TAG, "You are trying to publish a message without having a subscribed channel");
+
         if (!isConnected() && !retain)
             return false;
-
 
         if (message.length>MAX_PUBIT_MESSAGE_SIZE){
             // Log.e(TAG, "the message to be sent is larger than the maximum allowed size");
@@ -639,7 +657,7 @@ public class NearflyClient{
         }
         callbackExecutor = Executors.newSingleThreadExecutor();
 
-        if (!hasPermissions(mContext, REQUIRED_PERMISSIONS)){
+        if (!NearflyClient.hasPermissions(mContext, false)) {
             Log.e(TAG, "the application does not have the required permissions.");
             return;
         }
