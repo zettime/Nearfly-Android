@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import de.pbma.nearfly.NearflyBindingActivity;
+import de.pbma.nearfly.NearflyClient;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
@@ -45,7 +46,7 @@ public class TimePubIt extends NearflyBindingActivity {
     private Button mBtnStopSending;
     private ArrayList<Long> nearbyBuff = new ArrayList<>();
     private ArrayList<Long> mqttBuff = new ArrayList<>();
-    private int useTech = NearflyService.USE_MQTT;
+    private int useTech = NearflyClient.USE_MQTT;
     private Logger mLogger;
     private int mWantedMsg = 2;
     private int mRealMsg = 2;
@@ -82,7 +83,7 @@ public class TimePubIt extends NearflyBindingActivity {
 
         // Beginn with logging
         mLogger = new Logger((
-                ((useTech==NearflyService.USE_NEARBY)?"nearby":"mqtt"))+"_bytes_"+DATA_SIZE);
+                ((useTech==NearflyClient.USE_NEARBY)?"nearby":"mqtt"))+"_bytes_"+DATA_SIZE);
         mLogger.log(DATA_SIZE+"Byte\n");
 
         //for (int i=0; i<mWantedMsg; i++)

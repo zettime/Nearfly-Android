@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import de.pbma.nearfly.NearflyBindingActivity;
+import de.pbma.nearfly.NearflyClient;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 
@@ -18,7 +19,7 @@ public class NearflySampleActivity extends NearflyBindingActivity {
     public void onNearflyServiceBound() {
         if (!neaflyServiceConnectCalled) {
             nearflyService.addSubCallback(nearflyListener);
-            nearflyService.connect("ThisIsMyUniqueRoomString", NearflyService.USE_NEARBY);
+            nearflyService.connect("ThisIsMyUniqueRoomString", NearflyClient.USE_NEARBY);
             nearflyService.subIt(NEARFLY_CHANNEL);
             neaflyServiceConnectCalled = true;
         }

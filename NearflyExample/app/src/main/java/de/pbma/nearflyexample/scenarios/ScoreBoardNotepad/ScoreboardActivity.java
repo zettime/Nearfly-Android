@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 
+import de.pbma.nearfly.NearflyClient;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
@@ -78,7 +79,7 @@ public class ScoreboardActivity extends NearflyBindingActivity {
         if (!neaflyServiceConnectCalled) {
             nearflyService.askForPermissions(this, true);
             nearflyService.addSubCallback(nearflyListener);
-            nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
+            nearflyService.connect("19moa18", NearflyClient.USE_NEARBY);
 
             for (String str : USED_CHANNELS)
                 nearflyService.subIt(DEFAULT_CHANNEL + str);

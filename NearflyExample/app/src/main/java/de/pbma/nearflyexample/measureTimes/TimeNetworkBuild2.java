@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import de.pbma.nearfly.Constants;
 import de.pbma.nearfly.NearflyBindingActivity;
+import de.pbma.nearfly.NearflyClient;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
@@ -172,7 +173,7 @@ public class TimeNetworkBuild2 extends NearflyBindingActivity {
         nearflyService.addSubCallback(nearflyListener);
         final long excepted = System.currentTimeMillis();
         mConnectStartTime.set(excepted); // Reset time
-        nearflyService.connect("19moa18", NearflyService.USE_NEARBY);
+        nearflyService.connect("19moa18", NearflyClient.USE_NEARBY);
         nearflyService.subIt(NEARFLY_CHANNEL);
     }
 
@@ -188,10 +189,10 @@ public class TimeNetworkBuild2 extends NearflyBindingActivity {
     }
 
     public void toggleConnectionMode(View view){
-        if (nearflyService.getConnectionMode()==nearflyService.USE_MQTT)
-            nearflyService.switchConnectionMode(NearflyService.USE_NEARBY);
+        if (nearflyService.getConnectionMode()==NearflyClient.USE_MQTT)
+            nearflyService.switchConnectionMode(NearflyClient.USE_NEARBY);
         else
-            nearflyService.switchConnectionMode(NearflyService.USE_MQTT);
+            nearflyService.switchConnectionMode(NearflyClient.USE_MQTT);
     }
 
     @Override

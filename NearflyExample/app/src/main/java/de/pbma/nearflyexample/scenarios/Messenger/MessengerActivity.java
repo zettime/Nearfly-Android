@@ -44,6 +44,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import de.pbma.nearfly.NearflyClient;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
@@ -94,10 +95,10 @@ public class MessengerActivity extends NearflyBindingActivity {
 
     private boolean neaflyServiceConnectCalled = false;
     private SharedPreferences mSharedPreferences;
-    private int useTech = NearflyService.USE_NEARBY;
+    private int useTech = NearflyClient.USE_NEARBY;
 
     private Logger mLogger = new Logger((
-            ((useTech==NearflyService.USE_NEARBY)?"nearby":"mqtt"))+"_pubFile_");
+            ((useTech==NearflyClient.USE_NEARBY)?"nearby":"mqtt"))+"_pubFile_");
 
     @Override
     public void onNearflyServiceBound() {
