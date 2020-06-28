@@ -77,7 +77,7 @@ public class ScoreboardActivity extends NearflyBindingActivity {
     @Override
     public void onNearflyServiceBound() {
         if (!neaflyServiceConnectCalled) {
-            nearflyService.askForPermissions(this, true);
+            NearflyClient.askForPermissions(this, true);
             nearflyService.addSubCallback(nearflyListener);
             nearflyService.connect("19moa18", NearflyClient.USE_NEARBY);
 

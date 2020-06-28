@@ -105,7 +105,7 @@ public class MessengerActivity extends NearflyBindingActivity {
         /** TODO: WARNING ONSERVICECONNECT IS CALLED MULTIPLE TIMES,
          *  TODO: THIS LEADS TO PERMANENT RECONNECTIONS**/
         if (!neaflyServiceConnectCalled) {
-            nearflyService.askForPermissions(this, true);
+            NearflyClient.askForPermissions(this, true);
             nearflyService.addSubCallback(nearflyListener);
             nearflyService.connect("19moa18", useTech);
             nearflyService.subIt(mRoomChannel);

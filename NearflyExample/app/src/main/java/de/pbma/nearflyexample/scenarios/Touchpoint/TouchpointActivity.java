@@ -45,7 +45,7 @@ public class TouchpointActivity extends NearflyBindingActivity {
     @Override
     public void onNearflyServiceBound() {
         if (!neaflyServiceConnectCalled) {
-            nearflyService.askForPermissions(this, false);
+            NearflyClient.askForPermissions(this, false);
             nearflyService.addSubCallback(nearflyListener);
             nearflyService.connect("19moa18", NearflyClient.USE_MQTT);
             nearflyService.subIt(NEARFLY_CHANNEL);

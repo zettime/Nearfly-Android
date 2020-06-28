@@ -180,7 +180,7 @@ public class TimeNetworkBuild extends NearflyBindingActivity {
     };
 
     public void connect(View view){
-        nearflyService.askForPermissions(this, true);
+        NearflyClient.askForPermissions(this, true);
         nearflyService.addSubCallback(nearflyListener);
         final long excepted = System.currentTimeMillis();
         mConnectStartTime.set(excepted); // Reset time
