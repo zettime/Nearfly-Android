@@ -33,6 +33,7 @@ import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 import de.pbma.nearfly.NearflyBindingActivity;
+import de.pbma.nearfly.NearflyClient;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
@@ -47,9 +48,9 @@ public class TimeFreePubTest extends NearflyBindingActivity{
     private final int MEDIA_REQUEST_CODE=15255;
     public final String TAG = "freePubTest";
 
-    private int useTech = NearflyService.USE_NEARBY;
+    private int useTech = NearflyClient.USE_NEARBY;
     private Logger mLogger = new Logger((
-            ((useTech==NearflyService.USE_NEARBY)?"nearby":"mqtt"))+"_free_pubtest_");
+            ((useTech==NearflyClient.USE_NEARBY)?"nearby":"mqtt"))+"_free_pubtest_");
 
     @Override
     public void onNearflyServiceBound() {
@@ -117,10 +118,10 @@ public class TimeFreePubTest extends NearflyBindingActivity{
     }
 
     public void toggleConnectionMode(View view){
-        if (nearflyService.getConnectionMode()==nearflyService.USE_MQTT)
-            nearflyService.switchConnectionMode(NearflyService.USE_NEARBY);
+        if (nearflyService.getConnectionMode()==NearflyClient.USE_MQTT)
+            nearflyService.switchConnectionMode(NearflyClient.USE_NEARBY);
         else
-            nearflyService.switchConnectionMode(NearflyService.USE_MQTT);
+            nearflyService.switchConnectionMode(NearflyClient.USE_MQTT);
     }
 
     NearflyListener nearflyListener = new NearflyListener() {

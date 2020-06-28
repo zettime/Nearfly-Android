@@ -14,6 +14,7 @@ import java.util.Date;
 
 import de.pbma.nearfly.Constants;
 import de.pbma.nearfly.NearflyBindingActivity;
+import de.pbma.nearfly.NearflyClient;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 
@@ -40,7 +41,7 @@ public class MQTTConnection extends NearflyBindingActivity {
         if (!neaflyServiceConnectCalled) {
             nearflyService.addSubCallback(nearflyListener);
             mStartTime = System.currentTimeMillis();
-            nearflyService.connect("19moa18", NearflyService.USE_MQTT);
+            nearflyService.connect("19moa18", NearflyClient.USE_MQTT);
             nearflyService.subIt(NEARFLY_CHANNEL);
             neaflyServiceConnectCalled = true;
         }

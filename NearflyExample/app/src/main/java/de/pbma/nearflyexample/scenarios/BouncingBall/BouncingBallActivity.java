@@ -23,6 +23,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicReference;
 
 import de.pbma.nearfly.NearflyBindingActivity;
+import de.pbma.nearfly.NearflyClient;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
@@ -101,9 +102,9 @@ public class BouncingBallActivity extends NearflyBindingActivity {
     @Override
     public void onNearflyServiceBound() {
         if (!neaflyServiceConnectCalled) {
-            nearflyService.askForPermissions(this, false);
+            NearflyClient.askForPermissions(this, false);
             nearflyService.addSubCallback(nearflyListener);
-            nearflyService.connect("19moa18", NearflyService.USE_MQTT);
+            nearflyService.connect("19moa18", NearflyClient.USE_MQTT);
             for (String subChannel : SUBCHANNELS)
                 nearflyService.subIt(NEARFLY_CHANNEL+subChannel);
             neaflyServiceConnectCalled = true;
@@ -115,10 +116,10 @@ public class BouncingBallActivity extends NearflyBindingActivity {
     }
 
     public void toggleConnectionMode(View view){
-        if (nearflyService.getConnectionMode()==nearflyService.USE_MQTT)
-            nearflyService.switchConnectionMode(NearflyService.USE_NEARBY);
+        if (nearflyService.getConnectionMode()==NearflyClient.USE_MQTT)
+            nearflyService.switchConnectionMode(NearflyClient.USE_NEARBY);
         else
-            nearflyService.switchConnectionMode(NearflyService.USE_MQTT);
+            nearflyService.switchConnectionMode(NearflyClient.USE_MQTT);
     }
 
     NearflyListener nearflyListener = new NearflyListener() {
@@ -126,7 +127,7 @@ public class BouncingBallActivity extends NearflyBindingActivity {
         public void onLogMessage(String output) {
             switch (output){
                 case NearflyService.State.CONNECTED:
-                    int color = (nearflyService.getConnectionMode()==nearflyService.USE_MQTT)? R.color.state_connected: R.color.colorAccent;
+                    int color = (nearflyService.getConnectionMode()==NearflyClient.USE_MQTT)? R.color.state_connected: R.color.colorAccent;
                     runOnUiThread(() ->
                             mBtnToggleConMode.setBackgroundColor(ResourcesCompat.getColor(
                                     getResources(), color, null)));
