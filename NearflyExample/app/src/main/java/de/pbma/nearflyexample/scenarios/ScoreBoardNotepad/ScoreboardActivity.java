@@ -24,6 +24,8 @@ import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
 import de.pbma.nearfly.NearflyBindingActivity;
+import de.pbma.nearflyexample.scenarios.BouncingBall.BouncingBallActivity;
+import de.pbma.nearflyexample.scenarios.Messenger.MessengerActivity;
 
 public class ScoreboardActivity extends NearflyBindingActivity {
     private final String TAG = getClass().getCanonicalName();
@@ -79,7 +81,7 @@ public class ScoreboardActivity extends NearflyBindingActivity {
         if (!neaflyServiceConnectCalled) {
             NearflyClient.askForPermissions(this, true);
             nearflyService.addSubCallback(nearflyListener);
-            nearflyService.connect("19moa18", NearflyClient.USE_NEARBY);
+            nearflyService.connect("19moa18/scorebaord", NearflyClient.USE_NEARBY);
 
             for (String str : USED_CHANNELS)
                 nearflyService.subIt(DEFAULT_CHANNEL + str);
@@ -475,5 +477,9 @@ public class ScoreboardActivity extends NearflyBindingActivity {
                 });
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }

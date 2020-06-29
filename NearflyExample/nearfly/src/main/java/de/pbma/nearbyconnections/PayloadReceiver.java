@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * TODO -------------------------------------------------------------------------------------
@@ -44,6 +45,7 @@ abstract class PayloadReceiver extends PayloadCallback {
      * Name that precedes the date e.g. Nearfly 2020-05-02
      **/
     private final String FILEFORENAME = "Nearfly ";
+    // private final ConcurrentLinkedQueue<Long> payloadSendBuffer;
 
     public NeCon neCon = new NeCon();
     /**String notDeprecatedAlternativeDestinationDirectory
@@ -298,6 +300,14 @@ abstract class PayloadReceiver extends PayloadCallback {
                         }
                     }
                 }
+                /* // FAILED FOR QOS
+                else{
+                    int size = payloadSendBuffer.size();
+                    if (size>1){
+                        Log.d("testy","payloadSendBuffer: "+ size + " ###################################");
+                    }
+                    payloadSendBuffer.remove(payloadId);
+                }*/
                 /*else if (payload.getType() == Payload.Type.STREAM){
                     try {
                         onBigBytes(toByteArray(payload.asStream().asInputStream()));

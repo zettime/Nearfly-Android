@@ -1,5 +1,6 @@
 package de.pbma.nearflyexample.scenarios.BouncingBall;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -27,6 +28,7 @@ import de.pbma.nearfly.NearflyClient;
 import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
+import de.pbma.nearflyexample.scenarios.Messenger.MessengerActivity;
 
 public class BouncingBallActivity extends NearflyBindingActivity {
 
@@ -41,8 +43,8 @@ public class BouncingBallActivity extends NearflyBindingActivity {
 
     private Handler mHandler = new Handler();
     private GameView mGameView;
-    private final int FPS = 25;
-    private final int QOS_BUFFER = FPS;
+    private final int FPS = 24;
+    private final int QOS_BUFFER = 9000;// FPS*3;
 
 
     private TextView mSurviveTime;
@@ -52,6 +54,7 @@ public class BouncingBallActivity extends NearflyBindingActivity {
     private String mPlayerId;
     private TextView mPlayerBoard;
     private volatile int mSyncCnt = 0;
+    private boolean mGameOver = false;
 
     /** TeamMates with keepAlive time as value **/
     // ConcurrentHashMap<String, Integer> mTeamMates = new ConcurrentHashMap<>();
@@ -104,7 +107,7 @@ public class BouncingBallActivity extends NearflyBindingActivity {
         if (!neaflyServiceConnectCalled) {
             NearflyClient.askForPermissions(this, false);
             nearflyService.addSubCallback(nearflyListener);
-            nearflyService.connect("19moa18", NearflyClient.USE_MQTT);
+            nearflyService.connect("19moa18/bouncingball", NearflyClient.USE_NEARBY);
             for (String subChannel : SUBCHANNELS)
                 nearflyService.subIt(NEARFLY_CHANNEL+subChannel);
             neaflyServiceConnectCalled = true;
@@ -188,6 +191,7 @@ public class BouncingBallActivity extends NearflyBindingActivity {
                     case NEARFLY_CHANNEL+GAME_STATE:
                         if (message.equals("gameOver")){
                             runOnUiThread(() -> mGameView.changeState(GameView.STATE_GAMEOVER, true));
+                            mGameOver=true;
                             mTeamMates.forEach((v, tmpTeamMate) -> {
                                 /*tmpTeamMate.xAbs.clear();
                                 tmpTeamMate.yAbs.clear();
@@ -198,6 +202,10 @@ public class BouncingBallActivity extends NearflyBindingActivity {
 
                         }else if (message.equals("startGame")){
                             runOnUiThread(() -> mGameView.changeState(GameView.STATE_PLAYING, true));
+                            mTeamMates.forEach((v, tmpTeamMate) -> {
+                                tmpTeamMate.playdata.clear();
+                            });
+                            mGameOver=false;
                         }
                         break;
                 }
@@ -313,8 +321,6 @@ public class BouncingBallActivity extends NearflyBindingActivity {
                     });
                 }
         }, 0, 1000/FPS);
-
-
 
         /** Keep sending singal, to note  that you're participating **/
         new Thread(() -> {
@@ -433,5 +439,9 @@ public class BouncingBallActivity extends NearflyBindingActivity {
                 sum.sumVOri = 0d;
             }
         }).start();
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }

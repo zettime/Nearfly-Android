@@ -30,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static de.pbma.nearfly.Constants.TAG;
 
@@ -77,6 +78,9 @@ abstract class NeConEssentials {
 
     private boolean mIsDiscovering = false;
     private boolean mIsAdvertising = false;
+
+    // Failed for QoS
+    // private final ConcurrentLinkedQueue<Long> payloadSendBuffer = new ConcurrentLinkedQueue<>();
 
     /** Stop discvering while connecting -> helps to accelerate the connecting-phase **/
     private void setConnecting(boolean tmpConnecting){
@@ -509,6 +513,7 @@ abstract class NeConEssentials {
 
     private void send(Payload payload, Set<String> endpoints) {
         ArrayList<String> entpointsList = new ArrayList<>(endpoints);
+        // payloadSendBuffer.add(payload.getId());
         // TODO: provisorisch
         // entpointsList.add(id);
 

@@ -50,6 +50,8 @@ import de.pbma.nearfly.NearflyService;
 import de.pbma.nearflyexample.R;
 import de.pbma.nearfly.NearflyBindingActivity;
 import de.pbma.nearflyexample.measureTimes.Logger;
+import de.pbma.nearflyexample.scenarios.BouncingBall.BouncingBallActivity;
+import de.pbma.nearflyexample.scenarios.ScoreBoardNotepad.ScoreboardActivity;
 
 public class MessengerActivity extends NearflyBindingActivity {
     /**
@@ -107,7 +109,7 @@ public class MessengerActivity extends NearflyBindingActivity {
         if (!neaflyServiceConnectCalled) {
             NearflyClient.askForPermissions(this, true);
             nearflyService.addSubCallback(nearflyListener);
-            nearflyService.connect("19moa18", useTech);
+            nearflyService.connect("19moa18/messenger", useTech);
             nearflyService.subIt(mRoomChannel);
             neaflyServiceConnectCalled = true;
         }
@@ -116,10 +118,6 @@ public class MessengerActivity extends NearflyBindingActivity {
     @Override
     public void onNearflyServiceUnbound() {
         // nearflyService.disconnect();
-    }
-
-    @Override
-    public void onBackPressed() {
     }
 
     NearflyListener nearflyListener = new NearflyListener() {
@@ -839,8 +837,11 @@ public class MessengerActivity extends NearflyBindingActivity {
         return byteBuffer.toByteArray();
     }
 
-
     public void logIt(String str) {
         super.logIt(str);
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }
