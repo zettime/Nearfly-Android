@@ -69,6 +69,9 @@ abstract class PayloadReceiver extends PayloadCallback {
 
     public abstract void onByteMessage(String endpointId, NeCon.BytesMessage bytesMessage);
 
+    // Used for Subscriptions
+    public abstract void onControlMessage(String endpointId, NeCon.ControlMessage bytesMessage);
+
     protected abstract void onBigBytes(String channel, byte[] bigBytes);
 
     class fileRelatedData {
@@ -101,6 +104,9 @@ abstract class PayloadReceiver extends PayloadCallback {
             } else if (message instanceof NeCon.BytesMessage) {
                 NeCon.BytesMessage bytesMessage= (NeCon.BytesMessage) message;
                 onByteMessage(endpointId, bytesMessage);
+            } else if (message instanceof NeCon.ControlMessage) {
+                NeCon.ControlMessage controlMessage = (NeCon.ControlMessage) message;
+                onControlMessage(endpointId, controlMessage);
             } else {
                 throw new RuntimeException("Unknown NeConExtMessage File type Received");
             }

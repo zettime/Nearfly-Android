@@ -46,7 +46,6 @@ public class BouncingBallActivity extends NearflyBindingActivity {
     private final int FPS = 24;
     private final int QOS_BUFFER = 9000;// FPS*3;
 
-
     private TextView mSurviveTime;
     private LinearLayout mGameOverScreen;
     private TextView mTextViewScore;

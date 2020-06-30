@@ -110,6 +110,7 @@ public class MessengerActivity extends NearflyBindingActivity {
             NearflyClient.askForPermissions(this, true);
             nearflyService.addSubCallback(nearflyListener);
             nearflyService.connect("19moa18/messenger", useTech);
+            // nearflyService.subIt("19moa18/measureTest/test");
             nearflyService.subIt(mRoomChannel);
             neaflyServiceConnectCalled = true;
         }

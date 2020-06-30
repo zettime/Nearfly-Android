@@ -2,28 +2,35 @@ package de.pbma.nearbyconnections;
 import android.util.Log;
 
 import com.google.android.gms.nearby.connection.Payload;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 /** Component that keeps the two different NeConMessage **/
 public class NeCon {
     // Payloads
-    private final static String CHANNEL = "c";
-    private final static String PAYLOAD = "p";
+    private final static String CHANNEL = "1";
+    private final static String PAYLOAD = "2";
 
-    private final static String FILE_EXTENSION = "e";
-    private final static String FILE_ID = "i";
-    private final static String TEXT_ATTACHMENT = "t";
-    private final static String MESSAGE_TYPE= "m";
+    private final static String FILE_EXTENSION = "3";
+    private final static String FILE_ID = "4";
+    private final static String TEXT_ATTACHMENT = "5";
+    private final static String MESSAGE_TYPE= "6";
 
     public final static int BYTES = 0;
     public final static int FILEINFORMATION = 1;
+    public final static int CONTROLMESSAGE = 2;
 
-    public final String PREHEADER_FORMAT = "000:";
+    private static final String CMD = "7";
+    public static final int CMD_SUB = 0;
+    public static final int CMD_UNSUB = 1;
 
+    public static final String PREHEADER_FORMAT = "000:";
 
-    public Message createMessage(Payload payload){
+    public static Message createMessage(Payload payload){
         try {
             String str= new String(payload.asBytes());
             String[] segments = str.split(":", 2);
@@ -50,16 +57,18 @@ public class NeCon {
                 return createTextMessage(json, byteMessage);
             if (type==FILEINFORMATION)
                 return createFileInfMessage(json);
+            if (type==CONTROLMESSAGE)
+                return createControlMessage(json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public  class Message{
+    public static class Message{
     }
 
-    public class BytesMessage extends Message {
+    public static class BytesMessage extends Message {
         final private int type = BYTES;
         private byte[] payload;
         private String channel;
@@ -108,7 +117,7 @@ public class NeCon {
         }
     }
 
-    public BytesMessage createTextMessage(JSONObject jsonSegment, byte[] byteMessage){
+    public static BytesMessage createTextMessage(JSONObject jsonSegment, byte[] byteMessage){
         try {
             return new BytesMessage(
                     byteMessage,
@@ -120,7 +129,7 @@ public class NeCon {
         }
     }
 
-    public class FileInfMessage extends Message {
+    public static class FileInfMessage extends Message {
         final private int type = FILEINFORMATION;
         private String fileExtension;
         private long fileId;
@@ -173,13 +182,74 @@ public class NeCon {
         }
     }
 
-    public FileInfMessage createFileInfMessage(JSONObject jsonSegment){
+    public static FileInfMessage createFileInfMessage(JSONObject jsonSegment){
         try {
             return new FileInfMessage(
                     jsonSegment.getString(CHANNEL),
                     jsonSegment.getString(FILE_EXTENSION),
                     jsonSegment.getLong(FILE_ID),
                     jsonSegment.getString(TEXT_ATTACHMENT)
+            );
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // TODO Controlling for Subscriptions
+    public static class ControlMessage extends Message {
+        final private int type = CONTROLMESSAGE;
+        private int cmd;
+        private ArrayList<String> subList;
+        private JSONObject message;
+
+        public int getCMD() {
+            return cmd;
+        }
+        public ArrayList<String> getSubList() {
+            return subList;
+        }
+
+        public ControlMessage(int cmd, ArrayList<String> payload) {
+            this.cmd = cmd;
+            this.subList = payload;
+
+            buildMessage();
+        }
+
+        public byte[] getBytes(){
+            return (PREHEADER_FORMAT+message.toString()).getBytes(StandardCharsets.UTF_8);
+        }
+
+        private void buildMessage(){
+            message = new JSONObject();
+            try {
+                // Make ArrayList
+                JSONArray array = new JSONArray(subList.toArray());
+
+                message.put(CMD, cmd);
+                message.put(PAYLOAD, array);
+                message.put(MESSAGE_TYPE, type);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static ControlMessage createControlMessage(JSONObject jsonSegment){
+        try {
+            JSONArray jArray = jsonSegment.getJSONArray(PAYLOAD);
+
+            ArrayList<String> array = new ArrayList<String>();
+            if (jArray != null) {
+                for (int i=0;i<jArray.length();i++){
+                    array.add(jArray.getString(i));
+                }
+            }
+
+            return new ControlMessage(
+                    jsonSegment.getInt(CMD),
+                    array
             );
         } catch (JSONException e) {
             e.printStackTrace();

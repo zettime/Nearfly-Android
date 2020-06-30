@@ -54,7 +54,20 @@ abstract class NeConEssentials {
     private final Map<String, Endpoint> mDiscoveredEndpoints = new ConcurrentHashMap<>();
 
     // TODO
+    /*private ArrayList<String> mNodeSubscriptionList;
+    public getNodeSubscriptionList(){
+        return mNodeSubscriptionList
+    }*/
+
+
+    // TODO
     protected Context mContext;
+
+    // My Subscriptions
+    /*private final ArrayList<String> mSubscribedChannels = new ArrayList<>();
+    public final ArrayList<String> getSubscribedChannels(){
+        return mSubscribedChannels;
+    }*/
 
     /**
      * The devices we have pending connections to. They will stay pending until we call {@link
@@ -67,7 +80,7 @@ abstract class NeConEssentials {
      * there will only be one entry in this map.
      * TODO: Concurrent for visability
      */
-    private final Map<String, Endpoint> mEstablishedConnections = new ConcurrentHashMap<>();
+    public final Map<String, Endpoint> mEstablishedConnections = new ConcurrentHashMap<>();
 
     /**
      * True if we are asking a discovered device to connect to us. While we ask, we cannot ask another
@@ -174,6 +187,11 @@ abstract class NeConEssentials {
             @Override
             public void onByteMessage(String endpointId, NeCon.BytesMessage bytesMessage) {
                 onReceive(mEstablishedConnections.get(endpointId), bytesMessage);
+            }
+
+            @Override
+            public void onControlMessage(String endpointId, NeCon.ControlMessage controlMessage) {
+                NeConEssentials.this.onControl(endpointId, controlMessage);
             }
 
             @Override
@@ -511,6 +529,19 @@ abstract class NeConEssentials {
         send(payload, mEstablishedConnections.keySet());
     }
 
+    /** TODO: just try out **/
+    public void sendSingle(Payload payload, String entpointId) {
+        mConnectionsClient
+                .sendPayload(entpointId, payload)
+                .addOnFailureListener(
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                logW("sendPayload() failed.", e);
+                            }
+                        });
+    }
+
     private void send(Payload payload, Set<String> endpoints) {
         ArrayList<String> entpointsList = new ArrayList<>(endpoints);
         // payloadSendBuffer.add(payload.getId());
@@ -548,6 +579,9 @@ abstract class NeConEssentials {
     }
 
     protected void onBigBytes(String channel, byte[] bigBytes) {
+    }
+
+    protected void onControl(String endpoint, NeCon.ControlMessage controlMessage){
     }
 
     /** Returns the client's name. Visible to others when connecting. */

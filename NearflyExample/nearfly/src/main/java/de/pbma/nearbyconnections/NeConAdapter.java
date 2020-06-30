@@ -25,6 +25,8 @@ import java.io.PipedInputStream;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -55,7 +57,6 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  * time. Maybe another node is connecting therefor he waits withing the {@link #BACKOFFF_TIME}
  *
  */
-
 public class NeConAdapter extends NeConEssentials implements NearflyClientTarget {
 
     private static final long INITIAL_DISCOVERY_TIME = 1;
@@ -81,7 +82,19 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
 
     private long mClientStartedTime = 0;
 
-    private ArrayList<String> mSubscribedChannels = new ArrayList<>();
+    /** My Subscriptions **/
+    // private ArrayList<String> mSubscribedChannels = new ArrayList<>();
+
+    /**  SubscriptionMap for the Root  **/
+    private ConcurrentHashMap<String, ArrayList<String>> mCentralSubscriptionsMap;
+    /**  SubscriptionMap for the Nodes  **/
+    private ArrayList<String> mSubOutList = new ArrayList<>();
+    private ArrayList<String> mSubInList = new ArrayList<>();
+
+    /** My Subscriptions **/
+    /*public final ArrayList<String> getSubscribedChannels(){
+        return mSubscribedChannels;
+    }*/
 
     /** AtomicInteger so that the async sleep-threads gain visibility **/
     private AtomicInteger mState = new AtomicInteger(STATE_STANDBY);
@@ -102,7 +115,7 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
 
             // send(Payload.fromStream(new ByteArrayInputStream(bigBytes)));
 
-            NeCon.FileInfMessage fileMessage = neCon.new FileInfMessage(
+            NeCon.FileInfMessage fileMessage = new NeCon.FileInfMessage(
                     channel, "null",
                     fileAsPayload.getId(), NeConAdapter.BIG_BYTES_BYPASS);
             // send(Payload.fromBytes(neConExtMessage.getBytes()));
@@ -269,12 +282,13 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
         }
     }
 
-    private boolean tmpConnected = false;
-    protected void changeConnectionState(boolean isConnected) {
-        if (tmpConnected==isConnected)
+    private boolean isConnected = false;
+    protected void changeConnectionState(boolean connectionState) {
+        if (isConnected==connectionState)
                 return;
-        else
-            tmpConnected=isConnected;
+        else{
+            isConnected=connectionState;
+        }
 
         mNeConListener.onLogMessage(isConnected?"connected":"disconnected");
     }
@@ -304,6 +318,21 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
         if (getState() == STATE_FINDROOT)
             setState(STATE_ROOT);
 
+        // TODO: NEW
+        /*if (getState() == STATE_ROOT){
+            /** Start Central administration of the subscriptions **/
+           /* if (mCentralSubscriptionsMap == null){
+                mCentralSubscriptionsMap = new ConcurrentHashMap<>();
+            }
+        }*/
+
+        /** Keeps all subscriptions in the network **/
+        if (getState()==STATE_CONNODE)
+            send(Payload.fromBytes(new NeCon.ControlMessage(NeCon.CMD_SUB, mSubInList).getBytes()));
+
+        if (getState()==STATE_ROOT && mCentralSubscriptionsMap == null){
+            mCentralSubscriptionsMap = new ConcurrentHashMap<>();
+        }
 
         // TODO: Start the Executor *****************************************************
         /*if (getConnectedEndpoints().size() > 1) {
@@ -322,14 +351,22 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
                 mContext, "Disconnected from " + endpoint.getName(), Toast.LENGTH_SHORT)
                 .show();
 
-        if (getConnectedEndpoints().isEmpty())
+        if (getConnectedEndpoints().isEmpty()){
             changeConnectionState(false);
+            mCentralSubscriptionsMap = null;
+        }
 
         if (getState() == STATE_ROOT && getConnectedEndpoints().isEmpty())
             setState(STATE_FINDROOT);
 
         if (getState() == STATE_CONNODE)
             setState(STATE_FINDROOT);
+
+        if (getState() == STATE_ROOT){
+            mCentralSubscriptionsMap.remove(endpoint.getId());
+            rebuildSubOutList();
+        }else if (!mSubOutList.isEmpty())
+            mSubOutList.clear();
 
         /** Shutdown Executor ***/
         /*if (msgForwardExecutor != null) {
@@ -505,14 +542,23 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
     }
 
     public void publishIt(String channel, byte[] message) {
+        if (!mSubOutList.contains(channel)){
+            logD("No one subscribed to this channel");
+            return;
+        }
+
         // NeConExtMessage neConExtMessage = new NeConExtMessage(message, channel, NeConExtMessage.BYTES);
-        NeCon.BytesMessage textMessage = neCon.new BytesMessage(message, channel);
+        NeCon.BytesMessage textMessage = new NeCon.BytesMessage(message, channel);
         logD(message + " published");
         // send(Payload.fromBytes(neConExtMessage.getBytes()));
         send(Payload.fromBytes(textMessage.getBytes()));
     }
 
     public void pubFile(String channel, Uri uri, String textAttachment) {
+        if (!mSubOutList.contains(channel)){
+            logD("No one subscribed to this channel");
+            return;
+        }
         /*NeConExtMessage neConExtMessage = new NeConExtMessage(message, channel);*/
 
         // Get ParcelFileDescriptor
@@ -532,7 +578,7 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
         // String fileinformations = fileExtension + "/" + fileAsPayload.getId() + "/" + textAttachment;
 
         // NeConExtMessage neConExtMessage = new NeConExtMessage(fileinformations, channel, NeConExtMessage.FILEINFORMATION);
-        NeCon.FileInfMessage fileMessage = neCon.new FileInfMessage(channel, fileExtension,
+        NeCon.FileInfMessage fileMessage = new NeCon.FileInfMessage(channel, fileExtension,
                 fileAsPayload.getId(), textAttachment);
         // send(Payload.fromBytes(neConExtMessage.getBytes()));
         send(Payload.fromBytes(fileMessage.getBytes()));
@@ -542,6 +588,11 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
     }
 
     public void pubFileBytes(String channel, File file, String textAttachment) {
+        if (!mSubOutList.contains(channel)){
+            logD("No one subscribed to this channel");
+            return;
+        }
+
         Payload fileAsPayload = null;
         try {
             fileAsPayload = Payload.fromFile(file);
@@ -553,7 +604,7 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
         String parts[] = path.split(".");
         String fileExtension = parts[parts.length-1];
 
-        NeCon.FileInfMessage fileMessage = neCon.new FileInfMessage(channel, fileExtension,
+        NeCon.FileInfMessage fileMessage = new NeCon.FileInfMessage(channel, fileExtension,
                 fileAsPayload.getId(), textAttachment);
         // send(Payload.fromBytes(neConExtMessage.getBytes()));
         send(Payload.fromBytes(fileMessage.getBytes()));
@@ -583,13 +634,21 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
     }
 
     public void subscribe(String channel) {
-        if (!mSubscribedChannels.contains(channel))
-            mSubscribedChannels.add(channel);
+        if (!mSubInList.contains(channel)){
+            mSubInList.add(channel);
+
+            if (isConnected)
+                send(Payload.fromBytes(new NeCon.ControlMessage(NeCon.CMD_SUB, mSubInList).getBytes()));
+        }
     }
 
     public void unsubscribe(String channel) {
-        if (mSubscribedChannels.contains(channel))
-            mSubscribedChannels.remove(channel);
+        if (mSubInList.contains(channel)){
+            mSubInList.remove(channel);
+
+            if (isConnected) // PUB new mSubInList (Everytime Absolute list val)
+                send(Payload.fromBytes(new NeCon.ControlMessage(NeCon.CMD_SUB, mSubInList).getBytes()));
+        }
     }
 
     /**
@@ -601,9 +660,9 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
         // NeConExtMessage msg = NeConExtMessage.createExtMessage(payload);
         // NeCon.BytesMessage msg = neCon.createTextMessage(bytesMessage);
 
-        if (mSubscribedChannels.contains(bytesMessage.getChannel()) && mNeConListener != null) {
-            mNeConListener.onMessage(bytesMessage.getChannel(), bytesMessage.getPayload());
-        }
+        // if (mSubInList.contains(bytesMessage.getChannel()) && mNeConListener != null) {
+        mNeConListener.onMessage(bytesMessage.getChannel(), bytesMessage.getPayload());
+        // }
 
         /*if (payload.getType() == Payload.Type.STREAM)
             mNeConListener.onStream(payload);
@@ -617,7 +676,6 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
         if (getConnectedEndpoints().size()>1) // Only Root has more than 2 Connected Endpoints
             forward(bytesMessage, endpoint.getId());
             // publishForwarder.newMessage(payload, endpointId);
-
     }
 
     /**
@@ -628,6 +686,48 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
         mNeConListener.onBigBytes(channel, bigBytes);
     }
 
+    private void rebuildSubOutList(){
+        mSubOutList.clear();
+        mCentralSubscriptionsMap.forEach((endpointId, subList) -> {
+            for (int i = 0; i < subList.size(); i++) {
+                String channel = subList.get(i);
+
+                if (!mSubOutList.contains(channel))
+                    mSubOutList.add(channel);
+            }
+        });
+    }
+
+    @Override
+    protected void onControl(String endpoint, NeCon.ControlMessage controlMessage) {
+        if (controlMessage.getCMD() == NeCon.CMD_SUB) {
+            if (getState() == STATE_ROOT) {
+                mCentralSubscriptionsMap.put(endpoint, controlMessage.getSubList());
+
+                /** Root collects all subscriptions in the network in this list **/
+                /*ArrayList<String> othersSubList = controlMessage.getSubList();
+                for (int i = 0; i < othersSubList.size(); i++) {
+                    String str = othersSubList.get(i);
+
+                    if (!mSubOutList.contains(str)) {
+                        othersSubList.add(str);
+                    }
+                }*/
+                rebuildSubOutList();
+
+                send(Payload.fromBytes(
+                        new NeCon.ControlMessage(NeCon.CMD_SUB, mSubOutList).getBytes()));
+                /*mCentralSubscriptionsMap.forEach((endpointId, subList) -> {
+                    if (!subList.equals(mSubOutList))
+                        sendSingle(Payload.fromBytes(
+                                new NeCon.ControlMessage(
+                                        NeCon.CMD_SUB, subList).getBytes()), endpointId);
+                });*/
+            }else if (getState()==STATE_CONNODE)
+                mSubOutList = controlMessage.getSubList();
+            }
+        }
+
     private void forward(final NeCon.BytesMessage bytesMessage, final String excludedEntpointId) {
         // logE(++mCnt + " - forwarding Message: " + new String(payload.asBytes()));
         // final long starttime = System.currentTimeMillis();
@@ -636,20 +736,25 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
         ArrayList<String> broadcastList = new ArrayList<>();
 
         for (Endpoint endpoint: getConnectedEndpoints()){
-            if (!endpoint.getId().equals(excludedEntpointId)){
-                broadcastList.add(endpoint.getId());
+            if (!endpoint.getId().equals(excludedEntpointId)
+                    && mCentralSubscriptionsMap.get(endpoint.getId()).contains(bytesMessage.getChannel())) {
+                        broadcastList.add(endpoint.getId());
             }
         }
+
+        if (!broadcastList.isEmpty())
+            send(Payload.fromBytes(bytesMessage.getBytes()), broadcastList);
+
         //msgForwardExecutor.execute(() -> {
-        send(Payload.fromBytes(bytesMessage.getBytes()), broadcastList);
+        // send(Payload.fromBytes(bytesMessage.getBytes()), broadcastList);
         //});
     }
 
     @Override
     protected void onFile(Endpoint endpoint, String channel, String path, String textAttachment) {
-        if (mSubscribedChannels.contains(channel) && mNeConListener != null) {
+        // if (mSubInList.contains(channel) && mNeConListener != null) {
             mNeConListener.onFile(channel, path, textAttachment);
-        }
+        // }
     }
 
     protected void forwardFile(String excludedEntpointId, Payload fileAsPayload, String channel, String path, String textAttachment){
@@ -659,14 +764,15 @@ public class NeConAdapter extends NeConEssentials implements NearflyClientTarget
 
         ArrayList<String> broadcastList = new ArrayList<>();
         for (Endpoint endpoint: getConnectedEndpoints()){
-            if (!endpoint.getId().equals(excludedEntpointId)){
+            if (!endpoint.getId().equals(excludedEntpointId)
+                    && mCentralSubscriptionsMap.get(endpoint.getId()).contains(channel)){
                 broadcastList.add(endpoint.getId());
             }
         }
 
         // String fileinformations = fileExtension + "/" + fileAsPayload.getId() + "/" + textAttachment;
         // NeConExtMessage neConExtMessage = new NeConExtMessage(fileinformations, channel, NeConExtMessage.FILEINFORMATION);
-        NeCon.FileInfMessage fileMessage = neCon.new FileInfMessage(channel, fileExtension, fileAsPayload.getId(), textAttachment);
+        NeCon.FileInfMessage fileMessage = new NeCon.FileInfMessage(channel, fileExtension, fileAsPayload.getId(), textAttachment);
 
         logV("forwarding file");
         // send(Payload.fromBytes(neConExtMessage.getBytes()), broadcastList);
