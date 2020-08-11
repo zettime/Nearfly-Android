@@ -88,20 +88,6 @@ dependencies {
 ## Get Started
 
 ```java
-import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
-
-import de.pbma.nearfly.NearflyClient;
-import de.pbma.nearfly.NearflyListener;
-import de.pbma.nearflyexample.R;
-
 public class StandardWithClient extends AppCompatActivity {
     private final String TAG = "StandardWithClient";
     private final String ROOM = "com.unique.app.string"
@@ -148,7 +134,7 @@ public class StandardWithClient extends AppCompatActivity {
         /** Pass listener to react to incoming messages **/
         mNearflyClient.addSubCallback(nearflyListener);
        
-        // Set up an autonomous p2p network, if devices with the same ROOM string are nearby
+        /** Set up an autonomous p2p network, if devices with the same ROOM string are nearby **/
         mNearflyClient.connect(ROOM, mNearflyClient.USE_NEARBY);
         
         /** Subscribe to a channel **/
