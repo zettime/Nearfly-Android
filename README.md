@@ -1,44 +1,53 @@
-#### 20thesis04 - Alexis dos Santos
-
 # Nearfly-Android
 
-Entwicklung einer Android-Bibliothek, welche Nearby Connections und Mqtt wrappt.
+
+Nearfly is an Android api that allows the API user to establish local network-independent communication between up to 7 Android devices. Depending on the ConnectionMode set, the connection can be instantiated either via the Internet (ConnectionMode = USE_MQTT) or via an offline peer-to-peer network (ConnectionMode = USE_NEARBY) that is set up independently. The underlying technologies are extended in such a way that the API can be used similar to the MQTT API. The offline mode uses the Nearby Connections API and has been optimized over 3 month with the help of extensive research and empirical studies so that the connection times are kept as minimal as possible.
+
+Based on the extensive evaluation between the two ConnectionModes, which was carried out in the last two chapters of the [document for the conception and implementation of the Nearfly API](Nearfly_API_conception_and_implementation.pdf), the following decision tree was drawn up for the selection of the ConnectionModes.
+
+The evaluation in particular shows that nearby connections takes a very long time to establish a connection with approx. 7 seconds per network participant. If the requirement for a faster connection establishment is not given, up to 1 MByte/s can be sent with low latency in small networks (2 to 3 nodes). MQTT scales better and is more suitable for larger networks.
+
+![alt text](decisiontree.png "Decisiontree for the Nearfly-ConnectionModes")
+
+> ### Note
+>
+> The source code of the Nearfly API is openly available and can also be very useful to familiarize yourself with the very modestly documented Nearby Connections API. 
 
 
 
-Die Nearfly-Android-Bibliothek, kann wie folgt eingebunden werden:
+## Integrate the Nearfly library into the project
 
-1.  Die Passende AAR-Datei aus dem Ordner "AndroidLib" in das libs (`<Projectname>/app/libs/`)Verzeichnis des eigenen Projektes Kopieren
+The Nearfly Android library can be integrated as follows:
 
-2. Die Bibliothek hinzufügen der Abhängigkeiten in die build.gradle auf Modulebene(z.B. app)  einbinden: 
+1. Copy the appropriate AAR file from the "AndroidLib" folder into the libs (`<Projectname> / app / libs /`) directory of your own project
 
-   ```java
-   android {
-       compileOptions {
-           sourceCompatibility JavaVersion.VERSION_1_8
-           targetCompatibility JavaVersion.VERSION_1_8
-       }
-   }
-   
-   repositories {
-       flatDir {
-           dirs 'libs'
-       }
-   }
-   
-   dependencies {
-       implementation 'de.pbma.nearfly:nearfly-latest@aar'
-       
-       // May not be needed in the future
-       implementation 'com.google.android.gms:play-services-nearby:17.0.0'
-       implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
-   }
-   
-   ```
+2. Add the library and include the dependencies in the build.gradle at module level (e.g. app):
 
-3. In das Manifest, sowohl den Nearfly-Service, wie auch die nötigen Berechtigungen eintragen:
+```java
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
 
-   
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    implementation 'de.pbma.nearfly:nearfly-latest@aar'
+    
+    // May not be needed in the future
+    implementation 'com.google.android.gms:play-services-nearby:17.0.0'
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
+}
+
+```
+
+1. Enter both the Nearfly Library and the necessary authorizations in the manifest:
 
    ```xml
    <manifest xmlns:android="http://schemas.android.com/apk/res/android">
@@ -72,5 +81,5 @@ Die Nearfly-Android-Bibliothek, kann wie folgt eingebunden werden:
        </application>
    </manifest>
    ```
-   
-4. **ACHTUNG**: Bei Android 10 (API 29) ist es derzeitig zwingend Notwendig `android:requestLegacyExternalStorage="true">` in das Manifest einzutragen. Da Android 10 die letzte Version Android Version ist, die das *scoped storage* unterstützt.
+
+2. **ATTENTION**: With Android 10 (API 29) it is absolutely necessary to enter `android: requestLegacyExternalStorage =" true ">` in the manifest. Since Android 10 is the last version of Android that supports *scoped storage*.
