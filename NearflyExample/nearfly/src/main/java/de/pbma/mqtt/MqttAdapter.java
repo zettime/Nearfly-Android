@@ -33,9 +33,9 @@ import de.pbma.nearfly.NearflyClientTarget;
 public class MqttAdapter implements NearflyClientTarget {
     final static String TAG = MqttAdapter.class.getCanonicalName();
     // Messages
-    private static final String MQTT_PASSWORD = "779747ee";
-    private static final String MQTT_USERNAME = "19moa18";
-    private static final String MQTT_CONNECTION_URL = "ssl://pma.inftech.hs-mannheim.de:8883";
+    private final static String MQTT_PASSWORD = "YOUR_PASSWORD";
+    private final static String MQTT_USERNAME = "YOU_USERNAME";
+    private final static String MQTT_CONNECTION_URL = "YOUR_CONNECTION_URL";
     final String PREHEADER_FORMAT="000:";
 
     private static final String TYPE_FILE =  "f";

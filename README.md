@@ -67,7 +67,6 @@ dependencies {
        <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE " />
        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
        <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
-       <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
    
        <application 
           android:requestLegacyExternalStorage="true">
@@ -81,5 +80,83 @@ dependencies {
        </application>
    </manifest>
    ```
-
+   
 2. **ATTENTION**: With Android 10 (API 29) it is absolutely necessary to enter `android: requestLegacyExternalStorage =" true ">` in the manifest. Since Android 10 is the last version of Android that supports *scoped storage*.
+
+
+
+## Get Started
+
+```java
+import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+
+import de.pbma.nearfly.NearflyClient;
+import de.pbma.nearfly.NearflyListener;
+import de.pbma.nearflyexample.R;
+
+public class StandardWithClient extends AppCompatActivity {
+    /** If true, debug logs are shown on the device. */
+
+    private final String TAG = "StandardWithClient";
+    private final String ROOM = "com.unique.app.string"
+
+    private final String NEARFLY_CHANNEL = "test/a";
+    private Button mBtnToggleConMode;
+    private NearflyClient mNearflyClient;
+
+
+    NearflyListener nearflyListener = new NearflyListener() {
+        @Override
+        public void onLogMessage(String output) {}
+
+        @Override
+        public void onMessage(String channel, String message) {
+            Log.v(TAG, "channel: "+channel+" message: "+message + "\n");      
+        }
+
+        @Override
+        public void onFile(String channel, String path, String textAttachment){
+            Log.v(TAG, channel + " " + path + " " + textAttachment + "\n");
+        }
+
+        @Override
+        public void onBigBytes(String channel, byte[] bytes) {}
+    };
+
+    public void toggleConnectionMode(View view){
+        if (mNearflyClient.getConnectionMode()== mNearflyClient.USE_MQTT)
+            mNearflyClient.switchConnectionMode(mNearflyClient.USE_NEARBY);
+        else
+            mNearflyClient.switchConnectionMode(mNearflyClient.USE_MQTT);
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+
+        mNearflyClient = new NearflyClient(getApplicationContext());
+        
+		/** pass listener to react to incoming messages **/
+        mNearflyClient.addSubCallback(nearflyListener);
+       
+        // Set up an autonomous p2p network, if devices with the same ROOM string are nearby
+        mNearflyClient.connect(ROOM, mNearflyClient.USE_NEARBY);
+        
+        /** subscribe to a channel **/
+        mNearflyClient.subIt(NEARFLY_CHANNEL);
+        
+        /** publish the message as soon as there is a connection to at least one node **/
+        nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!".getBytes(), 0, true);
+    }
+}
+```
+
