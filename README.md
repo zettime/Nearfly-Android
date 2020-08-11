@@ -103,8 +103,6 @@ import de.pbma.nearfly.NearflyListener;
 import de.pbma.nearflyexample.R;
 
 public class StandardWithClient extends AppCompatActivity {
-    /** If true, debug logs are shown on the device. */
-
     private final String TAG = "StandardWithClient";
     private final String ROOM = "com.unique.app.string"
 
@@ -112,16 +110,18 @@ public class StandardWithClient extends AppCompatActivity {
     private Button mBtnToggleConMode;
     private NearflyClient mNearflyClient;
 
-
     NearflyListener nearflyListener = new NearflyListener() {
+        /** React to status changes like connected or disconnected **/
         @Override
         public void onLogMessage(String output) {}
 
+        /** React to 'normal' messages **/
         @Override
         public void onMessage(String channel, String message) {
             Log.v(TAG, "channel: "+channel+" message: "+message + "\n");      
         }
 
+        /** React to incoming files **/
         @Override
         public void onFile(String channel, String path, String textAttachment){
             Log.v(TAG, channel + " " + path + " " + textAttachment + "\n");
@@ -144,17 +144,17 @@ public class StandardWithClient extends AppCompatActivity {
         setContentView(R.layout.main);
 
         mNearflyClient = new NearflyClient(getApplicationContext());
-        
-		/** pass listener to react to incoming messages **/
+
+        /** Pass listener to react to incoming messages **/
         mNearflyClient.addSubCallback(nearflyListener);
        
         // Set up an autonomous p2p network, if devices with the same ROOM string are nearby
         mNearflyClient.connect(ROOM, mNearflyClient.USE_NEARBY);
         
-        /** subscribe to a channel **/
+        /** Subscribe to a channel **/
         mNearflyClient.subIt(NEARFLY_CHANNEL);
         
-        /** publish the message as soon as there is a connection to at least one node **/
+        /** Publish the message as soon as there is a connection to at least one node **/
         nearflyService.pubIt(NEARFLY_CHANNEL, "Hello World!".getBytes(), 0, true);
     }
 }
